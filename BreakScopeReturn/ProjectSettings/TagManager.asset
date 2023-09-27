@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Weapon
+  - SecondCamera
+  - LevelPart
+  - Dummie
+  - SnapAnchor
+  - RespawnAnchor
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - layer3
+  - Water
+  - UI
+  - layer6
+  - HUD
+  - layer8
+  - layer9
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
