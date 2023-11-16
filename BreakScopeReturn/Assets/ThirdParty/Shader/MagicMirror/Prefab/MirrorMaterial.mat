@@ -13,7 +13,7 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 5
+  m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -131,7 +131,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Rotation: 0
-    - _Saturation: 8
+    - _Saturation: 1.5
     - _ScrollSpeed: 0.2
     - _Shininess: 1
     - _Smoothness: 0.84

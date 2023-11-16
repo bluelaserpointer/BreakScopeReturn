@@ -1,34 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(CanvasGroup))]
 public class CompositeCrosshair : MonoBehaviour
 {
-    public float expandDistance = 100;
+    public float baseExpandDistance;
     [SerializeField]
-    Transform _sliceParent;
+    RectTransform _leaderPiece;
     [SerializeField]
-    Image _slicePrefab;
-    [SerializeField]
-    Vector3 _slicePrefabAxis = Vector3.right;
-    [SerializeField]
-    int _sliceAmount;
+    int _pieceAmount;
     public CanvasGroup CanvasGroup { get; private set; }
+    [HideInInspector]
+    public float expandDistance = 0;
 
-    readonly List<Image> _sliceImages = new List<Image>();
+    readonly List<RectTransform> _pieces = new List<RectTransform>();
     private void Awake()
     {
         CanvasGroup = GetComponent<CanvasGroup>();
-        if (_sliceParent == null)
-        {
-            _sliceParent = transform;
-        }
-    }
-    private void Start()
-    {
         Regenerate();
     }
     private void Update()
@@ -37,25 +27,26 @@ public class CompositeCrosshair : MonoBehaviour
     }
     public void Regenerate()
     {
-        _sliceParent.DestroyAllChildren();
-        _sliceImages.Clear();
-        _sliceImages.Add(_slicePrefab);
-        float angleSpan = 360F / _sliceAmount;
-        for (int i = 0; i < _sliceAmount; i++)
+        _pieces.Remove(_leaderPiece);
+        _pieces.ForEach(piece => Destroy(piece.gameObject));
+        _pieces.Clear();
+        _pieces.Add(_leaderPiece);
+        float angleSpan = 360F / _pieceAmount;
+        for (int i = 1; i < _pieceAmount; i++)
         {
-            GameObject sliceShaft = new GameObject("sliceShaft");
-            sliceShaft.transform.SetParent(transform, false);
-            sliceShaft.transform.localEulerAngles = Vector3.forward * angleSpan * i;
-            Image sliceImage = Instantiate(_slicePrefab, _sliceParent);
-            sliceImage.transform.SetParent(sliceShaft.transform, false);
-            _sliceImages.Add(sliceImage);
+            var piece = Instantiate(_leaderPiece, _leaderPiece.parent);
+            piece.localEulerAngles = Vector3.forward * angleSpan * i;
+            _pieces.Add(piece);
         }
+        UpdateUI();
     }
     public void UpdateUI()
     {
-        foreach (var image in _sliceImages)
+        float r = baseExpandDistance + expandDistance;
+        foreach (var image in _pieces)
         {
-            image.transform.localPosition = _slicePrefabAxis * expandDistance;
+            float zAngleRad = Mathf.Deg2Rad * image.transform.localEulerAngles.z;
+            image.transform.localPosition = new Vector2(r * Mathf.Cos(zAngleRad), r * Mathf.Sin(zAngleRad));
         }
     }
     public void SetCanvasGroupAlpha(float value)

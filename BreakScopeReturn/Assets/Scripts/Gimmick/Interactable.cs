@@ -19,24 +19,24 @@ public class Interactable : MonoBehaviour
     {
         onInteract.Invoke();
         if (oneTime)
-            Destroy(this);
+            gameObject.SetActive(false);
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponentInParent<Player>() != null)
+        if (GameManager.Instance.Player.IsMyCollider(other))
         {
             onStepIn.Invoke();
             if (oneTime)
-                Destroy(gameObject);
+                gameObject.SetActive(false);
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.GetComponentInParent<Player>() != null)
+        if (GameManager.Instance.Player.IsMyCollider(other))
         {
             onStepOut.Invoke();
             if (oneTime)
-                Destroy(gameObject);
+                gameObject.SetActive(false);
         }
     }
 }

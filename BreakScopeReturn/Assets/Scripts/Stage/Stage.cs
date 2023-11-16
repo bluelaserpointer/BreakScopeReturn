@@ -1,45 +1,78 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [DisallowMultipleComponent]
-public class Stage : MonoBehaviour
+public abstract class Stage : MonoBehaviour
 {
+    [Header("Start")]
     [SerializeField]
     Transform _initialSpawnAnchor;
 
-    public Player Player { get; private set; }
+    [Header("EventSignal")]
+    [SerializeField]
+    Transform _eventSignalParent;
+
+    [Header("Destory")]
+    [SerializeField]
+    UnityEvent _onDestroy;
+    public Player Player => _player;
     public Transform InitialSpawnAnchor => _initialSpawnAnchor;
+    public List<Unit> NpcUnits => _npcUnits;
+    public List<Unit> AliveNpcUnits => _aliveNpcUnits;
+    public UnityEvent OnDestroy => _onDestroy;
 
-    [SerializeField]
-    public readonly List<Unit> units = new List<Unit>();
-    [SerializeField]
-    public readonly List<Unit> aliveUnits = new List<Unit>();
+    readonly List<Unit> _npcUnits = new();
+    readonly List<Unit> _aliveNpcUnits = new();
 
-    public void Init(Player player)
+    [SerializeField, HideInInspector]
+    Player _player;
+
+    public void Init(Player playerPrefab)
     {
-        Player = player;
+        _player = Instantiate(playerPrefab, transform);
+        _player.InitialInit();
         Player.transform.SetPositionAndRotation(InitialSpawnAnchor.position, InitialSpawnAnchor.rotation);
-    }
-    protected virtual void Start()
-    {
-        units.Clear();
-        aliveUnits.Clear();
-        foreach (var unitObj in GameObject.FindGameObjectsWithTag("Unit"))
+        _npcUnits.Clear();
+        _aliveNpcUnits.Clear();
+        foreach (var unitObj in GameObject.FindGameObjectsWithTag(Unit.TAG_NPC_UNIT))
         {
             if (unitObj.GetComponentInParent<Stage>() == this && unitObj.TryGetComponent(out Unit unit))
             {
-                units.Add(unit);
-                aliveUnits.Add(unit);
-                unit.onDead.AddListener(() =>
+                _npcUnits.Add(unit);
+                if (!unit.IsDead)
                 {
-                    aliveUnits.Remove(unit);
-                });
+                    _aliveNpcUnits.Add(unit);
+                    unit.onDead.AddListener(() =>
+                    {
+                        _aliveNpcUnits.Remove(unit);
+                    });
+                }
             }
         }
+        _npcUnits.ForEach(unit => unit.InitialInit());
+    }
+    protected virtual void Start()
+    {
     }
     public virtual void GameClear()
     {
-        units.ForEach(unit => unit.enabled = false);
+        _npcUnits.ForEach(unit => unit.enabled = false);
     }
+    public void Destroy()
+    {
+        OnDestroy.Invoke();
+        Destroy(gameObject);
+    }
+    public EventSignal FindEventSignal(string eventName)
+    {
+        return _eventSignalParent.Find(eventName).GetComponent<EventSignal>();
+    }
+    public void InvokeEventSignal(string eventName)
+    {
+        FindEventSignal(eventName).onEvent.Invoke();
+    }
+    public abstract string Serialize();
+    public abstract void Deserialize(string data);
 }

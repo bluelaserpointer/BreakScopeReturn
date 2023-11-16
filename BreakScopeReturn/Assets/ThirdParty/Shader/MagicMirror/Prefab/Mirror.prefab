@@ -82,7 +82,7 @@ Camera:
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
+  m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
 --- !u!45 &4501582
@@ -186,7 +186,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77b7fc7cdbba2b4489915a8923a46f91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraLookingAtThisMirror: {fileID: 0}
   MaximumPerPixelLights: 2
   TextureSize: 768
   ClipPlaneOffset: 0.07

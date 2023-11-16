@@ -7,10 +7,6 @@ using UnityEditor;
 using System.Reflection;
 using System;
 using UnityEditor.SceneManagement;
-using System.Drawing.Printing;
-using UnityEngine.SocialPlatforms;
-using Unity.VisualScripting;
-using UnityEditor.ProBuilder;
 
 namespace IzumiTools
 {

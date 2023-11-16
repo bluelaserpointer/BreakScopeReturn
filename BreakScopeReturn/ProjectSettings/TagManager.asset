@@ -4,23 +4,21 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Weapon
-  - SecondCamera
-  - LevelPart
-  - Dummie
   - SnapAnchor
+  - NpcUnit
   - RespawnAnchor
+  - SecondCamera
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - layer3
+  - Minimap
   - Water
   - UI
   - layer6
   - HUD
-  - layer8
-  - layer9
+  - 
+  - 
   - 
   - 
   - 

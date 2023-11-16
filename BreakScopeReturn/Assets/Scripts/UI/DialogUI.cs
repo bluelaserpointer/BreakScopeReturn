@@ -18,8 +18,11 @@ public class DialogUI : MonoBehaviour
         {
             Destroy(CurrentNodeSet.gameObject);
         }
-        CurrentNodeSet = Instantiate(nodeSetPrefab);
-        CurrentNodeSet.transform.SetParent(transform, false);
+        if (nodeSetPrefab == null)
+        {
+            return; 
+        }
+        CurrentNodeSet = Instantiate(nodeSetPrefab, transform);
         CurrentNodeSet.Init();
         CurrentNodeSet.gameObject.SetActive(true);
         CurrentNodeSet.SetFirstNode();

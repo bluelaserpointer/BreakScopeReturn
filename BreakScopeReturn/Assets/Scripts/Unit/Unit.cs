@@ -4,17 +4,19 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [DisallowMultipleComponent]
-public class Unit : MonoBehaviour
+public class Unit : SaveTarget
 {
+    public static string TAG_NPC_UNIT => "NpcUnit";
     [Header("Unit Common Stats")]
-    public float initialHealth;
+    [SerializeField] IzumiTools.CappedValue _health;
+    [Range(0f, 1f)]
+    [SerializeField] float _initialHealthRatio = 1;
     [SerializeField] protected Transform viewAnchor;
     [SerializeField] List<Transform> detectAnchors;
-    [SerializeField] RagdollRelax _ragdollRelax;
     [SerializeField] protected Animator _animator;
     [SerializeField] AnimationClip _firingAnimationClip;
 
-    public IzumiTools.CappedValue Health { get; private set; }
+    public IzumiTools.CappedValue Health => _health;
     public Vector3 ViewPosition => viewAnchor.position;
     public bool IsDead { get; private set; }
     public readonly List<UnitDamageCollider> damageColliders = new List<UnitDamageCollider>();
@@ -23,17 +25,27 @@ public class Unit : MonoBehaviour
     public UnityEvent<float> onHeal = new();
     public UnityEvent onDead = new();
 
-    protected virtual void Start()
+    /// <summary>
+    /// Called on initial stgage load after <see cref="GameManager.Instance"/> is loaded
+    /// </summary>
+    public virtual void InitialInit()
     {
         damageColliders.AddRange(GetComponentsInChildren<UnitDamageCollider>());
         damageColliders.ForEach(collider => collider.Init(this));
-        Init();
-    }
-    public virtual void Init()
-    {
-        Health = new IzumiTools.CappedValue(initialHealth);
-        Health.Maximize();
+        Health.Ratio = _initialHealthRatio;
         IsDead = false;
+        if (Health.Value <= 0)
+        {
+            Dead();
+        }
+        LoadInit();
+    }
+    /// <summary>
+    /// Called on initial stage load and reuse
+    /// </summary>
+    public virtual void LoadInit()
+    {
+        IsDead = Health.Value <= 0;
     }
     public void SetModelFiringCD(float time)
     {
@@ -52,12 +64,13 @@ public class Unit : MonoBehaviour
         onDamage.Invoke(damageSource);
         if (Health.Value == 0)
         {
-            Dead();
+            Dead();  //TODO: immediately finish posing of dead body
         }
     }
     public virtual void Heal(float amount)
     {
-        //TODO: dead condition
+        if (IsDead)
+            return;
         Health.Value += amount;
         onHeal.Invoke(amount);
     }
@@ -66,11 +79,10 @@ public class Unit : MonoBehaviour
         if (IsDead)
             return;
         IsDead = true;
-        if(_ragdollRelax)
-            _ragdollRelax.relax = true;
+        Health.Value = 0;
         onDead.Invoke();
     }
-    public virtual void Hear(SoundSource soundSouce)
+    public virtual void ListenSound(SoundSource soundSouce)
     {
 
     }
@@ -123,12 +135,36 @@ public class Unit : MonoBehaviour
         raycastablePosition = Vector3.zero;
         return false;
     }
-    public bool IsMyCollider(GameObject colliderObject)
+    public virtual bool IsMyCollider(Collider collider)
     {
-        return colliderObject.TryGetComponent(out UnitDamageCollider damageCollider) && damageCollider.Unit == this;
+        return collider.transform.IsChildOf(transform);
     }
-    public bool IsMyCollider(Collider collider)
+    public virtual void SetAIActive(bool cond)
     {
-        return IsMyCollider(collider.gameObject);
+        enabled = false;
+    }
+
+    protected struct UnitCommonSave
+    {
+        public float health;
+        public Vector3 position;
+        public Quaternion rotation;
+    }
+    public override string Serialize()
+    {
+        return JsonUtility.ToJson(new UnitCommonSave()
+        {
+            health = Health.Value,
+            position = transform.position,
+            rotation = transform.rotation
+        });
+    }
+
+    public override void Deserialize(string json)
+    {
+        var save = JsonUtility.FromJson<UnitCommonSave>(json);
+        transform.SetPositionAndRotation(save.position, save.rotation);
+        Health.Value = save.health;
+        LoadInit();
     }
 }

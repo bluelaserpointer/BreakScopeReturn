@@ -33,7 +33,8 @@ public class PlayerMovementScript : MonoBehaviour {
 	public MovingStateEnum MovingState { get; private set; }
     public Vector2 InputXZ { get; private set; }
     public bool HasInputXZ { get; private set; }
-    [HideInInspector] public Vector3 cameraPosition;
+	public Vector3 Movement { get; private set; }
+	public bool IsMoving => Movement.sqrMagnitude > 0;
 
     float _fallVelocity;
     /*
@@ -59,6 +60,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	*/
 	void FixedUpdateMovement()
     {
+		Vector3 movement = Vector3.zero;
         IsGrounded = CharacterController.CheckGround(_groundCheckDepth);
         if (IsGrounded && _fallVelocity < 0)
         {
@@ -82,10 +84,15 @@ public class PlayerMovementScript : MonoBehaviour {
             if (!IsGrounded)
                 targetSpeed /= 2;
             Vector3 motion = transform.right * InputXZ.x + transform.forward * InputXZ.y;
-            CharacterController.Move(motion * targetSpeed * Time.deltaTime);
+			Vector3 walkMovement = motion * targetSpeed * Time.deltaTime;
+			movement += walkMovement;
+            CharacterController.Move(walkMovement);
         }
         _fallVelocity += Physics.gravity.y * Time.deltaTime;
-        CharacterController.Move(Vector3.up * _fallVelocity * Time.deltaTime);
+        Vector3 fallMovement = Vector3.up * _fallVelocity * Time.deltaTime;
+        movement += fallMovement;
+        CharacterController.Move(fallMovement);
+		Movement = movement;
     }
     void ListenMoveInput()
 	{
@@ -286,8 +293,6 @@ public class PlayerMovementScript : MonoBehaviour {
 	void InstantiateBlood (RaycastHit _hitPos,bool swordHitWithGunOrNot) {		
 
 		if (currentWeapon == "gun") {
-			GunScript.HitMarkerSound ();
-
 			if (_hitSound)
 				_hitSound.Play ();
 			else

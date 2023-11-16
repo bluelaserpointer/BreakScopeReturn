@@ -6,6 +6,10 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public class Stage1Scenario : Stage
 {
+    [Header("Event Signal Ref")]
+    [SerializeField]
+    EventSignal _activeRemainEnemyCounter;
+
     [Header("Dialog")]
     [SerializeField]
     DialogNodeSet initialDialog;
@@ -32,70 +36,61 @@ public class Stage1Scenario : Stage
 
     [Header("Others")]
     [SerializeField]
-    GameObject firstKillDrop;
+    TeamWalkie firstKillDropWalkie;
     [SerializeField]
     GameObject remainEnemyCounter;
 
-
-    [HideInInspector]
-    [SerializeField]
-    bool _didFirstContactGuide;
-    [HideInInspector]
-    [SerializeField]
-    bool _didFirstKill;
-    [HideInInspector]
-    [SerializeField]
-    bool _didFirstKillShieldMan;
-    [HideInInspector]
-    [SerializeField]
-    int _shieldManKillCount;
-    [HideInInspector]
-    [SerializeField]
-    int _killCount;
-    [HideInInspector]
-    [SerializeField]
-    int _sneakKillCount;
-    [HideInInspector]
-    [SerializeField]
-    float _totalDamageTake;
+    struct Scenario
+    {
+        public bool didFirstContactGuide;
+        public bool didFirstKill;
+        public bool didFirstKillShieldMan;
+        public int shieldManKillCount;
+        public int killCount;
+        public int sneakKillCount;
+        public float totalDamageTake;
+    }
+    Scenario _scenario;
 
     protected override void Start()
     {
         base.Start();
         GameManager.Instance.DialogUI.SetDialog(initialDialog);
-        GameManager.Instance.Player.onDamage.AddListener(damageSouce =>
+        Player.onDamage.AddListener(damageSouce =>
         {
             if (damageSouce.damage > 0)
             {
-                _totalDamageTake += damageSouce.damage;
+                _scenario.totalDamageTake += damageSouce.damage;
             }
         });
-        foreach (Unit unit in GameManager.Instance.CurrentStage.units)
+        foreach (Unit unit in GameManager.Instance.CurrentStage.NpcUnits)
         {
             if (unit.TryGetComponent(out CommonGuard guard))
             {
                 guard.onDead.AddListener(() =>
                 {
-                    ++_killCount;
+                    ++_scenario.killCount;
                     if (guard.NeverFoundEnemy)
                     {
-                        ++_sneakKillCount;
-                        if (_sneakKillCount == 1)
+                        ++_scenario.sneakKillCount;
+                        if (_scenario.sneakKillCount == 1)
                         {
                             GameManager.Instance.DialogUI.SetDialog(firstSneakKillDialog);
                         }
                     }
-                    if (!_didFirstKill)
+                    if (!_scenario.didFirstKill)
                     {
-                        _didFirstKill = true;
-                        Instantiate(firstKillDrop, transform).transform.position = guard.transform.position;
+                        _scenario.didFirstKill = true;
+                        TeamWalkie walkie = Instantiate(firstKillDropWalkie, transform);
+                        walkie.eventSignal = _activeRemainEnemyCounter;
+                        walkie.transform.position = guard.transform.position + Vector3.up * 1;
                     }
-                    if (guard.name.Contains("Shield")) //TOOD: unsafe shield man identifier
+                    if (guard.name.Contains("Shield")) //TODO: unsafe shield man identifier
                     {
-                        ++_shieldManKillCount;
-                        if (!_didFirstKillShieldMan)
+                        ++_scenario.shieldManKillCount;
+                        if (!_scenario.didFirstKillShieldMan)
                         {
-                            _didFirstKillShieldMan = true;
+                            _scenario.didFirstKillShieldMan = true;
                             GameManager.Instance.DialogUI.SetDialog(firstKillShieldManDialog);
                         }
                     }
@@ -105,25 +100,25 @@ public class Stage1Scenario : Stage
     }
     private void Update()
     {
-        if (!_didFirstContactGuide)
+        if (!_scenario.didFirstContactGuide)
         {
-            foreach (var unit in GameManager.Instance.CurrentStage.units)
+            foreach (var unit in GameManager.Instance.CurrentStage.NpcUnits)
             {
                 if (unit.GetType() == typeof(CommonGuard) && !((CommonGuard)unit).FoundEnemy
-                    && Vector3.Distance(unit.transform.position, GameManager.Instance.Player.transform.position) < 10)
+                    && Vector3.Distance(unit.transform.position, Player.transform.position) < 10)
                 {
-                    _didFirstContactGuide = true;
+                    _scenario.didFirstContactGuide = true;
                     GameManager.Instance.DialogUI.SetDialog(firstContactDialog);
                     break;
                 }
             }
         }
-        if (remainEnemyCounter.gameObject.activeSelf)
+        if (remainEnemyCounter.activeSelf)
         {
-            remainEnemyCounter.GetComponentInChildren<Text>().text = "Enemy: " + GameManager.Instance.CurrentStage.aliveUnits.Count;
+            remainEnemyCounter.GetComponentInChildren<Text>().text = "Enemy: " + GameManager.Instance.CurrentStage.AliveNpcUnits.Count;
         }
     }
-    public void ActivateRaminEnemyCounter()
+    public void ActivateRemainEnemyCounter()
     {
         remainEnemyCounter.SetActive(true);
         GameManager.Instance.DialogUI.SetDialog(remainEnemyCounterDialog);
@@ -131,23 +126,26 @@ public class Stage1Scenario : Stage
     public override void GameClear()
     {
         base.GameClear();
-        GameManager.Instance.Player.enabled = false;
-        GameManager.Instance.Player.MouseLook.enabled = false;
-        GameManager.Instance.Player.Movement.enabled = false;
-        GameManager.Instance.Player.Movement.Rigidbody.isKinematic = true;
-        GameManager.Instance.Player.GunInventory.enabled = false;
-        GameManager.Instance.Player.GunInventory.HandsAnimator.enabled = false;
-        GameManager.Instance.Player.GunInventory.currentGun.enabled = false;
-        GameManager.Instance.Player.GetComponent<ProjectRicochetMirror>().enabled = false;
-        GameManager.Instance.CurrentStage.units.ForEach(unit => unit.enabled = false);
+        Player.SetAIActive(false);
+        GameManager.Instance.CurrentStage.NpcUnits.ForEach(unit => unit.SetAIActive(false));
         Cursor.lockState = CursorLockMode.None;
-        _resultScreen.gameObject.SetActive(true);
-        float enemyCount = GameManager.Instance.CurrentStage.units.Count;
-        achievements[0].SetAchivement("シールドマンを二体倒す", _shieldManKillCount >= 2);
-        achievements[1].SetAchivement("全ての敵を倒す", _killCount == enemyCount);
-        achievements[2].SetAchivement("半数以上の敵を気付かれずに倒す", _sneakKillCount / enemyCount >= 0.5F);
-        _killCountText.text = _killCount + " (" + string.Format("{0:F1}", _killCount / enemyCount * 100) + "%)";
-        _sneakKillCountText.text = _sneakKillCount + " (" + string.Format("{0:F1}", _sneakKillCount / enemyCount * 100) + "%)";
-        _totalDamageTakeText.text = _totalDamageTake.ToString();
+        _resultScreen.SetActive(true);
+        float enemyCount = GameManager.Instance.CurrentStage.NpcUnits.Count;
+        achievements[0].SetAchivement("シールドマンを二体倒す", _scenario.shieldManKillCount >= 2);
+        achievements[1].SetAchivement("全ての敵を倒す", _scenario.killCount == enemyCount);
+        achievements[2].SetAchivement("半数以上の敵を気付かれずに倒す", _scenario.sneakKillCount / enemyCount >= 0.5F);
+        _killCountText.text = _scenario.killCount + " (" + string.Format("{0:F1}", _scenario.killCount / enemyCount * 100) + "%)";
+        _sneakKillCountText.text = _scenario.sneakKillCount + " (" + string.Format("{0:F1}", _scenario.sneakKillCount / enemyCount * 100) + "%)";
+        _totalDamageTakeText.text = _scenario.totalDamageTake.ToString();
+    }
+
+    public override string Serialize()
+    {
+        return JsonUtility.ToJson(_scenario);
+    }
+
+    public override void Deserialize(string data)
+    {
+        _scenario = JsonUtility.FromJson<Scenario>(data);
     }
 }

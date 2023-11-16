@@ -21,6 +21,10 @@ public class RagdollRelax : MonoBehaviour
     }
     private void Update()
     {
+        Check();
+    }
+    public void Check()
+    {
         if (_internalRelax != relax)
         {
             UpdateRelax();

@@ -28,7 +28,7 @@ public class WFX_BulletHoleDecal : MonoBehaviour
 	
 	void Awake()
 	{
-		color = this.GetComponent<Renderer>().material.GetColor("_TintColor");
+		color = this.GetComponent<Renderer>().material.GetColor("_Color");
 		orgAlpha = color.a;
 	}
 	
@@ -55,7 +55,7 @@ public class WFX_BulletHoleDecal : MonoBehaviour
 		life = lifetime;
 		fadeout = life * (fadeoutpercent/100f);
 		color.a = orgAlpha;
-		this.GetComponent<Renderer>().material.SetColor("_TintColor", color);
+		this.GetComponent<Renderer>().material.SetColor("_Color", color);
 		StopAllCoroutines();
 		StartCoroutine("holeUpdate");
 	}
@@ -68,7 +68,7 @@ public class WFX_BulletHoleDecal : MonoBehaviour
 			if(life <= fadeout)
 			{
 				color.a = Mathf.Lerp(0f, orgAlpha, life/fadeout);
-				this.GetComponent<Renderer>().material.SetColor("_TintColor", color);
+				this.GetComponent<Renderer>().material.SetColor("_Color", color);
 			}
 			
 			yield return null;

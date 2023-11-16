@@ -16,7 +16,16 @@ namespace IzumiTools
         {
             Max = 1;
         }
-        public bool IsReady => Value == Max;
+        public bool IsReady {
+            get => Value == Max;
+            set
+            {
+                if (value)
+                    Maximize();
+                else
+                    Reset();
+            }
+        }
         public void Reset()
         {
             Value = 0;

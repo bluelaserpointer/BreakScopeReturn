@@ -36,7 +36,13 @@ public class CommonGuard : Unit
 
     [Header("Model")]
     [SerializeField]
-    NPCGun _gun;
+    RagdollRelax _ragdollRelax;
+    [SerializeField]
+    Transform _weaponAnchor;
+    [SerializeField]
+    NPCGun _gunPrefab;
+    [SerializeField]
+    IKControl _leftHandIKControl;
     [SerializeField]
     LookAtIKControl _lookAtIKControl;
     [SerializeField]
@@ -58,9 +64,9 @@ public class CommonGuard : Unit
     [SerializeField]
     AudioClip _deathVoice;
 
+    public NPCGun Gun { get; private set; }
     public readonly UnityEvent<bool> onFoundEnemyChangedTo = new UnityEvent<bool>();
-
-    Player _player;
+    Player Player => GameManager.Instance.Player;
     PatrolAnchor _currentPatrolAnchor;
 
     public bool FoundEnemy
@@ -110,17 +116,9 @@ public class CommonGuard : Unit
     float _patrolAnchorStayedTime;
     private void Awake()
     {
-        UseAimRotationOrPosition = true;
-        AimRotation = Quaternion.identity;
-        MovePosition = transform.position;
+        NeverFoundEnemy = true;
         navMeshAgent.updateRotation = false;
         navMeshAgent.stoppingDistance = stoppingDistance;
-    }
-    protected override void Start()
-    {
-        base.Start();
-        _gun.Init(this);
-        _player = GameManager.Instance.Player;
         onFoundEnemyChangedTo.AddListener(found =>
         {
             if (found)
@@ -131,36 +129,47 @@ public class CommonGuard : Unit
         onDead.AddListener(() =>
         {
             VoicePlay(_deathVoice);
+            Gun.GetComponent<ArmDrop>().Drop(); //TODO: combine the function to NPCGun
             navMeshAgent.enabled = false;
             dropPrefabs.ForEach(dropPrefab =>
             {
                 GameObject drop = Instantiate(dropPrefab);
                 drop.transform.SetParent(GameManager.Instance.CurrentStage.transform);
-                drop.transform.position = transform.position;
+                drop.transform.position = transform.position + Vector3.up * 1;
             });
             if (_aliveDevice)
                 _aliveDevice.gameObject.SetActive(false);
+            if (_ragdollRelax)
+                _ragdollRelax.relax = true;
         });
-        SetModelFiringCD(_gun.FireCD.Max);
     }
-    public override void Init()
+    public override void LoadInit()
     {
-        base.Init();
+        base.LoadInit();
+        Gun = Instantiate(_gunPrefab, transform);
+        Gun.Init(this);
+        _leftHandIKControl.anchor = Gun.LeftHandAnchor;
+        SetModelFiringCD(Gun.FireCD.Max);
+        UseAimRotationOrPosition = true;
+        AimRotation = Quaternion.LookRotation(transform.forward);
+        MovePosition = transform.position;
         navMeshAgent.enabled = true;
         navMeshAgent.destination = transform.position;
-        NeverFoundEnemy = true;
-        if (_aliveDevice)
-            _aliveDevice.SetActive(true);
+        FoundEnemy = false;
+        if (!NeverFoundEnemy)
+        {
+            _lastFoundPosition = _suspiciousPosition = transform.position; //stop chasing after stage saving
+        }
+        _ragdollRelax.relax = IsDead;
+        _ragdollRelax.Check();
         if (patrolAnchors.Count > 0)
         {
             GuardState = GuardStateEnum.Patrol;
             _currentPatrolAnchor = patrolAnchors[0];
-            AimRotation = Quaternion.LookRotation((_currentPatrolAnchor.transform.position - viewAnchor.position).Set(y: 0));
         }
         else
         {
             GuardState = GuardStateEnum.Defend;
-            AimRotation = Quaternion.LookRotation(viewAnchor.forward);
         }
     }
     private void Update()
@@ -171,10 +180,10 @@ public class CommonGuard : Unit
         }
         GuardStateUpdate();
         _animator.transform.localEulerAngles = Vector3.up * aimModelYRotationFix;
-        float viewAngleDifference = Vector3.Angle(viewAnchor.forward, _player.ViewPosition - ViewPosition);
-        if (Vector3.Distance(_player.ViewPosition, ViewPosition) < viewRange
+        float viewAngleDifference = Vector3.Angle(viewAnchor.forward, Player.ViewPosition - ViewPosition);
+        if (Vector3.Distance(Player.ViewPosition, ViewPosition) < viewRange
          && viewAngleDifference < viewAngle / 2
-         && RaycastableTo(ViewPosition, _player, out Vector3 raycastablePosition))
+         && RaycastableTo(ViewPosition, Player, out Vector3 raycastablePosition))
         {
             FoundEnemy = true;
             NeverFoundEnemy = false;
@@ -182,7 +191,7 @@ public class CommonGuard : Unit
             _lastFoundTime = Time.timeSinceLevelLoad;
             _chaseLastFoundPositionWaitTime = Random.Range(chaseLastFoundPositionWaitTimeRange.x, chaseLastFoundPositionWaitTimeRange.y);
             //TODO: model spine vend vertically
-            float horzGunAngleDifference = Vector3.Angle(_gun.MuzzleAnchor.forward.Set(y: 0), (_gun.MuzzleAnchor.position - ViewPosition).Set(y: 0));
+            float horzGunAngleDifference = Vector3.Angle(Gun.MuzzleAnchor.forward.Set(y: 0), (Gun.MuzzleAnchor.position - ViewPosition).Set(y: 0));
             if (horzGunAngleDifference < _fireConeMaxAngle)
                 Trigger();
             GuardState = GuardStateEnum.Defend;
@@ -192,7 +201,8 @@ public class CommonGuard : Unit
             FoundEnemy = false;
             _animator.SetBool("Fire", false);
         }
-        _gun.Aim(AimPosition);
+        Gun.transform.SetPositionAndRotation(_weaponAnchor.transform.position, _weaponAnchor.transform.rotation);
+        Gun.Aim(AimPosition);
         if (navMeshAgent.remainingDistance > navMeshAgent.stoppingDistance)
         {
             _animator.SetBool("Walk", true);
@@ -201,18 +211,22 @@ public class CommonGuard : Unit
         {
             _animator.SetBool("Walk", false);
         }
+        Vector3 lookAtPosition;
         if (UseAimRotationOrPosition)
         {
-            _lookAtIKControl.SetLookAtPosition(viewAnchor.position + _aimRotation * Vector3.forward * 100);
-        }
-        else if (Vector3.Distance(viewAnchor.position, _aimPosition) < 2)
-        {
-            //_lookAtIKControl.StopControlLookAtPosition();
+            lookAtPosition = viewAnchor.position + AimRotation * Vector3.forward * 100;
         }
         else
         {
-            _lookAtIKControl.SetLookAtPosition(_aimPosition);
+            lookAtPosition = _aimPosition;
+            float footDistance = Vector3.Distance(transform.position, _aimPosition);
+            if (footDistance < 2)
+            {
+                //suppress head angle to horizontal
+                lookAtPosition = Vector3.Lerp(lookAtPosition, viewAnchor.position + transform.forward, (2 - footDistance) / 2);
+            }
         }
+        _lookAtIKControl.SetLookAtPosition(lookAtPosition);
     }
     private void FixedUpdate()
     {
@@ -300,7 +314,7 @@ public class CommonGuard : Unit
             bool stay = true;
             if (FoundEnemy)
             {
-                if (_gun.CheckRaycast(_player, out Vector3 gunRaycastablePosition))
+                if (Gun.CheckRaycast(Player, out Vector3 gunRaycastablePosition))
                 {
                     AimPosition = gunRaycastablePosition;
                     stay = true;
@@ -314,6 +328,7 @@ public class CommonGuard : Unit
             else if (NeverFoundEnemy)
             {
                 stay = true;
+                AimRotation = transform.rotation;
             }
             else if (Vector3.Distance(transform.position, _lastFoundPosition) < quickChaseDistance)
             {
@@ -346,9 +361,9 @@ public class CommonGuard : Unit
             }
         }
     }
-    public override void Hear(SoundSource soundSouce)
+    public override void ListenSound(SoundSource soundSouce)
     {
-        base.Hear(soundSouce);
+        base.ListenSound(soundSouce);
         bool shouldSearch = false;
         if (FoundEnemy)
         {
@@ -372,11 +387,33 @@ public class CommonGuard : Unit
     public void Trigger()
     {
         _animator.SetBool("Fire", true);
-        _gun.Trigger();
+        Gun.Trigger();
     }
     public void VoicePlay(AudioClip clip)
     {
         _voiceSource.clip = clip;
         _voiceSource.Play();
+    }
+    struct NpcEnemySave
+    {
+        public string commonUnitSave;
+        public bool neverFoundEnemy;
+        public Vector3 lookAtPosition;
+    }
+    public override string Serialize()
+    {
+        return JsonUtility.ToJson(new NpcEnemySave()
+        {
+            commonUnitSave = base.Serialize(),
+            neverFoundEnemy = NeverFoundEnemy,
+            lookAtPosition = _lookAtIKControl.lookAtPosition
+        });
+    }
+    public override void Deserialize(string json)
+    {
+        NpcEnemySave save = JsonUtility.FromJson<NpcEnemySave>(json);
+        NeverFoundEnemy = save.neverFoundEnemy;
+        _lookAtIKControl.SetLookAtPosition(save.lookAtPosition);
+        base.Deserialize(save.commonUnitSave);
     }
 }

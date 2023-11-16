@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: a804723bdccf04fca985e160ab5f88d5
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _handsAnimator: {instanceID: 0}
+  - _icon: {instanceID: 0}
+  - _gunModel: {instanceID: 0}
+  - _crosshair: {instanceID: 0}
+  - _scope: {instanceID: 0}
+  - bulletPrefab: {instanceID: 0}
+  - _reloadAnimationClip: {fileID: 7400006, guid: 6cae2f82a0a62ff4ab9be3eeeda19688, type: 3}
+  - _IKEventExposure: {instanceID: 0}
+  - _leftHandIKGoalPreview: {instanceID: 0}
+  - _rightHandIKGoalPreview: {instanceID: 0}
+  - _shootSESource: {instanceID: 0}
+  - _reloadSESource: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

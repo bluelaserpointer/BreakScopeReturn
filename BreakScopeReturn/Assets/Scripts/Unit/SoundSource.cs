@@ -15,11 +15,11 @@ public struct SoundSource
     public bool emergence;
     public static void MakeSound(SoundSource soundSource)
     {
-        foreach (GameObject unitObj in GameObject.FindGameObjectsWithTag("Unit"))
+        foreach (GameObject unitObj in GameObject.FindGameObjectsWithTag(Unit.TAG_NPC_UNIT))
         {
             if (unitObj.TryGetComponent(out Unit unit) && Vector3.Distance(soundSource.position, unit.ViewPosition) < soundSource.volumeDistance)
             {
-                unit.Hear(soundSource);
+                unit.ListenSound(soundSource);
             }
         }
     }

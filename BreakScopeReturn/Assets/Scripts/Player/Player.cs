@@ -41,18 +41,15 @@ public class Player : Unit
     public PlayerMovementScript Movement => movement;
     public MouseLookScript MouseLook => mouseLook;
     public GunInventory GunInventory => gunInventory;
-    public bool HasRaycastPosition { get; private set; }
-    public Vector3 RaycastPosition { get; private set; }
-    public Interactable RaycastingInteractable { get; private set; }
+    public bool HasAimRaycastHit { get; private set; }
+    public Vector3 AimPosition { get; private set; }
+    public Interactable AimingInteractable { get; private set; }
+    public Vector3 FootPosition => transform.position + Vector3.down * movement.CharacterController.height / 2;
     private Vignette _bloodVignette;
     private float _respawnWaitedTime;
     private void Awake()
     {
         _bloodVignette = (Vignette)_cameraVolumeProfile.components.Find(component => component.GetType() == typeof(Vignette));
-    }
-    protected override void Start()
-    {
-        base.Start();
         onDamage.AddListener(damageSource => {
             OnHealthChange();
             if (damageSource.GetType() == typeof(DamageSource.BulletDamage))
@@ -68,18 +65,21 @@ public class Player : Unit
             AudioSource.PlayClipAtPoint(_deathSE, Camera.transform.position);
         });
     }
+    public override bool IsMyCollider(Collider collider)
+    {
+        return collider.gameObject.Equals(Movement.CharacterController.gameObject);
+    }
     public void OnHealthChange()
     {
         _bloodVignette.intensity.value = Mathf.Lerp(0, _bloodVignetteMaxIntencity, 1 - Health.Ratio);
     }
-    public override void Init()
+    public override void LoadInit()
     {
-        base.Init();
+        base.LoadInit();
         GameManager.Instance.SetBlackout(false);
         Movement.enabled = true;
         MouseLook.enabled = true;
-        if (_bloodVignette)
-            _bloodVignette.intensity.value = 0;
+        OnHealthChange();
     }
     private void Update()
     {
@@ -88,7 +88,7 @@ public class Player : Unit
             _respawnWaitedTime += Time.deltaTime;
             if (_respawnWaitedTime > _respawnWaitTime)
             {
-                GameManager.Instance.RespawnPlayer();
+                GameManager.Instance.LoadStage();
             }
             return;
         }
@@ -97,10 +97,10 @@ public class Player : Unit
     }
     public void RaycastTargetUpdate()
     {
-        HasRaycastPosition = false;
-        Ray ray = new Ray(Camera.transform.position, Camera.transform.forward);
+        HasAimRaycastHit = false;
+        Ray ray = new(Camera.transform.position, Camera.transform.forward);
         RicochetMirror latestReflectedMirror = null;
-        Predicate<RaycastHit> rayHitPredicate = hitInfo =>
+        bool rayHitPredicate(RaycastHit hitInfo)
         {
             if (hitInfo.collider.isTrigger)
             {
@@ -111,18 +111,24 @@ public class Player : Unit
             {
                 return hitInfo.collider.GetComponentInParent<Player>() == null;
             }
-        };
+        }
         Vector3 virtualAimPosition = ray.origin;
+        List<Vector3> aimLinePositions = new()
+        {
+            Camera.transform.position
+        };
         do
         {
             if (ClosestRaycastHit(ray, rayHitPredicate, out var hit))
             {
+                aimLinePositions.Add(hit.point);
                 virtualAimPosition += Camera.transform.forward * hit.distance;
                 RicochetMirror mirror = hit.collider.GetComponentInParent<RicochetMirror>();
                 if (mirror == null)
                 {
-                    HasRaycastPosition = true;
-                    RaycastPosition = virtualAimPosition;
+                    HasAimRaycastHit = true;
+                    AimPosition = virtualAimPosition;
+                    GameManager.Instance.MinimapUI.SetAimLine(aimLinePositions.ToArray());
                     break;
                 }
                 else
@@ -134,8 +140,9 @@ public class Player : Unit
             }
             else
             {
-                HasRaycastPosition = false;
-                RaycastPosition = Camera.transform.position + Camera.transform.forward * 100;
+                HasAimRaycastHit = false;
+                AimPosition = Camera.transform.position + Camera.transform.forward * 100;
+                GameManager.Instance.MinimapUI.SetAimLine(aimLinePositions[0], AimPosition);
                 break;
             }
         } while (true);
@@ -143,9 +150,11 @@ public class Player : Unit
     public void InteractUpdate()
     {
         Interactable closestInteractable = null;
-        RaycastHit closestValidHit = new();
-        closestValidHit.distance = float.MaxValue;
-        foreach(var hit in Physics.RaycastAll(Camera.transform.position, Camera.transform.forward, _interactionDistance))
+        RaycastHit closestValidHit = new()
+        {
+            distance = float.MaxValue
+        };
+        foreach (var hit in Physics.RaycastAll(Camera.transform.position, Camera.transform.forward, _interactionDistance))
         {
             if (hit.distance > closestValidHit.distance)
                 continue;
@@ -161,26 +170,28 @@ public class Player : Unit
         }
         if (closestInteractable != null && closestInteractable.gameObject.Equals(closestValidHit.collider.gameObject))
         {
-            RaycastingInteractable = closestInteractable;
+            AimingInteractable = closestInteractable;
             GameManager.Instance.InteractIconViewer.SetActive(true);
             //GameManager.Instance.InteractIconViewer.transform.position = Camera.WorldToScreenPoint(closestValidHit.collider.bounds.center);
             GameManager.Instance.InteractIconViewer.transform.position = new Vector2(Screen.width / 2, Screen.height / 2);
-            GameManager.Instance.InteractIconViewer.GetComponentInChildren<Image>().sprite = RaycastingInteractable.InteractIcon;
+            GameManager.Instance.InteractIconViewer.GetComponentInChildren<Image>().sprite = AimingInteractable.InteractIcon;
             if (Input.GetKeyDown(KeyCode.E))
             {
-                RaycastingInteractable.Interact();
+                AimingInteractable.Interact();
             }
         }
         else
         {
-            RaycastingInteractable = null;
+            AimingInteractable = null;
             GameManager.Instance.InteractIconViewer.SetActive(false);
         }
     }
     private bool ClosestRaycastHit(Ray ray, Predicate<RaycastHit> predicate, out RaycastHit closestHit)
     {
-        closestHit = new();
-        closestHit.distance = float.MaxValue;
+        closestHit = new()
+        {
+            distance = float.MaxValue
+        };
         foreach (var hitInfo in Physics.RaycastAll(ray))
         {
             if (!predicate.Invoke(hitInfo))
@@ -191,5 +202,52 @@ public class Player : Unit
             }
         }
         return closestHit.collider != null;
+    }
+    public override void SetAIActive(bool cond)
+    {
+        base.SetAIActive(cond);
+        enabled = cond;
+        MouseLook.enabled = cond;
+        Movement.enabled = cond;
+        //Movement.Rigidbody.isKinematic = !cond;
+        GunInventory.enabled = cond;
+        if (GunInventory.Hands)
+        {
+            GunInventory.Hands.enabled = cond;
+        }
+        GetComponent<ProjectRicochetMirror>().enabled = cond;
+    }
+    struct PlayerSave
+    {
+        public List<PrefabCloneSave> equipmentSaves;
+        public int holdingEquipmentIndex;
+        public string commonUnitSave;
+    }
+    public override string Serialize()
+    {
+        string json = JsonUtility.ToJson(new PlayerSave()
+        {
+            equipmentSaves = gunInventory.equipments.ConvertAll(equipment => new PrefabCloneSave(equipment.saveProperty.prefabRoot)),
+            holdingEquipmentIndex = GunInventory.HoldingEquipmentIndex,
+            commonUnitSave = base.Serialize()
+        });
+        return json;
+    }
+    public override void Deserialize(string json)
+    {
+        PlayerSave save = JsonUtility.FromJson<PlayerSave>(json);
+        base.Deserialize(save.commonUnitSave);
+        List<SaveTargetPrefabRoot> reuseCandidates = gunInventory.equipments.ConvertAll(equpiment => equpiment.saveProperty.prefabRoot);
+        gunInventory.equipments.Clear();
+        foreach (var equipmentSave in save.equipmentSaves)
+        {
+            SaveTargetPrefabRoot equipmentPrefabRoot = equipmentSave.Deserialize(reuseCandidates, out bool reused);
+            HandEquipment equipment = equipmentPrefabRoot.GetComponent<HandEquipment>();
+            gunInventory.AddEquipment(equipment);
+        }
+        gunInventory.InitHoldingWeaponIndex(save.holdingEquipmentIndex);
+        gunInventory.LoadInit();
+        reuseCandidates.ForEach(candidate => Destroy(candidate.gameObject));
+        MouseLook.LoadInit();
     }
 }

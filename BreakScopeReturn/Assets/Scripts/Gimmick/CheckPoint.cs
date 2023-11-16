@@ -14,7 +14,8 @@ public class CheckPoint : Interactable
     }
     public void SetCheckPoint()
     {
-        if (GameManager.Instance.TrySetSpawnPoint(this))
-            GameManager.Instance.CheckPointNotification.gameObject.SetActive(true);
+        GameManager.Instance.CheckPointNotification.gameObject.SetActive(true);
+        GameManager.Instance.SaveStage();
+        gameObject.SetActive(false);
     }
 }

@@ -1,12 +1,12 @@
 using UnityEngine;
 
 public class Cannon : MonoBehaviour {
-    [SerializeField] private Projection _projection;
+    [SerializeField] private TrajectoryDrawer _projection;
 
     private void Update() {
         HandleControls();
         Ball ghostBall = Instantiate(_ballPrefab, _ballSpawn.position, Quaternion.LookRotation(_ballSpawn.forward));
-        _projection.SimulateTrajectory(ghostBall.gameObject, () => ghostBall.Init(_ballSpawn.forward * _force, true));
+        //_projection.SimulateSphereTrajectory(ghostBall.gameObject, () => ghostBall.Init(_ballSpawn.forward * _force, true));
     }
 
     #region Handle Controls

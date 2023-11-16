@@ -5,76 +5,24 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class ProjectRicochetMirror : MonoBehaviour
 {
-    [SerializeField] RicochetMirror mirrorPrfab;
-    [SerializeField] StickyProjectile testProjectile;
-    [SerializeField] GameObject placeGuide;
+    [SerializeField]
+    RicochetMirror _mirror;
 
-    bool isPlacing;
-    Transform placeTransform;
-    Vector3 placePosition;
-    Vector3 placeNormal;
+    public RicochetMirror Mirror => _mirror;
+    public bool MirrorExpanded => _mirror.expand;
 
-    StickyProjectile generatedKnife;
-    RicochetMirror generatedMirror;
 
-    private Player Player => GameManager.Instance.Player;
-
-    private void Awake()
+    private void Start()
     {
-        placeGuide.gameObject.SetActive(false);
+        _mirror.Init();
     }
     private void Update()
     {
-        if (Input.GetKey(KeyCode.Q))
-        {
-            if (!isPlacing)
-            {
-                placeGuide.gameObject.SetActive(true);
-                isPlacing = true;
-            }
-            Transform cameraTf = GameManager.Instance.Player.Camera.transform;
-            Ray cameraRay = new Ray(cameraTf.position, cameraTf.forward);
-            RaycastHit closestHit = new();
-            closestHit.distance = float.MaxValue;
-            foreach (var hitInfo in Physics.RaycastAll(cameraRay))
-            {
-                if (hitInfo.collider.isTrigger || hitInfo.collider.GetComponentInParent<Player>() != null)
-                    continue;
-                if (hitInfo.distance < closestHit.distance)
-                {
-                    closestHit = hitInfo;
-                }
-            }
-            placeTransform = closestHit.collider.transform;
-            placePosition = closestHit.point + closestHit.normal * 0.001F;
-            placeNormal = closestHit.normal;
-            placeGuide.transform.position = placePosition + placeNormal * 0.1F;
-            placeGuide.transform.forward = -placeNormal;
-        }
-        else if(isPlacing)
-        {
-            isPlacing = false;
-            placeGuide.gameObject.SetActive(false);
-            SpawnMirrorKnife(placeTransform, placePosition, placeNormal);
-        }
+        if (Input.GetKeyDown(KeyCode.Q))
+            SetMirror(!MirrorExpanded);
     }
-    public void SpawnMirrorKnife(Transform nest, Vector3 position, Vector3 normal)
+    public void SetMirror(bool cond)
     {
-        if (generatedKnife)
-            Destroy(generatedKnife.gameObject);
-        if (generatedMirror)
-            Destroy(generatedMirror.gameObject);
-        generatedKnife = Instantiate(testProjectile);
-        generatedKnife.transform.SetParent(nest);
-        generatedKnife.hitCondition = collider => !Player.IsMyCollider(collider);
-        generatedKnife.transform.position = GameManager.Instance.Player.Camera.transform.position;
-        generatedKnife.Eject(GameManager.Instance.Player.Camera.transform.forward * 40);
-        generatedKnife.onHit.AddListener(hitInfo =>
-        {
-            generatedMirror = Instantiate(mirrorPrfab);
-            generatedMirror.transform.SetParent(generatedKnife.transform);
-            generatedMirror.transform.position = position;
-            generatedMirror.Init(normal);
-        });
+        _mirror.expand = cond;
     }
 }

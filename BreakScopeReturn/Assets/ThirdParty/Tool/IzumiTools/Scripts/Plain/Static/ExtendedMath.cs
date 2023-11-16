@@ -5,7 +5,7 @@ namespace IzumiTools
     public static class ExtendedMath
     {
         /// <summary>
-        /// Get signed overflow upon clamping a value. (ex. 5 clampes in [8~10] gets -3)
+        /// Get signed overflow upon clamping a value. (ex. 5 clampes in [8, 10] gets -3)
         /// </summary>
         /// <param name="value"></param>
         /// <param name="min"></param>

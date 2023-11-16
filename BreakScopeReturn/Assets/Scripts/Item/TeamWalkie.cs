@@ -3,11 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class TeamWalkie : Item
+public class TeamWalkie : DropItem
 {
+    public EventSignal eventSignal; 
     public override bool TryPickUp()
     {
-        GameManager.Instance.CurrentStage.GetComponent<Stage1Scenario>().ActivateRaminEnemyCounter();
+        eventSignal.onEvent.Invoke();
+        Destroy(gameObject);
         return true;
+    }
+    public override void Deserialize(string data)
+    {
+        eventSignal = GameManager.Instance.CurrentStage.FindEventSignal(data);
+    }
+
+    public override string Serialize()
+    {
+        return eventSignal.name;
     }
 }
