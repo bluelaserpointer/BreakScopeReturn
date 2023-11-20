@@ -10,12 +10,19 @@ public partial class SlideGate : SaveTarget
     [SerializeField] Vector3 _openVector;
     [SerializeField] SmoothDampTransition _openTransition;
 
+    [Header("SE")]
+    [SerializeField] AudioSource _audioSource;
+    [SerializeField] AudioClip _openSE, _closeSE;
+
     private void Awake()
     {
         _openTransition.value = isOpen ? 1 : 0;
     }
     public void Open(bool cond)
     {
+        if (isOpen == cond)
+            return;
+        _audioSource.PlayOneShot(cond ? _openSE : _closeSE);
         isOpen = cond;
     }
     private void FixedUpdate()

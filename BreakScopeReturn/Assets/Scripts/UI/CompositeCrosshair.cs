@@ -12,8 +12,7 @@ public class CompositeCrosshair : MonoBehaviour
     [SerializeField]
     int _pieceAmount;
     public CanvasGroup CanvasGroup { get; private set; }
-    [HideInInspector]
-    public float expandDistance = 0;
+    public float ExpandDistance { get; set; }
 
     readonly List<RectTransform> _pieces = new List<RectTransform>();
     private void Awake()
@@ -42,7 +41,7 @@ public class CompositeCrosshair : MonoBehaviour
     }
     public void UpdateUI()
     {
-        float r = baseExpandDistance + expandDistance;
+        float r = baseExpandDistance + ExpandDistance;
         foreach (var image in _pieces)
         {
             float zAngleRad = Mathf.Deg2Rad * image.transform.localEulerAngles.z;

@@ -63,7 +63,6 @@ public class Gun : HandEquipment
     public AudioSource ReloadSESource => _reloadSESource;
     public TransformRelator CentreRelRightHand { get; private set; }
     public TransformRelator CentreRelAimCamera { get; private set; }
-    public TransformRelator LeftHandRelRightHand { get; private set; }
 
     private void Awake()
     {
@@ -79,7 +78,6 @@ public class Gun : HandEquipment
     {
         CentreRelRightHand = new TransformRelator(transform, RightHandAnchor);
         CentreRelAimCamera = new TransformRelator(transform, AimCameraAnchor);
-        LeftHandRelRightHand = new TransformRelator(LeftHandAnchor, RightHandAnchor);
     }
     public void SetCentreByRightHand(Transform currentRightHandTransform)
     {

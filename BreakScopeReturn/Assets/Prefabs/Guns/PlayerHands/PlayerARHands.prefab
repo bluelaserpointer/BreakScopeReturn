@@ -489,7 +489,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &9596676
 Animator:
-  serializedVersion: 7
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -503,7 +503,6 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -897,88 +896,16 @@ MonoBehaviour:
   _icon: {fileID: 21300000, guid: 89cb17ce6d76c46668922c09a46b97a2, type: 3}
   _crosshair: {fileID: 202621400498568866}
   _scopeCanvasGroup: {fileID: 1701350980572308533}
+  _reloadAnimationClip: {fileID: 7400006, guid: 6cae2f82a0a62ff4ab9be3eeeda19688, type: 3}
+  _IKEventExposure: {fileID: 7862013607740187141}
+  rotationLagTime: 0
+  forwardRotationAmount: {x: 1, y: 1}
   aimTransition:
     smoothTime: 0.05
     value: 0
     velocity: 0
-  cameraZoomRatio_notAiming: 60
-  cameraZoomRatio_aiming: 30
-  hudCameraZoomRatio_notAiming: 60
-  hudCameraZoomRatio_aiming: 30
-  mouseSensitvity_aiming: 1
-  currentStyle: 0
-  bulletPrefab: {fileID: 11440490, guid: c9e619a669d974fd28b5c89e43f2bce2, type: 3}
-  fireCD:
-    _max: 0.15
-  damage: 16
-  bulletSpeed: 600
-  accuracy: 0.008
-  recoilAmount_aiming: {x: 0.002, y: 0.008, z: 0.003}
-  recoilPenaltyNotAiming: 1.1
-  recoilOverTime: 0.5
-  recoilRotateRatio: 200
   velocity_recoil: {x: 0, y: 0, z: 0}
-  _reloadAnimationClip: {fileID: 7400006, guid: 6cae2f82a0a62ff4ab9be3eeeda19688, type: 3}
-  _reloadCD:
-    _max: 2
-  _reloadLeftHandIKWeightCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -0.00010534376
-      value: 1.0006633
-      inSlope: 0.018513834
-      outSlope: 0.018513834
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.955625
-    - serializedVersion: 3
-      time: 0.09557994
-      value: 0.00026632845
-      inSlope: -0.011324141
-      outSlope: -0.011324141
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.27845052
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.799157
-      value: 0.0011042356
-      inSlope: 0.0022984832
-      outSlope: 0.0022984832
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.15311679
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: -0.02504032
-      outSlope: -0.02504032
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.46850088
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _IKEventExposure: {fileID: 7862013607740187141}
-  _leftHandIKGoalPreview: {fileID: 4037824373519796187}
-  _rightHandIKGoalPreview: {fileID: 2607665381449353651}
-  _shootSESource: {fileID: 8263354}
-  _reloadSESource: {fileID: 8203074}
-  muzzleFlashes:
-  - {fileID: 199458, guid: 51b76f616384d4946bed4ecc9a6c2c3e, type: 3}
-  - {fileID: 199458, guid: 487eef9aff9d0f543836d5af5ab26430, type: 3}
-  - {fileID: 199458, guid: 7b6a7e40bd9ccc0489274923930761c7, type: 3}
-  - {fileID: 199458, guid: 29d86feb88bf925428f9d7de6d4b401f, type: 3}
-  - {fileID: 199458, guid: 4aa4c63f0f9d6a84dbaeed6b9caeca80, type: 3}
-  rotationLagTime: 0
-  forwardRotationAmount: {x: 1, y: 1}
   meeleAttack: 0
-  aiming: 0
-  crosshairExpand: 0
 --- !u!1 &142906
 GameObject:
   m_ObjectHideFlags: 0
@@ -2003,8 +1930,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 464380}
-  - {fileID: 4037824373519796187}
-  - {fileID: 2607665381449353651}
   m_Father: {fileID: 428670}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &169542
@@ -2939,37 +2864,6 @@ Transform:
   - {fileID: 482464}
   m_Father: {fileID: 411968}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4887008089195313540
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4037824373519796187}
-  m_Layer: 7
-  m_Name: (LeftHandIKPreview)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4037824373519796187
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4887008089195313540}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 406012}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6170024816801563900
 GameObject:
   m_ObjectHideFlags: 0
@@ -3002,37 +2896,6 @@ Transform:
   - {fileID: 428670}
   m_Father: {fileID: 469018}
   m_LocalEulerAnglesHint: {x: 0.3, y: 11.43, z: 0}
---- !u!1 &8589510790835165124
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2607665381449353651}
-  m_Layer: 7
-  m_Name: (RightHandIKPreview)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2607665381449353651
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8589510790835165124}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 406012}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &5106755734347792690
 PrefabInstance:
   m_ObjectHideFlags: 0

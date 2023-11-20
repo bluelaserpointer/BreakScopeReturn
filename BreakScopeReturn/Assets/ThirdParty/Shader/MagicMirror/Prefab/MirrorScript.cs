@@ -163,7 +163,7 @@ public class MirrorScript : MonoBehaviour
                 // Reflect camera around reflection plane
                 float d = -Vector3.Dot(normal, pos) - ClipPlaneOffset;
                 Vector4 reflectionPlane = new Vector4(normal.x, normal.y, normal.z, d);
-                CalculateReflectionMatrix(ref reflectionPlane);
+                CalculateReflectionMatrix(reflectionPlane);
                 Vector3 oldpos = mirrorCamera.transform.position;
                 float oldclip = mirrorCamera.farClipPlane;
                 Vector3 newpos = reflectionMatrix.MultiplyPoint(oldpos);
@@ -220,7 +220,7 @@ public class MirrorScript : MonoBehaviour
         return new Vector4(cnormal.x, cnormal.y, cnormal.z, -Vector3.Dot(cpos, cnormal));
     }
 
-    private void CalculateReflectionMatrix(ref Vector4 plane)
+    private void CalculateReflectionMatrix(Vector4 plane)
     {
         // Calculates reflection matrix around the given plane
 

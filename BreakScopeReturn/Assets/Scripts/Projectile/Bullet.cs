@@ -64,9 +64,18 @@ public class Bullet : MonoBehaviour
         if (closestValidHit.collider != null)
         {
             transform.position = closestValidHit.point;
+            //make noise (enemy will hear)
             SoundSource hitNoise = new SoundSource(transform.position, hitNoiseDistance);
             hitNoise.emergence = true;
             SoundSource.MakeSound(hitNoise);
+            //make SE
+            if (closestValidHit.transform.TryGetComponent(out HitSound hitSound))
+            {
+                AudioClip hitSE = hitSound.GetRandomClip();
+                if (hitSE != null)
+                    AudioSource.PlayClipAtPoint(hitSE, closestValidHit.point);
+            }
+            //mirror reflection / damage dealt / decal spawn
             if (validMirror != null)
             {
                 latestRicochetMirror = validMirror;

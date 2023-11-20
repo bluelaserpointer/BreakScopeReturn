@@ -17,8 +17,6 @@ public class PlayerGunHands : PlayerHands
     [Header("Animation Positioning")]
 	[SerializeField]
     AnimatorIKEventExposure _IKEventExposure;
-    [SerializeField]
-    Transform _leftHandIKGoalPreview, _rightHandIKGoalPreview;
 
     [Header("Rotation")]
     public float rotationLagTime = 0f;
@@ -31,7 +29,6 @@ public class PlayerGunHands : PlayerHands
     [HideInInspector] public Vector3 velocity_recoil;
     public Cooldown FireCD { get; private set; }
     public Cooldown ReloadCD { get; private set; }
-	public bool IsAimStable => aimTransition.NearOne;
     public bool IsReloading { get; private set; }
     public float RecoilPenalty { get; private set; }
     public Vector3 BulletSpawnPosition => Gun.MuzzleAnchor.position;
@@ -45,6 +42,8 @@ public class PlayerGunHands : PlayerHands
 
     private Vector3 currentRecoil;
     float _crosshairExpand;
+
+    bool _gunFirstRendered;
 
     public void Init(Gun gunModel)
     {
@@ -65,15 +64,11 @@ public class PlayerGunHands : PlayerHands
         Gun.onFireCDSet.Invoke(FireCD.Max);
         _IKEventExposure.onAnimatorIK.AddListener(layer =>
         {
-			//records after-ik-pose of right hand for left hand ik
-            Vector3 rightHandPos;
-            Quaternion rightHandRot;
+            //RightHand
             if (aimTransition.NearZero)
             {
                 //right hand's original animation defines position of gun
                 Gun.SetCentreByRightHand(_rightHandBone);
-                rightHandPos = _rightHandBone.position;
-                rightHandRot = _rightHandBone.rotation;
             }
             else
             {
@@ -82,27 +77,24 @@ public class PlayerGunHands : PlayerHands
                     aimTransition.Lerp(Gun.CentreRelRightHand.GetChildPosition(_rightHandBone.position, _rightHandBone.rotation), Gun.CentreRelAimCamera.GetChildPosition(MainCamera.transform)),
                     aimTransition.Lerp(Gun.CentreRelRightHand.GetChildRotation(_rightHandBone.rotation), Gun.CentreRelAimCamera.GetChildRotation(MainCamera.transform))
                     );
-                rightHandPos = Gun.RightHandAnchor.position;
-                rightHandRot = Gun.RightHandAnchor.rotation;
-                HandsAnimator.SetIKPosition(AvatarIKGoal.RightHand, rightHandPos);
-                HandsAnimator.SetIKRotation(AvatarIKGoal.RightHand, rightHandRot);
+                HandsAnimator.SetIKPosition(AvatarIKGoal.RightHand, Gun.RightHandAnchor.position);
+                HandsAnimator.SetIKRotation(AvatarIKGoal.RightHand, Gun.RightHandAnchor.rotation);
                 HandsAnimator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
                 HandsAnimator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1);
-                if (_rightHandIKGoalPreview != null)
-                    _rightHandIKGoalPreview.transform.SetPositionAndRotation(rightHandPos, rightHandRot);
             }
+            //Left Hand
+            HandsAnimator.SetIKPosition(AvatarIKGoal.LeftHand, Gun.LeftHandAnchor.position);
+            HandsAnimator.SetIKRotation(AvatarIKGoal.LeftHand, Gun.LeftHandAnchor.rotation);
             float leftHandReloadIKWeight = IsReloading ? Gun.ReloadLeftHandIKWeightCurve.Evaluate(this.ReloadCD.Ratio) : 1;
-            Vector3 leftHandPos = Gun.LeftHandRelRightHand.GetChildPosition(rightHandPos, rightHandRot);
-            Quaternion leftHandRot = Gun.LeftHandRelRightHand.GetChildRotation(rightHandRot);
-            HandsAnimator.SetIKPosition(AvatarIKGoal.LeftHand, leftHandPos);
-            HandsAnimator.SetIKRotation(AvatarIKGoal.LeftHand, leftHandRot);
             HandsAnimator.SetIKPositionWeight(AvatarIKGoal.LeftHand, leftHandReloadIKWeight);
             HandsAnimator.SetIKRotationWeight(AvatarIKGoal.LeftHand, leftHandReloadIKWeight);
-            if (_leftHandIKGoalPreview != null)
-                _leftHandIKGoalPreview.transform.SetPositionAndRotation(leftHandPos, leftHandRot);
+            //Ensure first gun positioning is done before render
+            if (!_gunFirstRendered)
+            {
+                _gunFirstRendered = true;
+                Gun.gameObject.SetActive(true);
+            }
         });
-        if (!Gun.gameObject.activeSelf)
-            Gun.gameObject.SetActive(true);
     }
     private void Update()
     {
@@ -114,7 +106,7 @@ public class PlayerGunHands : PlayerHands
 		MeeleAttack();
 		CrossHairExpansionOfWalking();
         _crosshairExpand = Mathf.Clamp(Mathf.Lerp(_crosshairExpand, 0, Time.deltaTime * 5), 0, 150);
-        _crosshair.expandDistance = _crosshairExpand;
+        _crosshair.ExpandDistance = _crosshairExpand;
 		_crosshair.CanvasGroup.alpha = 1 - aimTransition.value;
 		_scopeCanvasGroup.alpha = aimTransition.value;
         AnimationUpdate();

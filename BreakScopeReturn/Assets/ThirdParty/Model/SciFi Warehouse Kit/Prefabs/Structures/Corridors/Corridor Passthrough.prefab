@@ -505,6 +505,7 @@ GameObject:
   - component: {fileID: 2528018916320261979}
   - component: {fileID: 2528018916319294747}
   - component: {fileID: 4863746951772768764}
+  - component: {fileID: 1035522188954239710}
   m_Layer: 0
   m_Name: Tunnel Walls
   m_TagString: Untagged
@@ -599,6 +600,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300040, guid: a8a331381b0964540861396e52de1693, type: 3}
+--- !u!114 &1035522188954239710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2528018916317293405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b71066946a50ad4cb89b15c92daac19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundSet: {fileID: 11400000, guid: d1c0ae1133f0a8f46804c9a761f17197, type: 2}
 --- !u!1001 &5073936675268286065
 PrefabInstance:
   m_ObjectHideFlags: 0

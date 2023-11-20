@@ -24,8 +24,6 @@ public class PlayerMovementScript : MonoBehaviour {
     public AudioSource _moveAudioSource;
     public AudioSource _oralAudioSource;
     public AudioClip _jumpSE, _walkSE, _runSE;
-    [Tooltip("Sound Bullet makes when hits target.")]
-    public AudioSource _hitSound;
 
     public Rigidbody Rigidbody {get; private set; }
     public CharacterController CharacterController { get; private set; }
@@ -293,11 +291,6 @@ public class PlayerMovementScript : MonoBehaviour {
 	void InstantiateBlood (RaycastHit _hitPos,bool swordHitWithGunOrNot) {		
 
 		if (currentWeapon == "gun") {
-			if (_hitSound)
-				_hitSound.Play ();
-			else
-				print ("Missing hit sound");
-			
 			if (!swordHitWithGunOrNot) {
 				if (bloodEffect)
 					Instantiate (bloodEffect, _hitPos.point, Quaternion.identity);

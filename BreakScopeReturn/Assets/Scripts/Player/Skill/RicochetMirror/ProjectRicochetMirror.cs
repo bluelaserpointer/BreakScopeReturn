@@ -7,6 +7,8 @@ public class ProjectRicochetMirror : MonoBehaviour
 {
     [SerializeField]
     RicochetMirror _mirror;
+    [SerializeField]
+    AudioSource _moduleAudioSource;
 
     public RicochetMirror Mirror => _mirror;
     public bool MirrorExpanded => _mirror.expand;
@@ -23,6 +25,9 @@ public class ProjectRicochetMirror : MonoBehaviour
     }
     public void SetMirror(bool cond)
     {
+        if (_mirror.expand == cond)
+            return;
+        _moduleAudioSource.Play();
         _mirror.expand = cond;
     }
 }
