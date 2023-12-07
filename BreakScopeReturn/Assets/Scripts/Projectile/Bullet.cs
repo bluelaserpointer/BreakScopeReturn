@@ -4,6 +4,8 @@
 [RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
+    public SoundSetSO defaultObstacleHitSoundSet;
+    public SoundSetSO defaultBodyHitSoundSet;
     public float hitNoiseDistance = 20;
 	[Tooltip("Prefab of wall damange hit. The object needs 'LevelPart' tag to create decal on it.")]
 	public GameObject decalHitWall;
@@ -56,6 +58,7 @@ public class Bullet : MonoBehaviour
                 {
                     isCandidate = true;
                     validMirror = mirror;
+                    AudioSource.PlayClipAtPoint(mirror.HitSound.GetRandomClip(), hit.point);
                 }
             }
             if (isCandidate)
@@ -69,11 +72,10 @@ public class Bullet : MonoBehaviour
             hitNoise.emergence = true;
             SoundSource.MakeSound(hitNoise);
             //make SE
+            SoundSetSO hitSESet = null;
             if (closestValidHit.transform.TryGetComponent(out HitSound hitSound))
             {
-                AudioClip hitSE = hitSound.GetRandomClip();
-                if (hitSE != null)
-                    AudioSource.PlayClipAtPoint(hitSE, closestValidHit.point);
+                hitSESet = hitSound.SoundSet;
             }
             //mirror reflection / damage dealt / decal spawn
             if (validMirror != null)
@@ -83,11 +85,15 @@ public class Bullet : MonoBehaviour
             }
             else if (closestValidHit.collider.TryGetComponent(out DamageCollider damageCollider))
             {
+                if (hitSESet == null)
+                    hitSESet = defaultBodyHitSoundSet;
                 damageCollider.Hit(this);
                 Destroy(gameObject);
             }
             else
             {
+                if (hitSESet == null)
+                    hitSESet = defaultObstacleHitSoundSet;
                 if (decalHitWall)
                 {
                     GameObject generatedEffect = Instantiate(decalHitWall, closestValidHit.point + closestValidHit.normal * floatInfrontOfWall, Quaternion.LookRotation(closestValidHit.normal));
@@ -95,6 +101,8 @@ public class Bullet : MonoBehaviour
                 }
                 Destroy(gameObject);
             }
+            if (hitSESet != null)
+                AudioSource.PlayClipAtPoint(hitSESet.GetRandomClip(), closestValidHit.point);
         }
         else
         {

@@ -48,6 +48,7 @@ MonoBehaviour:
   _originalOrderInLayer: 0
   _startColor: {r: 0.4509804, g: 0.8862745, b: 0.32941177, a: 1}
   _endColor: {r: 0.4509804, g: 0.8862745, b: 0.32941177, a: 1}
+  stepWidth: 1.2
 --- !u!120 &7657949933595288723
 LineRenderer:
   serializedVersion: 2

@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 {
     [Header("Test")]
     [SerializeField] bool _logSaveLoad;
+    [SerializeField] bool _playerStealth;
     [SerializeField] Stage _stage;
 
     [Header("Reference")]
@@ -34,6 +35,7 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
         InitStage();
+        Player.stealth = _playerStealth;
     }
     public void Update()
     {

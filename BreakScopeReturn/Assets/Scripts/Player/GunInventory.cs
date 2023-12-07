@@ -115,7 +115,7 @@ public class GunInventory : MonoBehaviour
 			weaponChanging.Play();
 		if(Hands != null)
 		{
-			Hands.HandsAnimator.SetBool("changingWeapon", true);
+			Hands.Animator.SetTrigger("takeDown");
             yield return new WaitForSeconds(0.8f);//0.8 time to change waepon, but since there is no change weapon animation there is no need to wait fo weapon taken down
             Hands.WithdrawItemAndDestroy();
         }

@@ -8,6 +8,8 @@ public class HitSound : MonoBehaviour
     [SerializeField]
     SoundSetSO _soundSet;
 
+    public SoundSetSO SoundSet => _soundSet;
+
     public AudioClip GetRandomClip()
     {
         return _soundSet.GetRandomClip();

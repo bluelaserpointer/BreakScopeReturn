@@ -47,6 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15e3d39d01a5946499fa8b6b5dc1b00f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultObstacleHitSoundSet: {fileID: 11400000, guid: d1c0ae1133f0a8f46804c9a761f17197, type: 2}
+  defaultBodyHitSoundSet: {fileID: 11400000, guid: fe8f9def720c0f74ba5936ef5c30ad3d, type: 2}
   hitNoiseDistance: 5
   decalHitWall: {fileID: 100002, guid: 136e30fce8f46d54f8aaa1b6df64364b, type: 3}
   floatInfrontOfWall: 0.001

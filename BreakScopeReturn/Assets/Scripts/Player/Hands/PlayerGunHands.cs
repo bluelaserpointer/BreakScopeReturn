@@ -14,14 +14,16 @@ public class PlayerGunHands : PlayerHands
     [SerializeField]
     AnimationClip _reloadAnimationClip;
 
-    [Header("Animation Positioning")]
-	[SerializeField]
-    AnimatorIKEventExposure _IKEventExposure;
+    [Header("Bash")]
+    [SerializeField]
+    float _bashDamage;
+    [SerializeField]
+    float _bashActionOccupyTime;
 
     [Header("Rotation")]
     public float rotationLagTime = 0f;
     public Vector2 forwardRotationAmount = Vector2.one;
-
+      
     public Gun Gun { get; private set; }
 	public GunSpec GunSpec => Gun.spec;
 	[HideInInspector]
@@ -30,13 +32,15 @@ public class PlayerGunHands : PlayerHands
     public Cooldown FireCD { get; private set; }
     public Cooldown ReloadCD { get; private set; }
     public bool IsReloading { get; private set; }
+    public bool IsBashing => BashActionOccupyRemainTime > 0;
+    public float BashActionOccupyRemainTime { get; private set; }
     public float RecoilPenalty { get; private set; }
     public Vector3 BulletSpawnPosition => Gun.MuzzleAnchor.position;
     private Player Player => GameManager.Instance.Player;
     private Camera MainCamera => Player.Camera;
     private Camera HUDCamera => Player.HUDCamera;
-    private PlayerMovementScript PlayerMovement => Player.Movement;
-    private MouseLookScript PlayerLook => Player.MouseLook;
+    private PlayerMovement PlayerMovement => Player.Movement;
+    private MouseLook PlayerLook => Player.MouseLook;
 
 	Transform _rightHandBone;
 
@@ -54,47 +58,48 @@ public class PlayerGunHands : PlayerHands
 		FireCD = new Cooldown(GunSpec.fireCD);
 		ReloadCD = new Cooldown(GunSpec.reloadCD);
         //rotationLast = PlayerLook.currentRotation;
-        HandsAnimator.SetFloat("reloadSpeedMultiplier", _reloadAnimationClip.length / Mathf.Max(ReloadCD.Max, 0.1F));
-        _rightHandBone = HandsAnimator.GetBoneTransform(HumanBodyBones.RightHand);
+        Animator.SetFloat("reloadSpeedMultiplier", _reloadAnimationClip.length / Mathf.Max(ReloadCD.Max, 0.1F));
+        _rightHandBone = Animator.GetBoneTransform(HumanBodyBones.RightHand);
     }
     private void Start()
     {
         _crosshair.CanvasGroup.alpha = 1;
         _scopeCanvasGroup.alpha = 0;
         Gun.onFireCDSet.Invoke(FireCD.Max);
-        _IKEventExposure.onAnimatorIK.AddListener(layer =>
+        GameManager.Instance.Player.IKEventExposure.onAnimatorIK.AddListener(AnimatorIK);
+    }
+    private void AnimatorIK(int layerIndex)
+    {
+        //RightHand
+        if (aimTransition.NearZero)
         {
-            //RightHand
-            if (aimTransition.NearZero)
-            {
-                //right hand's original animation defines position of gun
-                Gun.SetCentreByRightHand(_rightHandBone);
-            }
-            else
-            {
-                //gun defines position of right hand using IK
-                Gun.transform.SetPositionAndRotation(
-                    aimTransition.Lerp(Gun.CentreRelRightHand.GetChildPosition(_rightHandBone.position, _rightHandBone.rotation), Gun.CentreRelAimCamera.GetChildPosition(MainCamera.transform)),
-                    aimTransition.Lerp(Gun.CentreRelRightHand.GetChildRotation(_rightHandBone.rotation), Gun.CentreRelAimCamera.GetChildRotation(MainCamera.transform))
-                    );
-                HandsAnimator.SetIKPosition(AvatarIKGoal.RightHand, Gun.RightHandAnchor.position);
-                HandsAnimator.SetIKRotation(AvatarIKGoal.RightHand, Gun.RightHandAnchor.rotation);
-                HandsAnimator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
-                HandsAnimator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1);
-            }
-            //Left Hand
-            HandsAnimator.SetIKPosition(AvatarIKGoal.LeftHand, Gun.LeftHandAnchor.position);
-            HandsAnimator.SetIKRotation(AvatarIKGoal.LeftHand, Gun.LeftHandAnchor.rotation);
-            float leftHandReloadIKWeight = IsReloading ? Gun.ReloadLeftHandIKWeightCurve.Evaluate(this.ReloadCD.Ratio) : 1;
-            HandsAnimator.SetIKPositionWeight(AvatarIKGoal.LeftHand, leftHandReloadIKWeight);
-            HandsAnimator.SetIKRotationWeight(AvatarIKGoal.LeftHand, leftHandReloadIKWeight);
-            //Ensure first gun positioning is done before render
-            if (!_gunFirstRendered)
-            {
-                _gunFirstRendered = true;
-                Gun.gameObject.SetActive(true);
-            }
-        });
+            //right hand's original animation defines position of gun
+            Gun.SetCentreByRightHand(_rightHandBone);
+        }
+        else
+        {
+            //gun defines position of right hand using IK
+            Gun.transform.SetPositionAndRotation(
+                aimTransition.Lerp(Gun.CentreRelRightHand.GetChildPosition(_rightHandBone.position, _rightHandBone.rotation), Gun.CentreRelAimCamera.GetChildPosition(MainCamera.transform)),
+                aimTransition.Lerp(Gun.CentreRelRightHand.GetChildRotation(_rightHandBone.rotation), Gun.CentreRelAimCamera.GetChildRotation(MainCamera.transform))
+                );
+            Animator.SetIKPosition(AvatarIKGoal.RightHand, Gun.RightHandAnchor.position);
+            Animator.SetIKRotation(AvatarIKGoal.RightHand, Gun.RightHandAnchor.rotation);
+            Animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
+            Animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1);
+        }
+        //Left Hand
+        Animator.SetIKPosition(AvatarIKGoal.LeftHand, Gun.LeftHandAnchor.position);
+        Animator.SetIKRotation(AvatarIKGoal.LeftHand, Gun.LeftHandAnchor.rotation);
+        float leftHandReloadIKWeight = IsReloading ? Gun.ReloadLeftHandIKWeightCurve.Evaluate(this.ReloadCD.Ratio) : 1;
+        Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, leftHandReloadIKWeight);
+        Animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, leftHandReloadIKWeight);
+        //Ensure first gun positioning is done before render
+        if (!_gunFirstRendered)
+        {
+            _gunFirstRendered = true;
+            Gun.gameObject.SetActive(true);
+        }
     }
     private void Update()
     {
@@ -103,7 +108,7 @@ public class PlayerGunHands : PlayerHands
         RecoilUpdate();
         ShootingUpdate();
 		ReloadUpdate();
-		MeeleAttack();
+        BashUpdate();
 		CrossHairExpansionOfWalking();
         _crosshairExpand = Mathf.Clamp(Mathf.Lerp(_crosshairExpand, 0, Time.deltaTime * 5), 0, 150);
         _crosshair.ExpandDistance = _crosshairExpand;
@@ -116,7 +121,8 @@ public class PlayerGunHands : PlayerHands
 		Gun.gameObject.SetActive(false);
 		foreach(var child in Gun.GetComponentsInChildren<Renderer>())
 			child.gameObject.layer = 0; //Default layer
-		base.WithdrawItemAndDestroy();
+        GameManager.Instance.Player.IKEventExposure.onAnimatorIK.RemoveListener(AnimatorIK);
+        base.WithdrawItemAndDestroy();
     }
     void AimUpdate()
 	{
@@ -150,13 +156,16 @@ public class PlayerGunHands : PlayerHands
         }
     }
 
-	[HideInInspector]
-	public bool meeleAttack;
-	void MeeleAttack(){	
+	void BashUpdate(){
 
-		if(Input.GetKeyDown(KeyCode.V) && !meeleAttack)
+        if (BashActionOccupyRemainTime > 0)
         {
-            HandsAnimator.SetTrigger("meeleAttack");
+            BashActionOccupyRemainTime -= Time.deltaTime;
+        }
+        if (Input.GetKeyDown(KeyCode.V) && !IsBashing)
+        {
+            Animator.SetTrigger("bash");
+            BashActionOccupyRemainTime = _bashActionOccupyTime;
         }
 	}
     //private Vector2 velocityGunRotate;
@@ -165,8 +174,8 @@ public class PlayerGunHands : PlayerHands
     //private Vector2 gunWeight;
     private void PoseUpdate()
     {
-        transform.position = MainCamera.transform.TransformPoint(currentRecoil);
-        transform.rotation = Quaternion.Euler(PlayerLook.currentRotation);
+        //transform.position = MainCamera.transform.TransformPoint(currentRecoil);
+        //transform.rotation = Quaternion.Euler(PlayerLook.currentRotation);
 		//TODO: smooth hands rotation accordings to equipment weight
         //Vector2 rotationDelta = PlayerLook.currentRotation - rotationLast;
         //rotationLast = PlayerLook.currentRotation;
@@ -190,7 +199,7 @@ public class PlayerGunHands : PlayerHands
 	}
 	void ShootingUpdate(){
 		FireCD.AddDeltaTime();
-        if (!meeleAttack)
+        if (!IsBashing)
 		{
 			if (GunSpec.fireMode == GunSpec.FireMode.Nonautomatic)
 			{
@@ -255,7 +264,7 @@ public class PlayerGunHands : PlayerHands
 				print ("'Reload Sound Source' missing.");
         }
         IsReloading = true;
-        HandsAnimator.SetTrigger("reload");
+        Animator.SetTrigger("reload");
 		ReloadCD.Reset();
 		return true;
 	}
@@ -263,13 +272,13 @@ public class PlayerGunHands : PlayerHands
 	{
 		if (!IsReloading)
 		{
-            if (Input.GetKeyDown(KeyCode.R) && !meeleAttack)
+            if (Input.GetKeyDown(KeyCode.R) && !IsBashing)
             {
                 TryReload();
             }
             return;
         }
-        if (meeleAttack || (PlayerMovement.HasInputXZ && PlayerMovement.MovingState == MovingStateEnum.Run))
+        if (IsBashing || (PlayerMovement.HasInputXZ && PlayerMovement.MovingState == MovingStateEnum.Run))
         {
 			IsReloading = false;
         }
@@ -303,10 +312,10 @@ public class PlayerGunHands : PlayerHands
 	*/
 	void AnimationUpdate()
 	{
-		if(HandsAnimator) {
-			HandsAnimator.SetBool("isMoving", PlayerMovement.HasInputXZ);
-			HandsAnimator.SetBool("aiming", IsAiming);
-			HandsAnimator.SetBool("running", PlayerMovement.HasInputXZ && PlayerMovement.MovingState == MovingStateEnum.Run);
+		if(Animator) {
+			Animator.SetBool("isMoving", PlayerMovement.HasInputXZ);
+			Animator.SetBool("aiming", IsAiming);
+			Animator.SetBool("running", PlayerMovement.HasInputXZ && PlayerMovement.MovingState == MovingStateEnum.Run);
 		}
 	}
 }

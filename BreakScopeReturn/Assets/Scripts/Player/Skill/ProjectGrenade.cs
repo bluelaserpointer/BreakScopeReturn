@@ -49,6 +49,6 @@ public class ProjectGrenade : MonoBehaviour
     {
         grenade.transform.SetPositionAndRotation(throwAnchor.position, throwAnchor.transform.rotation);
         grenade.velocity = initialVelocity;
-        Player.GunInventory.Hands.HandsAnimator.SetTrigger("toss");
+        Player.GunInventory.Hands.Animator.SetTrigger("toss");
     }
 }

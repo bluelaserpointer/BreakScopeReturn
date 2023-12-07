@@ -19,17 +19,18 @@ public class Player : Unit
 
     [Header("Graphic")]
     [SerializeField]
+    float _aimModelYRotationFix;
+    [SerializeField]
     VolumeProfile _cameraVolumeProfile;
     [SerializeField]
     [Range(0f, 1f)]
     float _bloodVignetteMaxIntencity;
-    [SerializeField]
-    GameObject _interactionIconViewer;
 
     [Header("Internal Reference")]
     [SerializeField] Camera _hudCamera;
-    [SerializeField] PlayerMovementScript movement;
-    [SerializeField] MouseLookScript mouseLook;
+    [SerializeField] AnimatorIKEventExposure _IKEventExposure;
+    [SerializeField] PlayerMovement movement;
+    [SerializeField] MouseLook mouseLook;
     [SerializeField] GunInventory gunInventory;
 
     [Header("SE")]
@@ -38,8 +39,9 @@ public class Player : Unit
 
     public Camera Camera => MouseLook.Camera;
     public Camera HUDCamera => _hudCamera;
-    public PlayerMovementScript Movement => movement;
-    public MouseLookScript MouseLook => mouseLook;
+    public AnimatorIKEventExposure IKEventExposure => _IKEventExposure;
+    public PlayerMovement Movement => movement;
+    public MouseLook MouseLook => mouseLook;
     public GunInventory GunInventory => gunInventory;
     public bool HasAimRaycastHit { get; private set; }
     public Vector3 AimPosition { get; private set; }
@@ -83,6 +85,7 @@ public class Player : Unit
     }
     private void Update()
     {
+        Animator.transform.localEulerAngles = Vector3.up * _aimModelYRotationFix;
         if (IsDead)
         {
             _respawnWaitedTime += Time.deltaTime;

@@ -11,11 +11,13 @@ public class Unit : SaveTarget
     [SerializeField] IzumiTools.CappedValue _health;
     [Range(0f, 1f)]
     [SerializeField] float _initialHealthRatio = 1;
+    public bool stealth;
     [SerializeField] protected Transform viewAnchor;
     [SerializeField] List<Transform> detectAnchors;
     [SerializeField] protected Animator _animator;
     [SerializeField] AnimationClip _firingAnimationClip;
 
+    public Animator Animator => _animator;
     public IzumiTools.CappedValue Health => _health;
     public Vector3 ViewPosition => viewAnchor.position;
     public bool IsDead { get; private set; }

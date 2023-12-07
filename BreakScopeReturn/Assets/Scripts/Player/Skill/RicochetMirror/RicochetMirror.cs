@@ -9,6 +9,9 @@ public class RicochetMirror : MonoBehaviour
     [SerializeField] float mirrorSize;
     [SerializeField] SmoothDampTransition _expanding = new SmoothDampTransition(0.5F);
 
+    [Header("SE")]
+    [SerializeField] HitSound _hitSound;
+
     [Header("Flat Check")]
     [SerializeField] float _flatCheckHeight;
     [SerializeField] float _flatCheckDistance;
@@ -18,6 +21,7 @@ public class RicochetMirror : MonoBehaviour
     [SerializeField] MirrorScript mirrorScript;
     [SerializeField] GameObject expandAnchor;
 
+    public HitSound HitSound => _hitSound;
 
     [HideInInspector]
     public bool expand;
@@ -25,7 +29,7 @@ public class RicochetMirror : MonoBehaviour
 
     public void Init()
     {
-        mirrorScript.CameraLookingAtThisMirror = GameManager.Instance.Player.Camera;
+        mirrorScript.cameraLookingAtThisMirror = GameManager.Instance.Player.Camera;
     }
     private void Update()
     {
@@ -102,7 +106,7 @@ public class RicochetMirror : MonoBehaviour
     }
     public void SetCameraLookingAtThisMirror(Camera camera, bool immediateRender = false)
     {
-        mirrorScript.CameraLookingAtThisMirror = camera;
+        mirrorScript.cameraLookingAtThisMirror = camera;
         if (immediateRender)
         {
             mirrorScript.UpdateCameraProperties();

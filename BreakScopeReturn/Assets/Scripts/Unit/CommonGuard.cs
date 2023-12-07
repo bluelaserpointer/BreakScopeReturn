@@ -181,9 +181,10 @@ public class CommonGuard : Unit
         GuardStateUpdate();
         _animator.transform.localEulerAngles = Vector3.up * aimModelYRotationFix;
         float viewAngleDifference = Vector3.Angle(viewAnchor.forward, Player.ViewPosition - ViewPosition);
-        if (Vector3.Distance(Player.ViewPosition, ViewPosition) < viewRange
-         && viewAngleDifference < viewAngle / 2
-         && RaycastableTo(ViewPosition, Player, out Vector3 raycastablePosition))
+        if (!Player.stealth
+            && Vector3.Distance(Player.ViewPosition, ViewPosition) < viewRange
+            && viewAngleDifference < viewAngle / 2
+            && RaycastableTo(ViewPosition, Player, out Vector3 raycastablePosition))
         {
             FoundEnemy = true;
             NeverFoundEnemy = false;

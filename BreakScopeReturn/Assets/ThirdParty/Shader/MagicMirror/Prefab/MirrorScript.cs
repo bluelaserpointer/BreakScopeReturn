@@ -7,15 +7,10 @@ using UnityEngine;
 [RequireComponent(typeof(Renderer))]
 public class MirrorScript : MonoBehaviour
 {
-    public Camera CameraLookingAtThisMirror
-    {
-        get => _cameraLookingAtThisMirror;
-        set
-        {
-            _cameraLookingAtThisMirror = value;
-        }
-    }
-    private Camera _cameraLookingAtThisMirror;
+    [Header("Debug")]
+    public GameObject oldPosAnchor, newPosAnchor;
+    public Camera cameraLookingAtThisMirror;
+    [SerializeField] LayerMask _additionalCullingMask;
 
     [Header("Setting")]
     [Tooltip("Maximum number of per pixel lights that will show in the mirrored image")]
@@ -107,25 +102,26 @@ public class MirrorScript : MonoBehaviour
     }
     public void UpdateCameraProperties()
     {
-        mirrorCamera.clearFlags = _cameraLookingAtThisMirror.clearFlags;
-        mirrorCamera.backgroundColor = _cameraLookingAtThisMirror.backgroundColor;
-        mirrorCamera.orthographic = _cameraLookingAtThisMirror.orthographic;
-        mirrorCamera.orthographicSize = _cameraLookingAtThisMirror.orthographicSize;
+        mirrorCamera.clearFlags = cameraLookingAtThisMirror.clearFlags;
+        mirrorCamera.backgroundColor = cameraLookingAtThisMirror.backgroundColor;
+        mirrorCamera.orthographic = cameraLookingAtThisMirror.orthographic;
+        mirrorCamera.orthographicSize = cameraLookingAtThisMirror.orthographicSize;
         if (AspectRatio > 0.0f)
         {
             mirrorCamera.aspect = AspectRatio;
         }
         else
         {
-            mirrorCamera.aspect = _cameraLookingAtThisMirror.aspect;
+            mirrorCamera.aspect = cameraLookingAtThisMirror.aspect;
         }
-        mirrorCamera.renderingPath = _cameraLookingAtThisMirror.renderingPath;
+        mirrorCamera.renderingPath = cameraLookingAtThisMirror.renderingPath;
+        mirrorCamera.cullingMask = cameraLookingAtThisMirror.cullingMask | _additionalCullingMask;
     }
 
     public void RenderMirror()
     {
         // bail if we don't have a camera or renderer
-        if (renderingMirror || !enabled || CameraLookingAtThisMirror == null ||
+        if (renderingMirror || !enabled || cameraLookingAtThisMirror == null ||
             mirrorRenderer == null || mirrorMaterial == null || !mirrorRenderer.enabled)
         {
             return;
@@ -149,7 +145,6 @@ public class MirrorScript : MonoBehaviour
                 mirrorCamera.ResetWorldToCameraMatrix();
                 mirrorCamera.ResetProjectionMatrix();
                 mirrorCamera.projectionMatrix = mirrorCamera.projectionMatrix * Matrix4x4.Scale(new Vector3(-1, 1, 1));
-                mirrorCamera.cullingMask = CameraLookingAtThisMirror.cullingMask;
                 GL.invertCulling = true;
                 mirrorCamera.Render();
                 GL.invertCulling = false;
@@ -168,24 +163,32 @@ public class MirrorScript : MonoBehaviour
                 float oldclip = mirrorCamera.farClipPlane;
                 Vector3 newpos = reflectionMatrix.MultiplyPoint(oldpos);
 
-                Matrix4x4 worldToCameraMatrix = CameraLookingAtThisMirror.worldToCameraMatrix;
+                Matrix4x4 worldToCameraMatrix = cameraLookingAtThisMirror.worldToCameraMatrix;
 
                 worldToCameraMatrix *= reflectionMatrix;
                 mirrorCamera.worldToCameraMatrix = worldToCameraMatrix;
 
                 // Clip out background
                 Vector4 clipPlane = CameraSpacePlane(ref worldToCameraMatrix, ref pos, ref normal, 1.0f);
-                mirrorCamera.projectionMatrix = CameraLookingAtThisMirror.CalculateObliqueMatrix(clipPlane);
+                mirrorCamera.projectionMatrix = cameraLookingAtThisMirror.CalculateObliqueMatrix(clipPlane);
                 //TODO: With baked occlusion culling this behave wierd...
-                mirrorCamera.cullingMatrix = mirrorCamera.projectionMatrix * mirrorCamera.worldToCameraMatrix;
+                //mirrorCamera.cullingMatrix = mirrorCamera.projectionMatrix * mirrorCamera.worldToCameraMatrix;
+                //As a temporal workaround, introduced a foward moving of near clip plane
+                //TODO: Do it in pure matrix computation
+                float originalNear = cameraLookingAtThisMirror.nearClipPlane;
+                cameraLookingAtThisMirror.nearClipPlane = worldToCameraMatrix.MultiplyPoint(newpos).magnitude;
+                //print("modified near: " + cameraLookingAtThisMirror.nearClipPlane);
+                mirrorCamera.cullingMatrix = cameraLookingAtThisMirror.projectionMatrix * mirrorCamera.worldToCameraMatrix;
+                cameraLookingAtThisMirror.nearClipPlane = originalNear;
                 GL.invertCulling = true;
                 mirrorCamera.transform.position = newpos;
                 mirrorCamera.farClipPlane = FarClipPlane;
-                mirrorCamera.cullingMask = CameraLookingAtThisMirror.cullingMask;
                 mirrorCamera.Render();
                 mirrorCamera.transform.position = oldpos;
                 mirrorCamera.farClipPlane = oldclip;
                 GL.invertCulling = false;
+                oldPosAnchor.transform.position = worldToCameraMatrix.MultiplyPoint(oldpos);
+                newPosAnchor.transform.position = worldToCameraMatrix.MultiplyPoint(newpos);
             }
         }
         catch(Exception e)
@@ -245,7 +248,7 @@ public class MirrorScript : MonoBehaviour
         reflectionMatrix.m33 = 1F;
     }
 
-    private static void CalculateObliqueMatrix(ref Matrix4x4 projection, ref Vector4 clipPlane)
+    private static void CalculateObliqueMatrix(ref Matrix4x4 projection, Vector4 clipPlane)
     {
         Vector4 q = projection.inverse * new Vector4
         (

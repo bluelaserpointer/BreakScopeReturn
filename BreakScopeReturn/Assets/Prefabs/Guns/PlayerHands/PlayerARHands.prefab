@@ -897,6 +897,8 @@ MonoBehaviour:
   _crosshair: {fileID: 202621400498568866}
   _scopeCanvasGroup: {fileID: 1701350980572308533}
   _reloadAnimationClip: {fileID: 7400006, guid: 6cae2f82a0a62ff4ab9be3eeeda19688, type: 3}
+  _bashDamage: 150
+  _bashActionOccupyTime: 0.5
   _IKEventExposure: {fileID: 7862013607740187141}
   rotationLagTime: 0
   forwardRotationAmount: {x: 1, y: 1}
@@ -905,7 +907,6 @@ MonoBehaviour:
     value: 0
     velocity: 0
   velocity_recoil: {x: 0, y: 0, z: 0}
-  meeleAttack: 0
 --- !u!1 &142906
 GameObject:
   m_ObjectHideFlags: 0

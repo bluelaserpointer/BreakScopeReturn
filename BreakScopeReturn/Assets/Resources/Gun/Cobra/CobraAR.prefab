@@ -465,7 +465,7 @@ MonoBehaviour:
   magazine:
     _max: 40
   spareAmmo: 200
-  _playerGunHandsPrefab: {fileID: 11400676, guid: d6a6595243d855e4d8f9b5c309d8e8cc, type: 3}
+  _playerGunHandsPrefab: {fileID: 11400676, guid: e2f83eeae643e844cac73033a0073ba5, type: 3}
   _reloadLeftHandIKWeightCurve:
     serializedVersion: 2
     m_Curve:
