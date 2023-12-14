@@ -5,11 +5,13 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public abstract class PlayerHands : MonoBehaviour
 {
+    public abstract HandsType HandsType { get; }
     public Animator Animator => GameManager.Instance.Player.Animator;
     public bool IsAiming { get; protected set; }
     public float MouseSensitivityModify { get; protected set; }
-    public virtual void WithdrawItemAndDestroy()
+    public abstract void Init(HandEquipment equipment);
+    public virtual void WithdrawItemAndDisable()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 }

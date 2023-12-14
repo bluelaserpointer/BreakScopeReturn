@@ -11,13 +11,17 @@ public class CompositeCrosshair : MonoBehaviour
     RectTransform _leaderPiece;
     [SerializeField]
     int _pieceAmount;
-    public CanvasGroup CanvasGroup { get; private set; }
+    public CanvasGroup CanvasGroup => _canvasGroup ?? (_canvasGroup = GetComponent<CanvasGroup>());
     public float ExpandDistance { get; set; }
 
     readonly List<RectTransform> _pieces = new List<RectTransform>();
+    CanvasGroup _canvasGroup;
     private void Awake()
     {
-        CanvasGroup = GetComponent<CanvasGroup>();
+        if (_canvasGroup == null)
+        {
+            _canvasGroup = GetComponent<CanvasGroup>();
+        }
         Regenerate();
     }
     private void Update()

@@ -19,6 +19,8 @@ public class Player : Unit
 
     [Header("Graphic")]
     [SerializeField]
+    Transform _cameraPositionTarget;
+    [SerializeField]
     float _aimModelYRotationFix;
     [SerializeField]
     VolumeProfile _cameraVolumeProfile;
@@ -86,6 +88,7 @@ public class Player : Unit
     private void Update()
     {
         Animator.transform.localEulerAngles = Vector3.up * _aimModelYRotationFix;
+        Camera.transform.position = _cameraPositionTarget.position;
         if (IsDead)
         {
             _respawnWaitedTime += Time.deltaTime;

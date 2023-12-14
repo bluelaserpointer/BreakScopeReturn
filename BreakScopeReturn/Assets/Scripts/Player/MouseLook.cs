@@ -39,14 +39,14 @@ public class MouseLook : MonoBehaviour
 		}
 		deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
 
-		if(GetComponent<PlayerMovement>().HasInputXZ)
+		if(GameManager.Instance.Player.Movement.HasInputXZ)
 			HeadMovement ();
     }
     void FixedUpdate()
     {
         currentRotation = baseRotation + recoilRotation;
-        transform.rotation = Quaternion.Euler(0, currentRotation.y, 0);
-        camera.transform.localRotation = Quaternion.Euler(currentRotation.x, 0, zRotation);
+        GameManager.Instance.Player.transform.rotation = Quaternion.Euler(0, currentRotation.y, 0);
+        transform.localRotation = Quaternion.Euler(currentRotation.x, 0, zRotation);
     }
 
     [Header("Z Rotation Camera")]

@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Compatibility;
 
 public enum MenuStyle{
 	horizontal,vertical
 }
 public class GunInventory : MonoBehaviour
 {
+    [Header("Hands")]
+    [SerializeField]
+    List<PlayerHands> _hands;
+
     [Header("Equipment")]
     [SerializeField]
     HandEquipment[] _initialEquipments;
@@ -42,7 +45,10 @@ public class GunInventory : MonoBehaviour
     public void LoadInit()
     {
         if (Hands != null)
-            Hands.WithdrawItemAndDestroy();
+        {
+            Hands.WithdrawItemAndDisable();
+            Hands = null;
+        }
     }
     public void AddEquipment(HandEquipment equipment)
     {
@@ -109,7 +115,7 @@ public class GunInventory : MonoBehaviour
     IEnumerator HandsChange(int newEquipmentIndex)
     {
         newEquipmentIndex = Mathf.Clamp(newEquipmentIndex, 0, equipments.Count - 1);
-        if (Hands != null && HoldingEquipmentIndex == newEquipmentIndex)
+        if (HoldingEquipmentIndex == newEquipmentIndex && (Hands != null || HoldingEquipment == null))
 			yield break;
         if (weaponChanging)
 			weaponChanging.Play();
@@ -117,14 +123,16 @@ public class GunInventory : MonoBehaviour
 		{
 			Hands.Animator.SetTrigger("takeDown");
             yield return new WaitForSeconds(0.8f);//0.8 time to change waepon, but since there is no change weapon animation there is no need to wait fo weapon taken down
-            Hands.WithdrawItemAndDestroy();
+            Hands.WithdrawItemAndDisable();
+            Hands = null;
         }
         HoldingEquipmentIndex = newEquipmentIndex;
         if (HoldingEquipment != null)
         {
-            Hands = HoldingEquipment.GeneratePlayerHands();
+            Hands = _hands.Find(hands => hands.HandsType.Equals(HoldingEquipment.HandsType));
             Hands.transform.SetPositionAndRotation(transform.position, transform.rotation);
-            Hands.transform.SetParent(GameManager.Instance.CurrentStage.transform); //TODO: check if it possible parent to player
+            Hands.Init(HoldingEquipment);
+            Hands.gameObject.SetActive(true);
         }
         else
         {

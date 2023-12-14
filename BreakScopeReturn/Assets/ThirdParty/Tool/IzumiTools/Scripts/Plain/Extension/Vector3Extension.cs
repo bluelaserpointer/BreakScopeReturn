@@ -20,7 +20,7 @@ public static class Vector3Extension
     }
     public static float XAngleRad(this Vector3 vector)
     {
-        return Mathf.Atan2(vector.z, vector.y);
+        return Mathf.Atan2(vector.y, Mathf.Sqrt(vector.x * vector.x + vector.z * vector.z));
     }
     public static float YAngleRad(this Vector3 vector)
     {

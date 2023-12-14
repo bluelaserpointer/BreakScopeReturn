@@ -10,10 +10,6 @@ public class PlayerGunHands : PlayerHands
     [SerializeField]
 	CanvasGroup _scopeCanvasGroup;
 
-    [Header("Reload")]
-    [SerializeField]
-    AnimationClip _reloadAnimationClip;
-
     [Header("Bash")]
     [SerializeField]
     float _bashDamage;
@@ -23,7 +19,8 @@ public class PlayerGunHands : PlayerHands
     [Header("Rotation")]
     public float rotationLagTime = 0f;
     public Vector2 forwardRotationAmount = Vector2.one;
-      
+
+    public override HandsType HandsType => HandsType.Rifle;
     public Gun Gun { get; private set; }
 	public GunSpec GunSpec => Gun.spec;
 	[HideInInspector]
@@ -42,58 +39,71 @@ public class PlayerGunHands : PlayerHands
     private PlayerMovement PlayerMovement => Player.Movement;
     private MouseLook PlayerLook => Player.MouseLook;
 
-	Transform _rightHandBone;
-
     private Vector3 currentRecoil;
     float _crosshairExpand;
+    Transform _rightHandBone;
 
     bool _gunFirstRendered;
+    bool _rightHandIKRotationOffsetAssigned;
+    Quaternion _rightHandIKRotationOffset;
 
-    public void Init(Gun gunModel)
+    public override void Init(HandEquipment equipment)
     {
-		Gun = gunModel;
-        foreach (var child in Gun.GetComponentsInChildren<Renderer>())
-            child.gameObject.layer = gameObject.layer;
+        Gun = (Gun)equipment;
+        _crosshair.CanvasGroup.alpha = 1;
+        _scopeCanvasGroup.alpha = 0;
         aimTransition = new SmoothDampTransition(GunSpec.aimTime);
 		FireCD = new Cooldown(GunSpec.fireCD);
 		ReloadCD = new Cooldown(GunSpec.reloadCD);
         //rotationLast = PlayerLook.currentRotation;
-        Animator.SetFloat("reloadSpeedMultiplier", _reloadAnimationClip.length / Mathf.Max(ReloadCD.Max, 0.1F));
+        Animator.SetFloat("reloadSpeedMultiplier", Gun.ReloadAnimationClipLength / Mathf.Max(ReloadCD.Max, 0.1F));
+        Animator.SetFloat("reloadAnimationType", Gun.ReloadAnimationID);
         _rightHandBone = Animator.GetBoneTransform(HumanBodyBones.RightHand);
-    }
-    private void Start()
-    {
-        _crosshair.CanvasGroup.alpha = 1;
-        _scopeCanvasGroup.alpha = 0;
         Gun.onFireCDSet.Invoke(FireCD.Max);
-        GameManager.Instance.Player.IKEventExposure.onAnimatorIK.AddListener(AnimatorIK);
+        Gun.gameObject.SetActive(true);
+        Player.IKEventExposure.onAnimatorIK.AddListener(AnimatorIK);
     }
     private void AnimatorIK(int layerIndex)
     {
-        //RightHand
-        if (aimTransition.NearZero)
+        if (layerIndex != Animator.GetLayerIndex("HandsLayer"))
         {
-            //right hand's original animation defines position of gun
-            Gun.SetCentreByRightHand(_rightHandBone);
+            return;
+        }
+        //compute skeleton rotation offset from mechanim (Gun hands uses it to describe ik goal)
+        if (!_rightHandIKRotationOffsetAssigned)
+        {
+            _rightHandIKRotationOffsetAssigned = true;
+            _rightHandIKRotationOffset = Quaternion.Inverse(_rightHandBone.rotation) * Animator.GetIKRotation(AvatarIKGoal.RightHand);
+        }
+        Quaternion rightHandIKRotationGoal = _rightHandBone.rotation * _rightHandIKRotationOffset;
+        if (!aimTransition.NearZero)
+        {
+            //camera defines position of gun
+            Gun.transform.SetPositionAndRotation(
+                aimTransition.Lerp(Gun.CentreRelArmCamera.GetChildPosition(MainCamera.transform), Gun.CentreRelAimCamera.GetChildPosition(MainCamera.transform)),
+                aimTransition.Lerp(Gun.CentreRelArmCamera.GetChildRotation(MainCamera.transform), Gun.CentreRelAimCamera.GetChildRotation(MainCamera.transform))
+                );
         }
         else
         {
-            //gun defines position of right hand using IK
+            //camera and animation defines position of gun
             Gun.transform.SetPositionAndRotation(
-                aimTransition.Lerp(Gun.CentreRelRightHand.GetChildPosition(_rightHandBone.position, _rightHandBone.rotation), Gun.CentreRelAimCamera.GetChildPosition(MainCamera.transform)),
-                aimTransition.Lerp(Gun.CentreRelRightHand.GetChildRotation(_rightHandBone.rotation), Gun.CentreRelAimCamera.GetChildRotation(MainCamera.transform))
+                Vector3.Lerp(Gun.CentreRelRightHand.GetChildPosition(_rightHandBone.position, rightHandIKRotationGoal),
+                    Gun.CentreRelArmCamera.GetChildPosition(MainCamera.transform),
+                    Player.IKEventExposure.equipmentFollowRightHandPositionWeight),
+                Quaternion.Lerp(Gun.CentreRelRightHand.GetChildRotation(rightHandIKRotationGoal),
+                    Gun.CentreRelArmCamera.GetChildRotation(MainCamera.transform),
+                    Player.IKEventExposure.equipmentFollowRightHandRotationWeight)
                 );
-            Animator.SetIKPosition(AvatarIKGoal.RightHand, Gun.RightHandAnchor.position);
-            Animator.SetIKRotation(AvatarIKGoal.RightHand, Gun.RightHandAnchor.rotation);
-            Animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
-            Animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1);
         }
-        //Left Hand
-        Animator.SetIKPosition(AvatarIKGoal.LeftHand, Gun.LeftHandAnchor.position);
-        Animator.SetIKRotation(AvatarIKGoal.LeftHand, Gun.LeftHandAnchor.rotation);
-        float leftHandReloadIKWeight = IsReloading ? Gun.ReloadLeftHandIKWeightCurve.Evaluate(this.ReloadCD.Ratio) : 1;
-        Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, leftHandReloadIKWeight);
-        Animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, leftHandReloadIKWeight);
+        //gun defines position of hands
+        Animator.SetIKPosition(AvatarIKGoal.LeftHand, Gun.LeftHandGoal.position);
+        Animator.SetIKRotation(AvatarIKGoal.LeftHand, Gun.LeftHandGoal.rotation);
+        Animator.SetIKPosition(AvatarIKGoal.RightHand, Gun.RightHandGoal.position);
+        Animator.SetIKRotation(AvatarIKGoal.RightHand, Gun.RightHandGoal.rotation);
+        //camera defines head rotation
+        Animator.SetLookAtPosition(Player.AimPosition); //TODO: smoothing?
+        //(above ik weights are exposed in IKEventExposure for direct animation control)
         //Ensure first gun positioning is done before render
         if (!_gunFirstRendered)
         {
@@ -116,13 +126,11 @@ public class PlayerGunHands : PlayerHands
 		_scopeCanvasGroup.alpha = aimTransition.value;
         AnimationUpdate();
     }
-    public override void WithdrawItemAndDestroy()
+    public override void WithdrawItemAndDisable()
     {
 		Gun.gameObject.SetActive(false);
-		foreach(var child in Gun.GetComponentsInChildren<Renderer>())
-			child.gameObject.layer = 0; //Default layer
         GameManager.Instance.Player.IKEventExposure.onAnimatorIK.RemoveListener(AnimatorIK);
-        base.WithdrawItemAndDestroy();
+        base.WithdrawItemAndDisable();
     }
     void AimUpdate()
 	{
@@ -168,22 +176,18 @@ public class PlayerGunHands : PlayerHands
             BashActionOccupyRemainTime = _bashActionOccupyTime;
         }
 	}
-    //private Vector2 velocityGunRotate;
-    //private Vector2 rotationLast;
-    //private Vector2 angularVelocity;
-    //private Vector2 gunWeight;
     private void PoseUpdate()
     {
         //transform.position = MainCamera.transform.TransformPoint(currentRecoil);
         //transform.rotation = Quaternion.Euler(PlayerLook.currentRotation);
-		//TODO: smooth hands rotation accordings to equipment weight
+        //TODO: smooth hands rotation accordings to equipment weight
         //Vector2 rotationDelta = PlayerLook.currentRotation - rotationLast;
         //rotationLast = PlayerLook.currentRotation;
         //angularVelocity = Vector3.Lerp (angularVelocity, rotationDelta, Time.deltaTime * 5);
         //gunWeight = Vector2.SmoothDamp (gunWeight, PlayerLook.currentRotation, ref velocityGunRotate, rotationLagTime);
         //transform.rotation = Quaternion.Euler (gunWeight + (angularVelocity * forwardRotationAmount.x));
     }
-	private void RecoilUpdate()
+    private void RecoilUpdate()
     {
         currentRecoil = Vector3.SmoothDamp(currentRecoil, Vector3.zero, ref velocity_recoil, GunSpec.recoilOverTime);
         PlayerLook.recoilRotation.x = -Mathf.Abs(currentRecoil.y) * GunSpec.recoilRotateRatio;
@@ -311,11 +315,9 @@ public class PlayerGunHands : PlayerHands
 	* Setting the reload animation upon pressing R.
 	*/
 	void AnimationUpdate()
-	{
-		if(Animator) {
-			Animator.SetBool("isMoving", PlayerMovement.HasInputXZ);
-			Animator.SetBool("aiming", IsAiming);
-			Animator.SetBool("running", PlayerMovement.HasInputXZ && PlayerMovement.MovingState == MovingStateEnum.Run);
-		}
-	}
+    {
+        Animator.SetBool("isMoving", PlayerMovement.HasInputXZ);
+        Animator.SetBool("aiming", IsAiming);
+        Animator.SetBool("running", PlayerMovement.HasInputXZ && PlayerMovement.MovingState == MovingStateEnum.Run);
+    }
 }

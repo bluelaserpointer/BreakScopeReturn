@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerTossHands : PlayerHands
 {
+    public override HandsType HandsType => HandsType.Toss;
     private Player Player => GameManager.Instance.Player;
     private Camera MainCamera => Player.Camera;
     private Camera HUDCamera => Player.HUDCamera;
@@ -14,6 +15,10 @@ public class PlayerTossHands : PlayerHands
     private Vector2 angularVelocity;
     private Vector2 rotationLast;
     private Vector2 gunWeight;
+
+    public override void Init(HandEquipment equipment)
+    {
+    }
     private void Update()
     {
         transform.position = MainCamera.transform.position;

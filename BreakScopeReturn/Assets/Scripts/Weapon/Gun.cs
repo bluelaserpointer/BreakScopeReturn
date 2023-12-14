@@ -3,35 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+public enum ReloadAnimationType { NoCocking, LeftCocking }
 [DisallowMultipleComponent]
 public class Gun : HandEquipment
 {
+    [Header("Debug")]
+    [SerializeField]
+    bool _realtimeIK;
+
     [Header("Info")]
     [SerializeField]
     string _displayName;
     [SerializeField]
     Sprite _icon;
 
-    [Header("IK")]
-    [SerializeField]
-    bool _relatimeIK;
-    [SerializeField]
-    Transform _leftHandAnchor, _rightHandAnchor;
-
-    [Header("Spec")]
-    public GunSpec spec;
-
     [Header("Dynamic data")]
     public IzumiTools.CappedValue magazine;
     public int spareAmmo;
 
-    [Header("Handling")]
+    [Header("Spec")]
+    public GunSpec spec;
+
+    [Header("Animation")]
     [SerializeField]
-    PlayerGunHands _playerGunHandsPrefab;
+    Transform _leftHandGoal, _rightHandGoal;
     [SerializeField]
-    AnimationCurve _reloadLeftHandIKWeightCurve;
+    ReloadAnimationType _reloadAnimationType;
+    [SerializeField]
+    AnimationClip _reloadAnimationClip;
+
+    [Header("Positioning")]
     [SerializeField]
     Transform _muzzleAnchor;
+    [SerializeField]
+    Transform _armCameraAnchor;
     [SerializeField]
     Transform _aimCameraAnchor;
     [SerializeField]
@@ -50,18 +55,43 @@ public class Gun : HandEquipment
     public UnityEvent onFire;
     public UnityEvent<float> onFireCDSet;
 
+    [ContextMenu("Pose Gun At Arm")]
+    private void PoseGunAtArm()
+    {
+        Player player = GetComponentInParent<Player>();
+        if (player == null)
+        {
+            print("Cannot find " + nameof(Player) + " in parent");
+            return;
+        }
+        new TransformRelator(transform, ArmCameraAnchor).ApplyChildTransform(transform, player.Camera.transform);
+    }
+    [ContextMenu("Pose Gun At Aim")]
+    private void PoseGunAtAim()
+    {
+        Player player = GetComponentInParent<Player>();
+        if (player == null)
+        {
+            print("Cannot find " + nameof(Player) + " in parent");
+            return;
+        }
+        new TransformRelator(transform, AimCameraAnchor).ApplyChildTransform(transform, player.Camera.transform);
+    }
     public string DisplayName => _displayName;
     public Sprite Icon => _icon;
     public Unit Owner { get; private set; }
     public Transform MuzzleAnchor => _muzzleAnchor;
-    public Transform LeftHandAnchor => _leftHandAnchor;
-    public Transform RightHandAnchor => _rightHandAnchor;
+    public Transform ArmCameraAnchor => _armCameraAnchor;
     public Transform AimCameraAnchor => _aimCameraAnchor;
+    public Transform LeftHandGoal => _leftHandGoal;
+    public Transform RightHandGoal => _rightHandGoal;
     public Transform MagazineRoot => _magazineRoot;
-    public AnimationCurve ReloadLeftHandIKWeightCurve => _reloadLeftHandIKWeightCurve;
+    public int ReloadAnimationID => (int)_reloadAnimationType;
+    public float ReloadAnimationClipLength => _reloadAnimationClip.length;
     public AudioSource ShootSESource => _shootSESource;
     public AudioSource ReloadSESource => _reloadSESource;
     public TransformRelator CentreRelRightHand { get; private set; }
+    public TransformRelator CentreRelArmCamera { get; private set; }
     public TransformRelator CentreRelAimCamera { get; private set; }
 
     private void Awake()
@@ -71,27 +101,14 @@ public class Gun : HandEquipment
     }
     private void Update()
     {
-        if (_relatimeIK)
+        if (_realtimeIK)
             UpdateAnchorRelation();
     }
     void UpdateAnchorRelation()
     {
-        CentreRelRightHand = new TransformRelator(transform, RightHandAnchor);
+        CentreRelRightHand = new TransformRelator(transform, RightHandGoal);
+        CentreRelArmCamera = new TransformRelator(transform, ArmCameraAnchor);
         CentreRelAimCamera = new TransformRelator(transform, AimCameraAnchor);
-    }
-    public void SetCentreByRightHand(Transform currentRightHandTransform)
-    {
-        CentreRelRightHand.ApplyChildTransform(transform, currentRightHandTransform);
-    }
-    public void SetCentreByAimCamera(Transform currentCameraTransform)
-    {
-        CentreRelAimCamera.ApplyChildTransform(transform, currentCameraTransform);
-    }
-    public override PlayerHands GeneratePlayerHands()
-    {
-        PlayerGunHands hands = Instantiate(_playerGunHandsPrefab);
-        hands.Init(this);
-        return hands;
     }
     struct GunSave
     {

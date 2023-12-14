@@ -35,4 +35,8 @@ public static class TransformExtension
         foreach (Transform each in parent)
             each.gameObject.SetActive(cond);
     }
+    public static void SetPositionAndRotation(this Transform source, Transform target)
+    {
+        source.SetPositionAndRotation(target.position, target.rotation);
+    }
 }
