@@ -330,7 +330,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3942226365965629950}
   m_Layer: 7
-  m_Name: ArmCameraPosition
+  m_Name: ArmEyePosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -345,7 +345,7 @@ Transform:
   m_GameObject: {fileID: 4442686135736734509}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000044703484, y: -0.000000059604645, z: 0.000000044703484, w: 1}
-  m_LocalPosition: {x: -0.06, y: 0.256, z: -0.08}
+  m_LocalPosition: {x: -0.04, y: 0.17, z: -0.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -34,6 +34,8 @@ public class Player : Unit
     [SerializeField] PlayerMovement movement;
     [SerializeField] MouseLook mouseLook;
     [SerializeField] GunInventory gunInventory;
+    [SerializeField] Transform _gunEyeAnchor;
+    [SerializeField] Transform _gunEyeNoZRotAnchor;
 
     [Header("SE")]
     [SerializeField]
@@ -45,6 +47,8 @@ public class Player : Unit
     public PlayerMovement Movement => movement;
     public MouseLook MouseLook => mouseLook;
     public GunInventory GunInventory => gunInventory;
+    public Transform GunEyeAnchor => _gunEyeAnchor;
+    public Transform GunEyeNoZRotAnchor => _gunEyeNoZRotAnchor;
     public bool HasAimRaycastHit { get; private set; }
     public Vector3 AimPosition { get; private set; }
     public Interactable AimingInteractable { get; private set; }
@@ -88,6 +92,8 @@ public class Player : Unit
     private void Update()
     {
         Animator.transform.localEulerAngles = Vector3.up * _aimModelYRotationFix;
+        _gunEyeNoZRotAnchor.position = _gunEyeAnchor.position;
+        _gunEyeNoZRotAnchor.rotation = Camera.transform.rotation;
         Camera.transform.position = _cameraPositionTarget.position;
         if (IsDead)
         {

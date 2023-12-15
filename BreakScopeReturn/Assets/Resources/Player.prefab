@@ -326,6 +326,7 @@ Transform:
   - {fileID: 4730053225657608}
   - {fileID: 6337669928358732514}
   - {fileID: 6672429481727499486}
+  - {fileID: 8638023923077164843}
   - {fileID: 1004565591677668510}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -392,6 +393,8 @@ MonoBehaviour:
   movement: {fileID: 11415148}
   mouseLook: {fileID: 4187842049964884708}
   gunInventory: {fileID: 11414154}
+  _gunEyeAnchor: {fileID: 2563071391471249063}
+  _gunEyeNoZRotAnchor: {fileID: 8638023923077164843}
   _deathSE: {fileID: 8300000, guid: e38254fadbcfbd64aa2c2ae056b5ffa6, type: 3}
 --- !u!114 &11415148
 MonoBehaviour:
@@ -1308,7 +1311,7 @@ GameObject:
   - component: {fileID: 6561959894146799332}
   - component: {fileID: 4831973008554542817}
   m_Layer: 0
-  m_Name: AlienSoldier
+  m_Name: Model - AlienSoldier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1367,11 +1370,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c741b11f546dd574a8a051268742e811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lookAtIKControlLayer: 0
   lookAtWeight: 0.4
   lookAtBodyWeight: 1
   lookAtClampWeight: 0.5
+  leftHandIKControlLayer: 1
   leftHandPositionWeight: 1
   leftHandRotationWeight: 1
+  rightHandIKControlLayer: 1
   rightHandPositionWeight: 1
   rightHandRotationWeight: 1
   equipmentFollowRightHandPositionWeight: 1
@@ -3972,7 +3978,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 6731146002191872453, guid: a1f5aa6ae6f2876458cbd2071fc276ea, type: 3}
+  - {fileID: 2100000, guid: cbfa1cfbf678f584ba6efc21191a5df4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4189,7 +4195,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 6731146002191872453, guid: a1f5aa6ae6f2876458cbd2071fc276ea, type: 3}
+  - {fileID: 2100000, guid: cbfa1cfbf678f584ba6efc21191a5df4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4723,8 +4729,8 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 321043427970439332, guid: a1f5aa6ae6f2876458cbd2071fc276ea, type: 3}
-  - {fileID: 6731146002191872453, guid: a1f5aa6ae6f2876458cbd2071fc276ea, type: 3}
+  - {fileID: 2100000, guid: 1b5def3be1aac9e44a61e2c181ae0e16, type: 2}
+  - {fileID: 2100000, guid: cbfa1cfbf678f584ba6efc21191a5df4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4960,7 +4966,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2563071391471249063}
   m_Layer: 0
-  m_Name: CameraFollowTarget
+  m_Name: GunEyeAnchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4976,7 +4982,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.00000007823109, y: 0.000000043717666, z: -1.559197e-11, w: 1}
   m_LocalPosition: {x: 0.032, y: 0.13, z: 0.127}
-  m_LocalScale: {x: 1.1111112, y: 1.1111113, z: 1.1111113}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7958623281654099646}
@@ -5012,6 +5018,37 @@ Transform:
   m_Children:
   - {fileID: 2806119968413179750}
   m_Father: {fileID: 8304445046484981101}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8120967989574194928
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8638023923077164843}
+  m_Layer: 0
+  m_Name: GunEyeNoZRotAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8638023923077164843
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8120967989574194928}
+  serializedVersion: 2
+  m_LocalRotation: {x: 2.4780886e-10, y: 4.014566e-13, z: -1.01117205e-11, w: 1}
+  m_LocalPosition: {x: 0.028814316, y: 1.6040998, z: 0.09402084}
+  m_LocalScale: {x: 1, y: 1, z: 0.89919996}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 479812}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8148787258368948242
 GameObject:

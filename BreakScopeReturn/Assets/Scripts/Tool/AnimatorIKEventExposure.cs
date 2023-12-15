@@ -5,10 +5,16 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Animator))]
 public class AnimatorIKEventExposure : MonoBehaviour
 {
+    [Min(0)]
+    public float lookAtIKControlLayer;
     [Range(0f, 1f)]
     public float lookAtWeight = 1, lookAtBodyWeight, lookAtClampWeight = 0.5F;
+    [Min(0)]
+    public float leftHandIKControlLayer;
     [Range(0f, 1f)]
     public float leftHandPositionWeight = 1, leftHandRotationWeight = 1;
+    [Min(0)]
+    public float rightHandIKControlLayer;
     [Range(0f, 1f)]
     public float rightHandPositionWeight = 1, rightHandRotationWeight = 1;
     [Range(0f, 1f)]
@@ -25,10 +31,19 @@ public class AnimatorIKEventExposure : MonoBehaviour
     private void OnAnimatorIK(int layerIndex)
     {
         onAnimatorIK.Invoke(layerIndex);
-        Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, leftHandPositionWeight);
-        Animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, leftHandRotationWeight);
-        Animator.SetIKPositionWeight(AvatarIKGoal.RightHand, rightHandPositionWeight);
-        Animator.SetIKRotationWeight(AvatarIKGoal.RightHand, rightHandRotationWeight);
-        Animator.SetLookAtWeight(lookAtWeight, lookAtBodyWeight, 1, 0, lookAtClampWeight);
+        if (layerIndex == lookAtIKControlLayer)
+        {
+            Animator.SetLookAtWeight(lookAtWeight, lookAtBodyWeight, 1, 0, lookAtClampWeight);
+        }
+        if (layerIndex == leftHandIKControlLayer)
+        {
+            Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, leftHandPositionWeight);
+            Animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, leftHandRotationWeight);
+        }
+        if (layerIndex == rightHandIKControlLayer)
+        {
+            Animator.SetIKPositionWeight(AvatarIKGoal.RightHand, rightHandPositionWeight);
+            Animator.SetIKRotationWeight(AvatarIKGoal.RightHand, rightHandRotationWeight);
+        }
     }
 }

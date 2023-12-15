@@ -65,11 +65,18 @@ public class PlayerGunHands : PlayerHands
     }
     private void AnimatorIK(int layerIndex)
     {
+        if (layerIndex == 0)
+        {
+            //camera defines head rotation
+            //hands ik depends on head bone ik result, thus must do look at ik in prior layer 
+            Animator.SetLookAtPosition(Player.GunEyeNoZRotAnchor.position + MainCamera.transform.forward);
+            return;
+        }
         if (layerIndex != Animator.GetLayerIndex("HandsLayer"))
         {
             return;
         }
-        //compute skeleton rotation offset from mechanim (Gun hands uses it to describe ik goal)
+        //compute skeleton rotation offset from mechanim (Gun hands ik goal uses mechanim form)
         if (!_rightHandIKRotationOffsetAssigned)
         {
             _rightHandIKRotationOffsetAssigned = true;
@@ -80,8 +87,8 @@ public class PlayerGunHands : PlayerHands
         {
             //camera defines position of gun
             Gun.transform.SetPositionAndRotation(
-                aimTransition.Lerp(Gun.CentreRelArmCamera.GetChildPosition(MainCamera.transform), Gun.CentreRelAimCamera.GetChildPosition(MainCamera.transform)),
-                aimTransition.Lerp(Gun.CentreRelArmCamera.GetChildRotation(MainCamera.transform), Gun.CentreRelAimCamera.GetChildRotation(MainCamera.transform))
+                aimTransition.Lerp(Gun.CentreRelArmCamera.GetChildPosition(Player.GunEyeNoZRotAnchor), Gun.CentreRelAimCamera.GetChildPosition(Player.GunEyeNoZRotAnchor)),
+                aimTransition.Lerp(Gun.CentreRelArmCamera.GetChildRotation(Player.GunEyeNoZRotAnchor), Gun.CentreRelAimCamera.GetChildRotation(Player.GunEyeNoZRotAnchor))
                 );
         }
         else
@@ -89,10 +96,10 @@ public class PlayerGunHands : PlayerHands
             //camera and animation defines position of gun
             Gun.transform.SetPositionAndRotation(
                 Vector3.Lerp(Gun.CentreRelRightHand.GetChildPosition(_rightHandBone.position, rightHandIKRotationGoal),
-                    Gun.CentreRelArmCamera.GetChildPosition(MainCamera.transform),
+                    Gun.CentreRelArmCamera.GetChildPosition(Player.GunEyeNoZRotAnchor),
                     Player.IKEventExposure.equipmentFollowRightHandPositionWeight),
                 Quaternion.Lerp(Gun.CentreRelRightHand.GetChildRotation(rightHandIKRotationGoal),
-                    Gun.CentreRelArmCamera.GetChildRotation(MainCamera.transform),
+                    Gun.CentreRelArmCamera.GetChildRotation(Player.GunEyeNoZRotAnchor),
                     Player.IKEventExposure.equipmentFollowRightHandRotationWeight)
                 );
         }
@@ -101,8 +108,6 @@ public class PlayerGunHands : PlayerHands
         Animator.SetIKRotation(AvatarIKGoal.LeftHand, Gun.LeftHandGoal.rotation);
         Animator.SetIKPosition(AvatarIKGoal.RightHand, Gun.RightHandGoal.position);
         Animator.SetIKRotation(AvatarIKGoal.RightHand, Gun.RightHandGoal.rotation);
-        //camera defines head rotation
-        Animator.SetLookAtPosition(Player.AimPosition); //TODO: smoothing?
         //(above ik weights are exposed in IKEventExposure for direct animation control)
         //Ensure first gun positioning is done before render
         if (!_gunFirstRendered)
