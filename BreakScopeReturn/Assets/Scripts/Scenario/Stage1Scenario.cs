@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Playables;
 using UnityEngine.UI;
 
 [DisallowMultipleComponent]
@@ -9,6 +11,17 @@ public class Stage1Scenario : Stage
     [Header("Event Signal Ref")]
     [SerializeField]
     EventSignal _activeRemainEnemyCounter;
+
+    [Header("Cutscene")]
+    [SerializeField]
+    PlayableDirector _openingCutscene;
+    [SerializeField]
+    Camera _cutsceneCamera;
+    public bool playingCutscene;
+    [SerializeField]
+    int _cutsceneEventIndex;
+    [SerializeField]
+    List<UnityEvent> _cutsceneEvent;
 
     [Header("Dialog")]
     [SerializeField]
@@ -40,6 +53,7 @@ public class Stage1Scenario : Stage
     [SerializeField]
     GameObject remainEnemyCounter;
 
+    ProjectRicochetMirror _projectRicochetMirror;
     struct Scenario
     {
         public bool didFirstContactGuide;
@@ -55,7 +69,9 @@ public class Stage1Scenario : Stage
     protected override void Start()
     {
         base.Start();
-        GameManager.Instance.DialogUI.SetDialog(initialDialog);
+        _cutsceneEventIndex = -1;
+        _projectRicochetMirror = Player.AbilityContainer.GetComponentInChildren<ProjectRicochetMirror>();
+        //GameManager.Instance.DialogUI.SetDialog(initialDialog);
         Player.onDamage.AddListener(damageSouce =>
         {
             if (damageSouce.damage > 0)
@@ -73,7 +89,7 @@ public class Stage1Scenario : Stage
                     if (guard.NeverFoundEnemy)
                     {
                         ++_scenario.sneakKillCount;
-                        if (_scenario.sneakKillCount == 1)
+                        if (_scenario.sneakKillCount == 2)
                         {
                             GameManager.Instance.DialogUI.SetDialog(firstSneakKillDialog);
                         }
@@ -97,14 +113,21 @@ public class Stage1Scenario : Stage
                 });
             }
         }
+        //Playable Director Opening Scene
+        GameManager.Instance.PlayCutscene(_openingCutscene);
     }
     private void Update()
     {
+        if (GameManager.Instance.ActiveDirector.time > 0)
+        {
+            return;
+        }
         if (!_scenario.didFirstContactGuide)
         {
             foreach (var unit in GameManager.Instance.CurrentStage.NpcUnits)
             {
                 if (unit.GetType() == typeof(CommonGuard) && !((CommonGuard)unit).FoundEnemy
+                    &&  !((CommonGuard)unit).IsDead
                     && Vector3.Distance(unit.transform.position, Player.transform.position) < 10)
                 {
                     _scenario.didFirstContactGuide = true;
@@ -118,22 +141,38 @@ public class Stage1Scenario : Stage
             remainEnemyCounter.GetComponentInChildren<Text>().text = "Enemy: " + GameManager.Instance.CurrentStage.AliveNpcUnits.Count;
         }
     }
+    public void CutsceneEventProceed()
+    {
+        CutsceneEventChange(_cutsceneEventIndex + 1);
+    }
+    public void CutsceneEventChange(int cutsceneEventIndex)
+    {
+        _cutsceneEventIndex = cutsceneEventIndex;
+        if (_cutsceneEventIndex < 0 || _cutsceneEventIndex >= _cutsceneEvent.Count)
+            return;
+        _cutsceneEvent[_cutsceneEventIndex].Invoke();
+    }
     public void ActivateRemainEnemyCounter()
     {
         remainEnemyCounter.SetActive(true);
         GameManager.Instance.DialogUI.SetDialog(remainEnemyCounterDialog);
     }
+    public void EnablePlayerRicochetMirrorForCutscene(bool cond)
+    {
+        _projectRicochetMirror.SetMirror(cond);
+        _projectRicochetMirror.Mirror.SetCameraLookingAtThisMirror(cond ? _cutsceneCamera : Player.Camera);
+    }
     public override void GameClear()
     {
         base.GameClear();
-        Player.SetAIActive(false);
-        GameManager.Instance.CurrentStage.NpcUnits.ForEach(unit => unit.SetAIActive(false));
+        Player.SetEnableAI(false);
+        GameManager.Instance.CurrentStage.NpcUnits.ForEach(unit => unit.SetEnableAI(false));
         Cursor.lockState = CursorLockMode.None;
         _resultScreen.SetActive(true);
         float enemyCount = GameManager.Instance.CurrentStage.NpcUnits.Count;
-        achievements[0].SetAchivement("シールドマンを二体倒す", _scenario.shieldManKillCount >= 2);
-        achievements[1].SetAchivement("全ての敵を倒す", _scenario.killCount == enemyCount);
-        achievements[2].SetAchivement("半数以上の敵を気付かれずに倒す", _scenario.sneakKillCount / enemyCount >= 0.5F);
+        achievements[0].SetAchivement("achiv1", _scenario.shieldManKillCount >= 2);
+        achievements[1].SetAchivement("achiv2", _scenario.killCount == enemyCount);
+        achievements[2].SetAchivement("achiv3", _scenario.sneakKillCount / enemyCount >= 0.5F);
         _killCountText.text = _scenario.killCount + " (" + string.Format("{0:F1}", _scenario.killCount / enemyCount * 100) + "%)";
         _sneakKillCountText.text = _scenario.sneakKillCount + " (" + string.Format("{0:F1}", _scenario.sneakKillCount / enemyCount * 100) + "%)";
         _totalDamageTakeText.text = _scenario.totalDamageTake.ToString();

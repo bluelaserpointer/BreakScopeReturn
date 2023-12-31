@@ -33,9 +33,7 @@ Transform:
   - {fileID: 421096}
   - {fileID: 467724}
   - {fileID: 488024}
-  - {fileID: 5922820056601133163}
-  - {fileID: 5227837332469919077}
-  - {fileID: 8871362738432515529}
+  - {fileID: 8105121276564530095}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11400676
@@ -50,10 +48,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a804723bdccf04fca985e160ab5f88d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _armXRotation: 0
+  _crosshairContainer: {fileID: 8105121276564530095}
   _crosshair: {fileID: 202621400498568866}
   _scopeCanvasGroup: {fileID: 1701350980572308533}
-  _reloadAnimationClip: {fileID: 7400006, guid: 6cae2f82a0a62ff4ab9be3eeeda19688, type: 3}
   _bashDamage: 150
   _bashActionOccupyTime: 0.5
   rotationLagTime: 0
@@ -447,13 +444,47 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!1 &4808835174649505737
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8105121276564530095}
+  m_Layer: 7
+  m_Name: crosshairContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8105121276564530095
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4808835174649505737}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5922820056601133163}
+  - {fileID: 8871362738432515529}
+  - {fileID: 5227837332469919077}
+  m_Father: {fileID: 469018}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &5106755734347792690
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 469018}
+    m_TransformParent: {fileID: 8105121276564530095}
     m_Modifications:
     - target: {fileID: 1032403019680476247, guid: ffd4ebdda90f3ee4db541499ae97af60, type: 3}
       propertyPath: m_Pivot.x
@@ -563,7 +594,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 469018}
+    m_TransformParent: {fileID: 8105121276564530095}
     m_Modifications:
     - target: {fileID: 3393615811209702273, guid: a021c00049185cb4cbf5998963ef48d9, type: 3}
       propertyPath: m_Pivot.x
@@ -670,7 +701,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 469018}
+    m_TransformParent: {fileID: 8105121276564530095}
     m_Modifications:
     - target: {fileID: 2476644762006968549, guid: 4438a517eeb5afc4caca135fc9ef84e4, type: 3}
       propertyPath: m_Pivot.x

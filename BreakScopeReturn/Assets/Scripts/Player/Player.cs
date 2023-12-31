@@ -11,9 +11,11 @@ public class Player : Unit
 {
     [Header("Ability")]
     [SerializeField]
-    float _respawnWaitTime;
+    Transform _abilityContainer;
 
     [Header("Accessiblity")]
+    [SerializeField]
+    float _respawnWaitTime;
     [SerializeField]
     float _interactionDistance;
 
@@ -30,6 +32,7 @@ public class Player : Unit
 
     [Header("Internal Reference")]
     [SerializeField] Camera _hudCamera;
+    [SerializeField] EquipmentSidePreview _equipmentSidePreview;
     [SerializeField] AnimatorIKEventExposure _IKEventExposure;
     [SerializeField] PlayerMovement movement;
     [SerializeField] MouseLook mouseLook;
@@ -41,8 +44,10 @@ public class Player : Unit
     [SerializeField]
     AudioClip _deathSE;
 
+    public bool Controllable { get; private set; }
     public Camera Camera => MouseLook.Camera;
     public Camera HUDCamera => _hudCamera;
+    public EquipmentSidePreview EquipmentSidePreview => _equipmentSidePreview;
     public AnimatorIKEventExposure IKEventExposure => _IKEventExposure;
     public PlayerMovement Movement => movement;
     public MouseLook MouseLook => mouseLook;
@@ -53,10 +58,12 @@ public class Player : Unit
     public Vector3 AimPosition { get; private set; }
     public Interactable AimingInteractable { get; private set; }
     public Vector3 FootPosition => transform.position + Vector3.down * movement.CharacterController.height / 2;
+    public Transform AbilityContainer => _abilityContainer;
     private Vignette _bloodVignette;
     private float _respawnWaitedTime;
     private void Awake()
     {
+        Controllable = true;
         _bloodVignette = (Vignette)_cameraVolumeProfile.components.Find(component => component.GetType() == typeof(Vignette));
         onDamage.AddListener(damageSource => {
             OnHealthChange();
@@ -73,6 +80,11 @@ public class Player : Unit
             AudioSource.PlayClipAtPoint(_deathSE, Camera.transform.position);
         });
     }
+    public void SetEnableCameras(bool cond)
+    {
+        Camera.enabled = cond;
+        HUDCamera.enabled = cond;
+    }
     public override bool IsMyCollider(Collider collider)
     {
         return collider.gameObject.Equals(Movement.CharacterController.gameObject);
@@ -80,6 +92,11 @@ public class Player : Unit
     public void OnHealthChange()
     {
         _bloodVignette.intensity.value = Mathf.Lerp(0, _bloodVignetteMaxIntencity, 1 - Health.Ratio);
+    }
+    public override void InitialInit()
+    {
+        base.InitialInit();
+        GunInventory.InitialInit();
     }
     public override void LoadInit()
     {
@@ -107,7 +124,7 @@ public class Player : Unit
         RaycastTargetUpdate();
         InteractUpdate();
     }
-    public void RaycastTargetUpdate()
+    private void RaycastTargetUpdate()
     {
         HasAimRaycastHit = false;
         Ray ray = new(Camera.transform.position, Camera.transform.forward);
@@ -159,7 +176,7 @@ public class Player : Unit
             }
         } while (true);
     }
-    public void InteractUpdate()
+    private void InteractUpdate()
     {
         Interactable closestInteractable = null;
         RaycastHit closestValidHit = new()
@@ -187,7 +204,7 @@ public class Player : Unit
             //GameManager.Instance.InteractIconViewer.transform.position = Camera.WorldToScreenPoint(closestValidHit.collider.bounds.center);
             GameManager.Instance.InteractIconViewer.transform.position = new Vector2(Screen.width / 2, Screen.height / 2);
             GameManager.Instance.InteractIconViewer.GetComponentInChildren<Image>().sprite = AimingInteractable.InteractIcon;
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Controllable && Input.GetKeyDown(KeyCode.E))
             {
                 AimingInteractable.Interact();
             }
@@ -215,10 +232,10 @@ public class Player : Unit
         }
         return closestHit.collider != null;
     }
-    public override void SetAIActive(bool cond)
+    public override void SetEnableAI(bool cond)
     {
-        base.SetAIActive(cond);
-        enabled = cond;
+        //monobehavior update method will keep working
+        Controllable = cond;
         MouseLook.enabled = cond;
         Movement.enabled = cond;
         //Movement.Rigidbody.isKinematic = !cond;
@@ -227,7 +244,16 @@ public class Player : Unit
         {
             GunInventory.Hands.enabled = cond;
         }
-        GetComponent<ProjectRicochetMirror>().enabled = cond;
+    }
+    public void OrderAimAction(Transform aimTarget)
+    {
+        Vector3 lookRotationEuler = Quaternion.LookRotation(aimTarget.position - MouseLook.transform.position).eulerAngles;
+        GameManager.Instance.Player.transform.rotation = Quaternion.Euler(0, lookRotationEuler.y, 0);
+        MouseLook.transform.localRotation = Quaternion.Euler(lookRotationEuler.x, 0, 0);
+    }
+    public void OrderFireAction()
+    {
+        ((PlayerGunHands)GunInventory.Hands).Trigger();
     }
     struct PlayerSave
     {

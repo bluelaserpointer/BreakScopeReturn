@@ -8,11 +8,11 @@ using UnityEngine.UI;
 public class GunSidePreviewSlot : MonoBehaviour
 {
     [SerializeField]
-    TextMeshProUGUI _nameText;
+    TextMeshPro _nameText;
     [SerializeField]
     Image _icon;
     [SerializeField]
-    TextMeshProUGUI _subText;
+    TextMeshPro _subText;
 
     public Gun Gun { get; private set; }
 

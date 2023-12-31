@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: 8911123174683755400}
   - component: {fileID: 8911123174684852680}
   - component: {fileID: 2413322328822037920}
+  - component: {fileID: 6565369580801651857}
   m_Layer: 0
   m_Name: Tunnel Piipes001
   m_TagString: Untagged
@@ -143,6 +144,25 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300012, guid: cae5fd5b00916314594b00729f56646b, type: 3}
+--- !u!114 &6565369580801651857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8911123174686793606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 0
+  m_Area: 0
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 1
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &8911123174686793608
 GameObject:
   m_ObjectHideFlags: 0

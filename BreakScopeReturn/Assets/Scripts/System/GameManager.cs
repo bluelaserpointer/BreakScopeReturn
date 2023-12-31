@@ -1,8 +1,8 @@
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Playables;
 
 [DisallowMultipleComponent]
 public class GameManager : MonoBehaviour
@@ -10,9 +10,10 @@ public class GameManager : MonoBehaviour
     [Header("Test")]
     [SerializeField] bool _logSaveLoad;
     [SerializeField] bool _playerStealth;
-    [SerializeField] Stage _stage;
 
     [Header("Reference")]
+    [SerializeField] Stage _stage;
+    [SerializeField] PlayableDirector _director;
     [SerializeField] Player playerPrefab;
     [SerializeField] DialogUI dialogUI;
     [SerializeField] GameObject playerDeathBlackout;
@@ -20,9 +21,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] DirectionIndicator directionIndicator;
     [SerializeField] GameObject interactIconViewer;
     [SerializeField] MinimapUI minimapUI;
-    [SerializeField] EquipmentSidePreview equipmentSidePreview;
 
     public static GameManager Instance { get; private set; }
+    public PlayableDirector ActiveDirector { get; private set; }
     public Stage CurrentStage => _stage;
     public Player Player => CurrentStage.Player;
     public DialogUI DialogUI => dialogUI;
@@ -30,7 +31,8 @@ public class GameManager : MonoBehaviour
     public MinimapUI MinimapUI => minimapUI;
     public CheckPointNotifiactionUI CheckPointNotification => checkPointNotification;
     public DirectionIndicator DirectionIndicator => directionIndicator;
-    public EquipmentSidePreview EquipmentSidePreview => equipmentSidePreview;
+
+    private string _savedStageData;
     private void Awake()
     {
         Instance = this;
@@ -53,7 +55,34 @@ public class GameManager : MonoBehaviour
         CurrentStage.Init(playerPrefab);
         SaveStage();
     }
-    string savedStageData;
+    public void PlayCutscene(PlayableDirector director)
+    {
+        if (ActiveDirector != null)
+        {
+            ActiveDirector.Stop();
+        }
+        ActiveDirector = director;
+        if (director == null)
+            return;
+        if (Player != null)
+        {
+            Player.gameObject.SetActive(false);
+        }
+        MinimapUI.gameObject.SetActive(false);
+        ActiveDirector.gameObject.SetActive(true);
+        ActiveDirector.stopped += director =>
+        {
+            director.gameObject.SetActive(false);
+            //TODO: detect application quit
+            if (Player != null)
+            {
+                Player.gameObject.SetActive(true);
+            }
+            if (MinimapUI != null)
+                MinimapUI.gameObject.SetActive(true);
+        };
+        ActiveDirector.Play();
+    }
     public void SaveStage()
     {
         CollectSaveTargets(out List<SaveTargetPrefabRoot> prefabClones, out List<SaveTarget> sceneBasedComponents);
@@ -73,9 +102,9 @@ public class GameManager : MonoBehaviour
             if (!sceneBasedComponent.saveProperty.excludeFromSave)
                 stageSave.sceneBasedComponents.Add(new ComponentSave(sceneBasedComponent));
         }
-        savedStageData = JsonConvert.SerializeObject(stageSave, Formatting.Indented);
+        _savedStageData = JsonConvert.SerializeObject(stageSave, Formatting.Indented);
         if (_logSaveLoad)
-            print("savedStageData: " + savedStageData);
+            print("savedStageData: " + _savedStageData);
     }
     struct StageSave
     {
@@ -113,7 +142,7 @@ public class GameManager : MonoBehaviour
         {
             reusableSceneBasedComponents.RemoveAll(component => prefabRoot.SaveTargets.Contains(component));
         }
-        StageSave stageSave = JsonConvert.DeserializeObject<StageSave>(savedStageData);
+        StageSave stageSave = JsonConvert.DeserializeObject<StageSave>(_savedStageData);
         //deserialize stage progress / records / events
         CurrentStage.Deserialize(stageSave.stageProgressData);
         //deserialize prefab based components
@@ -151,5 +180,25 @@ public class GameManager : MonoBehaviour
     public void SetBlackout(bool cond)
     {
         playerDeathBlackout.SetActive(cond);
+    }
+    public void SetEnablePlayerCameras(bool cond)
+    {
+        Player.SetEnableCameras(cond);
+    }
+    public void SetEnablePlayerAI(bool cond)
+    {
+        Player.SetEnableAI(cond);
+    }
+    public void SetPlayerWeaponIndex(int index)
+    {
+        Player.GunInventory.SwitchWeapon(index);
+    }
+    public void OrderPlayerAimAction(Transform aimTarget)
+    {
+        Player.OrderAimAction(aimTarget);
+    }
+    public void OrderPlayerFireAction()
+    {
+        Player.OrderFireAction();
     }
 }

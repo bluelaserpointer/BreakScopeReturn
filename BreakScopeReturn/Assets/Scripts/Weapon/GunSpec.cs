@@ -13,8 +13,6 @@ public struct GunSpec
     public float aimTime;
     public float cameraZoomRatio_notAiming;
     public float cameraZoomRatio_aiming;
-    public float hudCameraZoomRatio_notAiming;
-    public float hudCameraZoomRatio_aiming;
     public float mouseSensitivity_aiming;
 
     [Header("Firing")]

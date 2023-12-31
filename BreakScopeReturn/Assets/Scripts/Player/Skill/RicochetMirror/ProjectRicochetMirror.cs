@@ -20,7 +20,7 @@ public class ProjectRicochetMirror : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (GameManager.Instance.Player.Controllable && Input.GetKeyDown(KeyCode.Q))
             SetMirror(!MirrorExpanded);
     }
     public void SetMirror(bool cond)

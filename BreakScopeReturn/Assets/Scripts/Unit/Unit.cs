@@ -8,6 +8,7 @@ public class Unit : SaveTarget
 {
     public static string TAG_NPC_UNIT => "NpcUnit";
     [Header("Unit Common Stats")]
+    [SerializeField] bool _disableAIOnAwake;
     [SerializeField] IzumiTools.CappedValue _health;
     [Range(0f, 1f)]
     [SerializeField] float _initialHealthRatio = 1;
@@ -40,6 +41,8 @@ public class Unit : SaveTarget
         {
             Dead();
         }
+        if (_disableAIOnAwake)
+            SetEnableAI(false);
         LoadInit();
     }
     /// <summary>
@@ -141,7 +144,7 @@ public class Unit : SaveTarget
     {
         return collider.transform.IsChildOf(transform);
     }
-    public virtual void SetAIActive(bool cond)
+    public virtual void SetEnableAI(bool cond)
     {
         enabled = false;
     }

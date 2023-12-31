@@ -21,6 +21,7 @@ public class ProjectGrenade : MonoBehaviour
     {
         Transform cameraTransform = Player.Camera.transform;
         Vector3 throwVector = cameraTransform.forward * velocityPerDistance * Vector3.Distance(cameraTransform.position, Player.AimPosition);
+        /*
         if (Input.GetKey(KeyCode.G))
         {
             _trajectoryLine.enabled = true;
@@ -39,7 +40,7 @@ public class ProjectGrenade : MonoBehaviour
         {
             _trajectoryLine.enabled = false;
             Throw(GenerateGrenade(), throwVector);
-        }
+        }*/
     }
     public Grenade GenerateGrenade()
     {

@@ -187,8 +187,10 @@ public class MirrorScript : MonoBehaviour
                 mirrorCamera.transform.position = oldpos;
                 mirrorCamera.farClipPlane = oldclip;
                 GL.invertCulling = false;
-                oldPosAnchor.transform.position = worldToCameraMatrix.MultiplyPoint(oldpos);
-                newPosAnchor.transform.position = worldToCameraMatrix.MultiplyPoint(newpos);
+                if (oldPosAnchor != null)
+                    oldPosAnchor.transform.position = worldToCameraMatrix.MultiplyPoint(oldpos);
+                if (newPosAnchor != null)
+                    newPosAnchor.transform.position = worldToCameraMatrix.MultiplyPoint(newpos);
             }
         }
         catch(Exception e)

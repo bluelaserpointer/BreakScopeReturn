@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2501763609186605494}
   - component: {fileID: 2564202559896711564}
   - component: {fileID: 1207490951764157880}
+  - component: {fileID: 3749888522519385195}
   m_Layer: 0
   m_Name: Tunnel Pipes
   m_TagString: Untagged
@@ -120,3 +121,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _soundSet: {fileID: 11400000, guid: d1c0ae1133f0a8f46804c9a761f17197, type: 2}
+--- !u!114 &3749888522519385195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2501763609188861940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 0
+  m_Area: 0
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 1
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -11,6 +12,17 @@ public class CommonGuard : Unit
     float viewRange = 50;
     [SerializeField]
     float viewAngle = 100;
+
+    [Header("ActionOrder")]
+    [SerializeField]
+    bool _obeyActionOrder;
+    [SerializeField]
+    Vector3 _orderMovePosition;
+    [SerializeField]
+    Vector3 _orderAimPosition;
+
+    [Header("Performance")]
+    public float aimSmoothTime = 1;
 
     [Header("Strategy")]
     [SerializeField]
@@ -48,11 +60,9 @@ public class CommonGuard : Unit
     [SerializeField]
     GameObject _aliveDevice;
     [SerializeField]
-    float rotateLerpFactor = 10;
-    [SerializeField]
     float rotateQuickAngle = 1F;
     [SerializeField]
-    float rotateMaxSpeed = 10;
+    float _modelRotateSmoothTime = 10;
     [SerializeField]
     float aimModelYRotationFix;
 
@@ -64,6 +74,7 @@ public class CommonGuard : Unit
     [SerializeField]
     AudioClip _deathVoice;
 
+    public bool AIEnabled { get; private set; }
     public NPCGun Gun { get; private set; }
     public readonly UnityEvent<bool> onFoundEnemyChangedTo = new UnityEvent<bool>();
     Player Player => GameManager.Instance.Player;
@@ -82,38 +93,29 @@ public class CommonGuard : Unit
         }
     }
     private bool _foundEnemy;
-    public bool UseAimRotationOrPosition { get; private set; }
-    public Quaternion AimRotation
-    {
-        get => _aimRotation;
-        set
-        {
-            UseAimRotationOrPosition = true;
-            _aimRotation = value;
-        }
-    }
     public Vector3 AimPosition
     {
         get => _aimPosition;
         set
         {
-            UseAimRotationOrPosition = false;
             _aimPosition = value;
         }
     }
     public Vector3 MovePosition { get; private set; }
-    public enum GuardStateEnum { Patrol, PatrolStay, Defend, Search }
+    public enum GuardStateEnum { Patrol, PatrolStay, Defend, Search, ObeyActionOrder }
     public GuardStateEnum GuardState { get; private set; }
     public bool NeverFoundEnemy { get; private set; }
 
     Vector3 _aimPosition;
-    Quaternion _aimRotation;
+    Vector3 _aimVelocity;
+    Vector3 _currentAimPosition;
     Vector3 _lastFoundPosition;
     Vector3 _suspiciousPosition; //TODO: merge into above?
     float _suspiciousPositionSearchedTime;
     float _lastFoundTime;
     float _chaseLastFoundPositionWaitTime;
     float _patrolAnchorStayedTime;
+    float _modelYRotateVelocity;
     private void Awake()
     {
         NeverFoundEnemy = true;
@@ -150,8 +152,7 @@ public class CommonGuard : Unit
         Gun.Init(this);
         _leftHandIKControl.anchor = Gun.LeftHandAnchor;
         SetModelFiringCD(Gun.FireCD.Max);
-        UseAimRotationOrPosition = true;
-        AimRotation = Quaternion.LookRotation(transform.forward);
+        _currentAimPosition = AimPosition = viewAnchor.position + transform.forward;
         MovePosition = transform.position;
         navMeshAgent.enabled = true;
         navMeshAgent.destination = transform.position;
@@ -212,54 +213,61 @@ public class CommonGuard : Unit
         {
             _animator.SetBool("Walk", false);
         }
-        Vector3 lookAtPosition;
-        if (UseAimRotationOrPosition)
+        float footDistance = Vector3.Distance(transform.position, _aimPosition);
+        Vector3 aimPosition = _aimPosition;
+        if (footDistance < 2)
         {
-            lookAtPosition = viewAnchor.position + AimRotation * Vector3.forward * 100;
+            //suppress head angle to horizontal
+            aimPosition = Vector3.Lerp(aimPosition, viewAnchor.position + transform.forward, (2 - footDistance) / 2);
         }
-        else
-        {
-            lookAtPosition = _aimPosition;
-            float footDistance = Vector3.Distance(transform.position, _aimPosition);
-            if (footDistance < 2)
-            {
-                //suppress head angle to horizontal
-                lookAtPosition = Vector3.Lerp(lookAtPosition, viewAnchor.position + transform.forward, (2 - footDistance) / 2);
-            }
-        }
-        _lookAtIKControl.SetLookAtPosition(lookAtPosition);
+        _currentAimPosition = Vector3.SmoothDamp(_currentAimPosition, aimPosition, ref _aimVelocity, aimSmoothTime);
+        _lookAtIKControl.SetLookAtPosition(_currentAimPosition);
     }
     private void FixedUpdate()
     {
         if (IsDead)
             return;
-        Quaternion oldRotation = transform.rotation;
-        Quaternion targetRotation;
-        if (UseAimRotationOrPosition)
+        float oldYRotation = transform.eulerAngles.y;
+        Vector3 horzDelta = (AimPosition - viewAnchor.position).Set(y: 0);
+        float newYRotation = horzDelta != Vector3.zero ? Quaternion.LookRotation(horzDelta).eulerAngles.y : oldYRotation;
+        if (Mathf.DeltaAngle(oldYRotation, newYRotation) < rotateQuickAngle)
         {
-            targetRotation = AimRotation;
+            transform.eulerAngles = transform.eulerAngles.Set(y: newYRotation);
         }
         else
         {
-            Vector3 horzDelta = (AimPosition - transform.position).Set(y: 0);
-            targetRotation = horzDelta != Vector3.zero ? Quaternion.LookRotation(horzDelta) : oldRotation;
-        }
-        if (Quaternion.Angle(oldRotation, targetRotation) < rotateQuickAngle)
-        {
-            transform.rotation = targetRotation;
-        }
-        else
-        {
+            /*
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotateLerpFactor * Time.fixedDeltaTime);
             if (Quaternion.Angle(oldRotation, transform.rotation) > rotateMaxSpeed * Time.fixedDeltaTime)
             {
-                transform.rotation = Quaternion.RotateTowards(oldRotation, targetRotation, rotateMaxSpeed * Time.fixedDeltaTime);
-            }
+            }*/
+
+            transform.eulerAngles = transform.eulerAngles.Set(y: Mathf.SmoothDamp(oldYRotation, newYRotation, ref _modelYRotateVelocity, _modelRotateSmoothTime));
         }
+    }
+    public override void SetEnableAI(bool cond)
+    {
+        AIEnabled = cond;
+        _leftHandIKControl.enabled = cond;
+        _lookAtIKControl.enabled = cond;
+        _ragdollRelax.enabled = cond;
+    }
+    public void OrderAction(UnitActionOrder order)
+    {
+        _obeyActionOrder = true;
+        _orderMovePosition = order.transform.position;
+        _orderAimPosition = order.aimTarget.position;
     }
     private void GuardStateUpdate()
     {
-        if (GuardState == GuardStateEnum.Search)
+        if (_obeyActionOrder)
+            GuardState = GuardStateEnum.ObeyActionOrder;
+        if (GuardState == GuardStateEnum.ObeyActionOrder)
+        {
+            navMeshAgent.destination = _orderMovePosition;
+            AimPosition = _orderAimPosition;
+        }
+        else if (GuardState == GuardStateEnum.Search)
         {
             MovePosition = _suspiciousPosition;
             navMeshAgent.destination = MovePosition;
@@ -278,7 +286,7 @@ public class CommonGuard : Unit
             if (_currentPatrolAnchor == null)
             {
                 GuardState = GuardStateEnum.Defend;
-                AimRotation = Quaternion.LookRotation(viewAnchor.forward);
+                AimPosition = viewAnchor.position + transform.forward;
                 return;
             }
             MovePosition = _currentPatrolAnchor.transform.position;
@@ -286,7 +294,11 @@ public class CommonGuard : Unit
             Vector3 moveDelta = (navMeshAgent.steeringTarget - navMeshAgent.nextPosition).Set(y: 0);
             if (moveDelta != Vector3.zero)
             {
-                AimRotation = Quaternion.LookRotation(moveDelta);
+                AimPosition = viewAnchor.position + moveDelta;
+            }
+            else
+            {
+                AimPosition = viewAnchor.position + transform.forward;
             }
             if (patrolAnchors.Count > 1)
             {
@@ -296,13 +308,14 @@ public class CommonGuard : Unit
                     _patrolAnchorStayedTime = 0;
                     if (_currentPatrolAnchor.LookFowardOnReach)
                     {
-                        AimRotation = Quaternion.LookRotation(_currentPatrolAnchor.transform.forward.Set(y: 0));
+                        AimPosition = viewAnchor.position + _currentPatrolAnchor.transform.forward.Set(y: 0);
                     }
                 }
             }
         }
         else if (GuardState == GuardStateEnum.PatrolStay)
         {
+            AimPosition = viewAnchor.position + transform.forward;
             _patrolAnchorStayedTime += Time.deltaTime;
             if (_patrolAnchorStayedTime > _currentPatrolAnchor.StayDuration)
             {
@@ -312,6 +325,7 @@ public class CommonGuard : Unit
         }
         else if (GuardState == GuardStateEnum.Defend)
         {
+            AimPosition = viewAnchor.position + transform.forward;
             bool stay = true;
             if (FoundEnemy)
             {
@@ -329,7 +343,6 @@ public class CommonGuard : Unit
             else if (NeverFoundEnemy)
             {
                 stay = true;
-                AimRotation = transform.rotation;
             }
             else if (Vector3.Distance(transform.position, _lastFoundPosition) < quickChaseDistance)
             {

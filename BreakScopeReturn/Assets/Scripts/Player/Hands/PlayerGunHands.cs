@@ -4,7 +4,9 @@ using IzumiTools;
 
 public class PlayerGunHands : PlayerHands
 {
-	[Header("HUD")]
+    [Header("Crosshair")]
+    [SerializeField]
+    Transform _crosshairContainer;
     [SerializeField]
     CompositeCrosshair _crosshair;
     [SerializeField]
@@ -54,6 +56,7 @@ public class PlayerGunHands : PlayerHands
         _scopeCanvasGroup.alpha = 0;
         aimTransition = new SmoothDampTransition(GunSpec.aimTime);
 		FireCD = new Cooldown(GunSpec.fireCD);
+        FireCD.IsReady = true;
 		ReloadCD = new Cooldown(GunSpec.reloadCD);
         //rotationLast = PlayerLook.currentRotation;
         Animator.SetFloat("reloadSpeedMultiplier", Gun.ReloadAnimationClipLength / Mathf.Max(ReloadCD.Max, 0.1F));
@@ -124,7 +127,7 @@ public class PlayerGunHands : PlayerHands
         ShootingUpdate();
 		ReloadUpdate();
         BashUpdate();
-		CrossHairExpansionOfWalking();
+		CrossHairUpdate();
         _crosshairExpand = Mathf.Clamp(Mathf.Lerp(_crosshairExpand, 0, Time.deltaTime * 5), 0, 150);
         _crosshair.ExpandDistance = _crosshairExpand;
 		_crosshair.CanvasGroup.alpha = 1 - aimTransition.value;
@@ -154,14 +157,21 @@ public class PlayerGunHands : PlayerHands
             RecoilPenalty = GunSpec.recoilPenaltyNotAiming;
         }
         MainCamera.fieldOfView = aimTransition.Lerp(GunSpec.cameraZoomRatio_notAiming, GunSpec.cameraZoomRatio_aiming);
-        HUDCamera.fieldOfView = aimTransition.Lerp(GunSpec.hudCameraZoomRatio_notAiming, GunSpec.hudCameraZoomRatio_aiming);
         GameManager.Instance.MinimapUI.SetAimLineVisibility(IsAiming);
     }
 
 	/*
 	 * Used to expand position of the crosshair or make it dissapear when running
 	 */
-	void CrossHairExpansionOfWalking() {
+	void CrossHairUpdate() {
+        if (Player.Controllable)
+        {
+            _crosshairContainer.gameObject.SetActive(true);
+        }
+        else
+        {
+            _crosshairContainer.gameObject.SetActive(false);
+        }
 		float playerSpeed = PlayerMovement.CharacterController.velocity.magnitude;
         if (playerSpeed > 0.1F)
         {
@@ -175,7 +185,7 @@ public class PlayerGunHands : PlayerHands
         {
             BashActionOccupyRemainTime -= Time.deltaTime;
         }
-        if (Input.GetKeyDown(KeyCode.V) && !IsBashing)
+        if (Player.Controllable && Input.GetKeyDown(KeyCode.V) && !IsBashing)
         {
             Animator.SetTrigger("bash");
             BashActionOccupyRemainTime = _bashActionOccupyTime;
@@ -206,31 +216,30 @@ public class PlayerGunHands : PlayerHands
 		//PlayerLook.OverrideRecoil();
 		_crosshairExpand += 90;
 	}
-	void ShootingUpdate(){
+	void ShootingUpdate() {
 		FireCD.AddDeltaTime();
-        if (!IsBashing)
-		{
-			if (GunSpec.fireMode == GunSpec.FireMode.Nonautomatic)
-			{
-				if (Input.GetButtonDown("Fire1"))
-				{
-					Trigger();
-				}
-			}
-			if (GunSpec.fireMode == GunSpec.FireMode.Automatic)
-			{
-				if (Input.GetButton("Fire1"))
-				{
-					Trigger();
-				}
-			}
-		}
-	}
+        if (!Player.Controllable || IsBashing)
+            return;
+        if (GunSpec.fireMode == GunSpec.FireMode.Nonautomatic)
+        {
+            if (Input.GetButtonDown("Fire1"))
+            {
+                Trigger();
+            }
+        }
+        if (GunSpec.fireMode == GunSpec.FireMode.Automatic)
+        {
+            if (Input.GetButton("Fire1"))
+            {
+                Trigger();
+            }
+        }
+    }
 	/*
 	 * Called from Shooting();
 	 * Creates bullets and muzzle flashes and calls for Recoil.
 	 */
-	private void Trigger()
+	public void Trigger()
 	{
 		if(FireCD.IsReady && !IsReloading)
 		{
@@ -281,7 +290,7 @@ public class PlayerGunHands : PlayerHands
 	{
 		if (!IsReloading)
 		{
-            if (Input.GetKeyDown(KeyCode.R) && !IsBashing)
+            if (Player.Controllable && Input.GetKeyDown(KeyCode.R) && !IsBashing)
             {
                 TryReload();
             }
@@ -304,6 +313,7 @@ public class PlayerGunHands : PlayerHands
 	 */
 	TextMesh HUD_bullets;
 	void OnGUI(){
+        /*
 		if(!HUD_bullets){
 			try{
 				HUD_bullets = GameObject.Find("HUD_bullets").GetComponent<TextMesh>();
@@ -314,6 +324,7 @@ public class PlayerGunHands : PlayerHands
 		}
 		if(PlayerLook && HUD_bullets)
 			HUD_bullets.text = Gun.spareAmmo.ToString() + " - " + Gun.magazine.Value.ToString();
+        */
 	}
 	/*
 	* Fetching if any current animation is running.
@@ -322,7 +333,7 @@ public class PlayerGunHands : PlayerHands
 	void AnimationUpdate()
     {
         Animator.SetBool("isMoving", PlayerMovement.HasInputXZ);
-        Animator.SetBool("aiming", IsAiming);
+        Animator.SetFloat("ADSTransition", aimTransition.value);
         Animator.SetBool("running", PlayerMovement.HasInputXZ && PlayerMovement.MovingState == MovingStateEnum.Run);
     }
 }

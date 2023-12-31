@@ -28,10 +28,12 @@ public class GunInventory : MonoBehaviour
     public PlayerHands Hands { get; private set; } //TODO: make sure non null (make empty hands)
 	//readonly Dictionary<HandEquipment, PlayerHands> _equipmentToHands = new();
 
+    private Player Player => GameManager.Instance.Player;
+
 	[HideInInspector]
 	public float switchWeaponCooldown;
 
-	void Awake(){
+	public void InitialInit(){
         foreach (var equipmentPrefab in _initialEquipments)
         {
             AddEquipment(Instantiate(equipmentPrefab));
@@ -62,17 +64,17 @@ public class GunInventory : MonoBehaviour
         equipment.gameObject.SetActive(false);
         equipments.Add(equipment);
         if (typeof(Gun).IsAssignableFrom(equipment.GetType()))
-            GameManager.Instance.EquipmentSidePreview.SetGun(equipments.Count - 1, equipment as Gun);
+            Player.EquipmentSidePreview.SetGun(equipments.Count - 1, equipment as Gun);
         else
             print("<!>Unsupported " + nameof(HandEquipment) + " type: " + equipment.GetType().Name);
     }
-	void Update(){
+    private void Update(){
         ListenSwitchWeaponInput();
 	}
     /// <summary>
     /// If used scroll mousewheel or arrows up and down the player will change weapon.
     /// </summary>
-    void ListenSwitchWeaponInput() {
+    private void ListenSwitchWeaponInput() {
         switchWeaponCooldown += 1 * Time.deltaTime;
         if (switchWeaponCooldown < 1.2f || Input.GetKey(KeyCode.LeftShift))
         {
@@ -117,7 +119,7 @@ public class GunInventory : MonoBehaviour
         newEquipmentIndex = Mathf.Clamp(newEquipmentIndex, 0, equipments.Count - 1);
         if (HoldingEquipmentIndex == newEquipmentIndex && (Hands != null || HoldingEquipment == null))
 			yield break;
-        if (weaponChanging)
+        if (Hands != null)
 			weaponChanging.Play();
 		if(Hands != null)
 		{
