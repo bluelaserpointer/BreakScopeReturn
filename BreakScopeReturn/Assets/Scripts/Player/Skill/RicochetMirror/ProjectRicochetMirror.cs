@@ -6,17 +6,18 @@ using UnityEngine;
 public class ProjectRicochetMirror : MonoBehaviour
 {
     [SerializeField]
-    RicochetMirror _mirror;
+    RicochetMirror _mirrorPrefab;
     [SerializeField]
     AudioSource _moduleAudioSource;
 
-    public RicochetMirror Mirror => _mirror;
-    public bool MirrorExpanded => _mirror.expand;
+    public RicochetMirror Mirror { get; private set; }
+    public bool MirrorExpanded => Mirror.expand;
 
 
     private void Start()
     {
-        _mirror.Init();
+        Mirror = Instantiate(_mirrorPrefab);
+        Mirror.Init();
     }
     private void Update()
     {
@@ -25,9 +26,9 @@ public class ProjectRicochetMirror : MonoBehaviour
     }
     public void SetMirror(bool cond)
     {
-        if (_mirror.expand == cond)
+        if (Mirror.expand == cond)
             return;
         _moduleAudioSource.Play();
-        _mirror.expand = cond;
+        Mirror.expand = cond;
     }
 }

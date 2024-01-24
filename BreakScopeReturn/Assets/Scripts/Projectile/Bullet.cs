@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.VFX;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Rigidbody))]
@@ -7,9 +8,17 @@ public class Bullet : MonoBehaviour
     public SoundSetSO defaultObstacleHitSoundSet;
     public SoundSetSO defaultBodyHitSoundSet;
     public float hitNoiseDistance = 20;
-	[Tooltip("Prefab of wall damange hit. The object needs 'LevelPart' tag to create decal on it.")]
-	public GameObject decalHitWall;
-	[Tooltip("Decal will need to be sligtly infront of the wall so it doesnt cause rendeing problems so for best feel put from 0.01-0.1.")]
+    [SerializeField]
+    GameObject _reinstanceOnReflection;
+    [SerializeField]
+    Transform _detachBeforeDestory;
+    [SerializeField]
+    GameObject _destoryVFXPrefab;
+    [SerializeField]
+    GameObject _reflectVFXPrefab;
+    [SerializeField]
+    GameObject _bodyHitVFXPrefab;
+    [Tooltip("Decal will need to be sligtly infront of the wall so it doesnt cause rendeing problems so for best feel put from 0.01-0.1.")]
 	public float floatInfrontOfWall;
 	[Tooltip("Put Weapon layer and Player layer to ignore bullet raycast.")]
 	public LayerMask ignoreLayer;
@@ -33,8 +42,14 @@ public class Bullet : MonoBehaviour
     void FixedUpdate () {
 		Travel();
 	}
+    int _travelPauseForDebug;
     public void Travel()
     {
+        if (_travelPauseForDebug > 0)
+        {
+            _travelPauseForDebug--;
+            return;
+        }
         RaycastHit closestValidHit = new();
         closestValidHit.distance = float.MaxValue;
         RicochetMirror validMirror = null;
@@ -45,6 +60,8 @@ public class Bullet : MonoBehaviour
             bool isCandidate = false;
             if (hit.collider.TryGetComponent(out DamageCollider damageCollider))
             {
+                if (damageCollider.Ignore)
+                    continue;
                 isCandidate = true;
             }
             else
@@ -81,25 +98,42 @@ public class Bullet : MonoBehaviour
             if (validMirror != null)
             {
                 latestRicochetMirror = validMirror;
+                //detach and reinstance trail visual effect on every reflections
+                Transform parent = _reinstanceOnReflection.transform.parent;
+                Vector3 pos = _reinstanceOnReflection.transform.localPosition;
+                Quaternion rot = _reinstanceOnReflection.transform.localRotation;
+                _reinstanceOnReflection.transform.SetParent(transform.parent);
                 transform.forward = Vector3.Reflect(transform.forward, closestValidHit.normal);
+                GameObject copyOnEveryReflection = Instantiate(_reinstanceOnReflection, parent);
+                copyOnEveryReflection.transform.SetLocalPositionAndRotation(pos, rot);
+                if (_reflectVFXPrefab)
+                {
+                    GameObject generatedEffect = Instantiate(_reflectVFXPrefab, closestValidHit.point + closestValidHit.normal * floatInfrontOfWall, Quaternion.LookRotation(closestValidHit.normal));
+                    generatedEffect.transform.SetParent(closestValidHit.collider.transform);
+                }
             }
             else if (closestValidHit.collider.TryGetComponent(out DamageCollider damageCollider))
             {
                 if (hitSESet == null)
                     hitSESet = defaultBodyHitSoundSet;
                 damageCollider.Hit(this);
-                Destroy(gameObject);
+                if (damageCollider.DamageRatio > 0 && _bodyHitVFXPrefab)
+                {
+                    GameObject generatedEffect = Instantiate(_bodyHitVFXPrefab, closestValidHit.point, Quaternion.LookRotation(closestValidHit.normal));
+                    generatedEffect.transform.SetParent(closestValidHit.collider.transform);
+                }
+                Destroy();
             }
             else
             {
                 if (hitSESet == null)
                     hitSESet = defaultObstacleHitSoundSet;
-                if (decalHitWall)
+                if (_destoryVFXPrefab)
                 {
-                    GameObject generatedEffect = Instantiate(decalHitWall, closestValidHit.point + closestValidHit.normal * floatInfrontOfWall, Quaternion.LookRotation(closestValidHit.normal));
+                    GameObject generatedEffect = Instantiate(_destoryVFXPrefab, closestValidHit.point + closestValidHit.normal * floatInfrontOfWall, Quaternion.LookRotation(closestValidHit.normal));
                     generatedEffect.transform.SetParent(closestValidHit.collider.transform);
                 }
-                Destroy(gameObject);
+                Destroy();
             }
             if (hitSESet != null)
                 AudioSource.PlayClipAtPoint(hitSESet.GetRandomClip(), closestValidHit.point);
@@ -109,5 +143,13 @@ public class Bullet : MonoBehaviour
             transform.position += transform.forward * speed * Time.fixedDeltaTime;
         }
     }
-
+    public void Destroy()
+    {
+        if (_detachBeforeDestory)
+        {
+            _detachBeforeDestory.DetachChildren();
+            Destroy(_detachBeforeDestory.gameObject);
+        }
+        Destroy(gameObject);
+    }
 }

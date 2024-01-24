@@ -32,6 +32,13 @@ public struct SmoothDampTransition
     {
         SmoothTowards(1);
     }
+    public void Round()
+    {
+        if (NearOne)
+            value = 1;
+        else if (NearZero)
+            value = 0;
+    }
     public static float PRECISION = 1.0E-5F;
     public bool NearZero => value < PRECISION;
     public bool NearOne => value > 1 - PRECISION;

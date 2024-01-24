@@ -34,6 +34,7 @@ public class NPCGun : MonoBehaviour
     public void Init(Unit owner)
     {
         OwnerUnit = owner;
+        SetCollision(owner == null); //only collides during drop item state
     }
     public void Aim(Vector3 aimPosition)
     {
@@ -80,5 +81,9 @@ public class NPCGun : MonoBehaviour
                 return false;
         }
         return true;
+    }
+    public void SetCollision(bool cond)
+    {
+        GetComponentInChildren<Collider>().enabled = cond;
     }
 }

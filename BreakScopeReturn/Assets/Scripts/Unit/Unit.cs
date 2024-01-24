@@ -58,7 +58,7 @@ public class Unit : SaveTarget
             time = 0.1F;
         if (_animator)
         {
-            _animator.SetFloat("FiringSpeedMultiplier", _firingAnimationClip.length / time);
+            //_animator.SetFloat("FiringSpeedMultiplier", _firingAnimationClip.length / time);
         }
     }
     public virtual void Damage(DamageSource damageSource)

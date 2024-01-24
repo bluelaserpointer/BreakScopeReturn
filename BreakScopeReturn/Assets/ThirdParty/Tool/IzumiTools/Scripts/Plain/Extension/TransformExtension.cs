@@ -30,7 +30,7 @@ public static class TransformExtension
         foreach (Transform each in parent)
             UnityEngine.Object.Destroy(each.gameObject);
     }
-    public static void ActiveAllChidren(this Transform parent, bool cond)
+    public static void SetActiveAllChidren(this Transform parent, bool cond)
     {
         foreach (Transform each in parent)
             each.gameObject.SetActive(cond);

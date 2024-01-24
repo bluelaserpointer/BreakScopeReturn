@@ -8,7 +8,6 @@ using UnityEngine;
 public class MirrorScript : MonoBehaviour
 {
     [Header("Debug")]
-    public GameObject oldPosAnchor, newPosAnchor;
     public Camera cameraLookingAtThisMirror;
     [SerializeField] LayerMask _additionalCullingMask;
 
@@ -187,10 +186,6 @@ public class MirrorScript : MonoBehaviour
                 mirrorCamera.transform.position = oldpos;
                 mirrorCamera.farClipPlane = oldclip;
                 GL.invertCulling = false;
-                if (oldPosAnchor != null)
-                    oldPosAnchor.transform.position = worldToCameraMatrix.MultiplyPoint(oldpos);
-                if (newPosAnchor != null)
-                    newPosAnchor.transform.position = worldToCameraMatrix.MultiplyPoint(newpos);
             }
         }
         catch(Exception e)

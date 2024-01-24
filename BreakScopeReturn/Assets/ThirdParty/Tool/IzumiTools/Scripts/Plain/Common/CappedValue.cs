@@ -12,9 +12,9 @@ namespace IzumiTools
         [Min(0f)]
         private float _max;
 
-        public CappedValue(float maxValue)
+        public CappedValue(float capacity)
         {
-            Max = maxValue;
+            Capacity = capacity;
         }
         public CappedValue()
         {
@@ -27,7 +27,7 @@ namespace IzumiTools
             get => _value;
             set => _value = Mathf.Clamp(value, 0, _max);
         }
-        public float Max
+        public float Capacity
         {
             get => _max;
             set
@@ -48,7 +48,7 @@ namespace IzumiTools
         }
         public void Maximize()
         {
-            Value = Max;
+            Value = Capacity;
         }
         public float AddAndGetOverflow(float value)
         {

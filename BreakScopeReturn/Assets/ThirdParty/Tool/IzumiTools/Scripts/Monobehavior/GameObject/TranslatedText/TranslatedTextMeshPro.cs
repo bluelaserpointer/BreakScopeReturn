@@ -6,14 +6,19 @@ using UnityEngine;
 public class TranslatedTextMeshPro : MonoBehaviour
 {
     [SerializeField]
-    TranslatableSentence sentence;
+    LanguageTMPFontSO _languageFontSO;
+    public TranslatableSentence sentence;
     private void UpdateText()
     {
         TextMeshProUGUI text = GetComponent<TextMeshProUGUI>();
         if (text != null)
+        {
+            if (_languageFontSO != null)
+                text.font = _languageFontSO.GetCurrentLanguageFont();
             text.text = sentence.ToString();
+        }
     }
-    private void Start()
+    private void Awake()
     {
         UpdateText();
     }

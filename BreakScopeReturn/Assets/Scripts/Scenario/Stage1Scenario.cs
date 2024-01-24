@@ -14,14 +14,8 @@ public class Stage1Scenario : Stage
 
     [Header("Cutscene")]
     [SerializeField]
-    PlayableDirector _openingCutscene;
-    [SerializeField]
     Camera _cutsceneCamera;
     public bool playingCutscene;
-    [SerializeField]
-    int _cutsceneEventIndex;
-    [SerializeField]
-    List<UnityEvent> _cutsceneEvent;
 
     [Header("Dialog")]
     [SerializeField]
@@ -69,9 +63,8 @@ public class Stage1Scenario : Stage
     protected override void Start()
     {
         base.Start();
-        _cutsceneEventIndex = -1;
         _projectRicochetMirror = Player.AbilityContainer.GetComponentInChildren<ProjectRicochetMirror>();
-        //GameManager.Instance.DialogUI.SetDialog(initialDialog);
+        GameManager.Instance.DialogUI.SetDialog(initialDialog);
         Player.onDamage.AddListener(damageSouce =>
         {
             if (damageSouce.damage > 0)
@@ -85,11 +78,12 @@ public class Stage1Scenario : Stage
             {
                 guard.onDead.AddListener(() =>
                 {
-                    ++_scenario.killCount;
+                    if (!GameManager.Instance.PlayingCutscene)
+                        ++_scenario.killCount;
                     if (guard.NeverFoundEnemy)
                     {
                         ++_scenario.sneakKillCount;
-                        if (_scenario.sneakKillCount == 2)
+                        if (_scenario.sneakKillCount == 1)
                         {
                             GameManager.Instance.DialogUI.SetDialog(firstSneakKillDialog);
                         }
@@ -113,12 +107,10 @@ public class Stage1Scenario : Stage
                 });
             }
         }
-        //Playable Director Opening Scene
-        GameManager.Instance.PlayCutscene(_openingCutscene);
     }
     private void Update()
     {
-        if (GameManager.Instance.ActiveDirector.time > 0)
+        if (GameManager.Instance.PlayingCutscene)
         {
             return;
         }
@@ -140,17 +132,6 @@ public class Stage1Scenario : Stage
         {
             remainEnemyCounter.GetComponentInChildren<Text>().text = "Enemy: " + GameManager.Instance.CurrentStage.AliveNpcUnits.Count;
         }
-    }
-    public void CutsceneEventProceed()
-    {
-        CutsceneEventChange(_cutsceneEventIndex + 1);
-    }
-    public void CutsceneEventChange(int cutsceneEventIndex)
-    {
-        _cutsceneEventIndex = cutsceneEventIndex;
-        if (_cutsceneEventIndex < 0 || _cutsceneEventIndex >= _cutsceneEvent.Count)
-            return;
-        _cutsceneEvent[_cutsceneEventIndex].Invoke();
     }
     public void ActivateRemainEnemyCounter()
     {

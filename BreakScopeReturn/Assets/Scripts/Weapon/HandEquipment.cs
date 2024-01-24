@@ -9,4 +9,6 @@ public abstract class HandEquipment : SaveTarget
     [SerializeField]
     HandsType _handsType;
     public HandsType HandsType => _handsType;
+
+    public bool HoldedByPlayer => this == GameManager.Instance.Player.GunInventory.HoldingEquipment;
 }

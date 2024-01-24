@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce5cda27f38a949458fde23d26be81d3, type: 3}
+  m_Name: LanguageTMPFont
+  m_EditorClassIdentifier: 
+  fallbackFont: {fileID: 11400000, guid: 1e3fe12a9cc211d4493a9dd18b64f062, type: 2}
+  _languageFonts:
+  - language: 0
+    font: {fileID: 11400000, guid: 80dc722490430904ebfc4319ce32ac2a, type: 2}
+  - language: 2
+    font: {fileID: 11400000, guid: 155260995651ddf44abca1ea87597232, type: 2}

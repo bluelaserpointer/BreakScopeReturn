@@ -10,14 +10,14 @@ namespace IzumiTools
     {
         public Cooldown(float maxValue)
         {
-            Max = maxValue;
+            Capacity = maxValue;
         }
         public Cooldown()
         {
-            Max = 1;
+            Capacity = 1;
         }
         public bool IsReady {
-            get => Value == Max;
+            get => Value == Capacity;
             set
             {
                 if (value)

@@ -2,31 +2,35 @@ using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Playables;
 
 [DisallowMultipleComponent]
 public class GameManager : MonoBehaviour
 {
     [Header("Test")]
+    [SerializeField] Language _startLanguage;
     [SerializeField] bool _logSaveLoad;
     [SerializeField] bool _playerStealth;
 
     [Header("Reference")]
     [SerializeField] Stage _stage;
-    [SerializeField] PlayableDirector _director;
     [SerializeField] Player playerPrefab;
+    [SerializeField] GameObject _cutsceneUI;
     [SerializeField] DialogUI dialogUI;
     [SerializeField] GameObject playerDeathBlackout;
+    [SerializeField] FadingBlackout _cutsceneBlackout;
     [SerializeField] CheckPointNotifiactionUI checkPointNotification;
     [SerializeField] DirectionIndicator directionIndicator;
     [SerializeField] GameObject interactIconViewer;
     [SerializeField] MinimapUI minimapUI;
 
     public static GameManager Instance { get; private set; }
-    public PlayableDirector ActiveDirector { get; private set; }
+    public Cutscene ActiveCutscene { get; set; }
+    public bool PlayingCutscene => ActiveCutscene != null && ActiveCutscene.Playing;
     public Stage CurrentStage => _stage;
+    public FadingBlackout CutsceneBlackout => _cutsceneBlackout;
     public Player Player => CurrentStage.Player;
     public DialogUI DialogUI => dialogUI;
+    public GameObject CutsceneUI => _cutsceneUI;
     public GameObject InteractIconViewer => interactIconViewer;
     public MinimapUI MinimapUI => minimapUI;
     public CheckPointNotifiactionUI CheckPointNotification => checkPointNotification;
@@ -36,6 +40,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        LanguageExtension.currentLanguage = _startLanguage;
         InitStage();
         Player.stealth = _playerStealth;
     }
@@ -55,33 +60,12 @@ public class GameManager : MonoBehaviour
         CurrentStage.Init(playerPrefab);
         SaveStage();
     }
-    public void PlayCutscene(PlayableDirector director)
+    public void SkipCutScene()
     {
-        if (ActiveDirector != null)
+        if (ActiveCutscene != null)
         {
-            ActiveDirector.Stop();
+            ActiveCutscene.Skip();
         }
-        ActiveDirector = director;
-        if (director == null)
-            return;
-        if (Player != null)
-        {
-            Player.gameObject.SetActive(false);
-        }
-        MinimapUI.gameObject.SetActive(false);
-        ActiveDirector.gameObject.SetActive(true);
-        ActiveDirector.stopped += director =>
-        {
-            director.gameObject.SetActive(false);
-            //TODO: detect application quit
-            if (Player != null)
-            {
-                Player.gameObject.SetActive(true);
-            }
-            if (MinimapUI != null)
-                MinimapUI.gameObject.SetActive(true);
-        };
-        ActiveDirector.Play();
     }
     public void SaveStage()
     {
@@ -191,7 +175,7 @@ public class GameManager : MonoBehaviour
     }
     public void SetPlayerWeaponIndex(int index)
     {
-        Player.GunInventory.SwitchWeapon(index);
+        Player.GunInventory.SwitchWeaponUpdate(index);
     }
     public void OrderPlayerAimAction(Transform aimTarget)
     {

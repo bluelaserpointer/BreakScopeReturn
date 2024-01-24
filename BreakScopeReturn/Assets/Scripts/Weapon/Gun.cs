@@ -120,7 +120,7 @@ public class Gun : HandEquipment
     {
         return JsonUtility.ToJson(new GunSave()
         {
-            magazineSize = (int)magazine.Max,
+            magazineSize = (int)magazine.Capacity,
             magazineAmmo = (int)magazine.Value,
             spareAmmo = spareAmmo
         });
@@ -128,7 +128,7 @@ public class Gun : HandEquipment
     public override void Deserialize(string json)
     {
         GunSave save = JsonUtility.FromJson<GunSave>(json);
-        magazine.Max = save.magazineSize;
+        magazine.Capacity = save.magazineSize;
         magazine.Value = save.magazineAmmo;
         spareAmmo = save.spareAmmo;
     }

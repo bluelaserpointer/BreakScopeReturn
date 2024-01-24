@@ -44,6 +44,8 @@ GameObject:
   - component: {fileID: 1081409944546234434}
   - component: {fileID: 6646602723570166971}
   - component: {fileID: 5554848894322070565}
+  - component: {fileID: 4172883652897179215}
+  - component: {fileID: -4288155244066275538}
   m_Layer: 0
   m_Name: Catwalk Rails Short
   m_TagString: Untagged
@@ -139,6 +141,32 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 27ecae3d31c802f46bb92e6d54dd743c, type: 3}
+--- !u!114 &4172883652897179215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4900391360115841127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b71066946a50ad4cb89b15c92daac19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundSet: {fileID: 11400000, guid: 0688ab142e3ec424ba5dfa6ca03f4b90, type: 2}
+--- !u!114 &-4288155244066275538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4900391360115841127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d8c5c3ac5d33945aa4e316b6d0c9db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ignore: 1
 --- !u!1001 &7632294774015827823
 PrefabInstance:
   m_ObjectHideFlags: 0

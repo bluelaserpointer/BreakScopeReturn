@@ -23,6 +23,7 @@ public class ImageAspectRatioFitter : MonoBehaviour
         if (Image.sprite == null)
             return;
         Rect spriteRect = Image.sprite.rect;
-        AspectRatioFitter.aspectRatio = spriteRect.width / spriteRect.height;
+        float spriteAspectRatio = spriteRect.width / spriteRect.height;
+        AspectRatioFitter.aspectRatio = spriteAspectRatio;
     }
 }

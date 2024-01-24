@@ -66,11 +66,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ignore: 0
   onBulletHit:
     m_PersistentCalls:
       m_Calls: []
   damageRatio: 0.75
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
 --- !u!1 &2928854160562073741
 GameObject:
   m_ObjectHideFlags: 0
@@ -297,11 +297,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ignore: 0
   onBulletHit:
     m_PersistentCalls:
       m_Calls: []
   damageRatio: 5
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
 --- !u!1 &8857185449003952871
 GameObject:
   m_ObjectHideFlags: 0
@@ -355,6 +355,142 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 2
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &8916635883563958669
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7110690595024684313}
+  - component: {fileID: 7485218951885572124}
+  m_Layer: 0
+  m_Name: LookLineDebug
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &7110690595024684313
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8916635883563958669}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9201546432711364362}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!120 &7485218951885572124
+LineRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8916635883563958669}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 0
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 1}
+  m_Parameters:
+    serializedVersion: 3
+    widthMultiplier: 0.1
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    colorGradient:
+      serializedVersion: 2
+      key0: {r: 1, g: 1, b: 1, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_ColorSpace: -1
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    numCornerVertices: 0
+    numCapVertices: 0
+    alignment: 0
+    textureMode: 0
+    textureScale: {x: 1, y: 1}
+    shadowBias: 0.5
+    generateLightingData: 0
+  m_MaskInteraction: 0
+  m_UseWorldSpace: 1
+  m_Loop: 0
+  m_ApplyActiveColorSpace: 1
 --- !u!1 &9201546432711364340
 GameObject:
   m_ObjectHideFlags: 0
@@ -387,6 +523,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9201546432704989650}
+  - {fileID: 7110690595024684313}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1856690465757679453
@@ -405,6 +542,7 @@ MonoBehaviour:
     excludeFromSave: 0
     identifyName: 
     prefabRoot: {fileID: 0}
+  _disableAIOnAwake: 0
   _health:
     _max: 100
   _initialHealthRatio: 1
@@ -426,6 +564,7 @@ MonoBehaviour:
   onDead:
     m_PersistentCalls:
       m_Calls: []
+  _lookLineDebug: {fileID: 7485218951885572124}
   viewRange: 50
   viewAngle: 110
   _obeyActionOrder: 0
@@ -445,8 +584,7 @@ MonoBehaviour:
   _ragdollRelax: {fileID: 1339696913413384416}
   _weaponAnchor: {fileID: 9201546432704955886}
   _gunPrefab: {fileID: 6977903294796379667, guid: a22b3d5ed714bdb439f5325cb7d3b8d7, type: 3}
-  _leftHandIKControl: {fileID: 5493618518210120074}
-  _lookAtIKControl: {fileID: 1939777625768312644}
+  _IKControl: {fileID: 655996331055801107}
   _aliveDevice: {fileID: 0}
   rotateQuickAngle: 1
   _modelRotateSmoothTime: 0.5
@@ -555,7 +693,11 @@ PrefabInstance:
     - target: {fileID: 9567366, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 84a3a4b7dea6d234f9750a1b551d90c3, type: 2}
+      objectReference: {fileID: 9100000, guid: 511f24fd060ef465da64edde8c05d690, type: 2}
+    - target: {fileID: 13534784, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
+      propertyPath: m_Radius
+      value: 0.16
+      objectReference: {fileID: 0}
     - target: {fileID: 13605628, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
       propertyPath: m_Height
       value: 0.4
@@ -571,6 +713,18 @@ PrefabInstance:
     - target: {fileID: 13691876, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
       propertyPath: m_Height
       value: 0.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 13709290, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
+      propertyPath: m_LightProbeUsage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 13716152, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
+      propertyPath: m_LightProbeUsage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 13791990, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
+      propertyPath: m_LightProbeUsage
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3817538093067481839, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
       propertyPath: _fireSESouce
@@ -601,10 +755,7 @@ PrefabInstance:
       addedObject: {fileID: 1339696913413384416}
     - targetCorrespondingSourceObject: {fileID: 161332, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5493618518210120074}
-    - targetCorrespondingSourceObject: {fileID: 161332, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1939777625768312644}
+      addedObject: {fileID: 655996331055801107}
     - targetCorrespondingSourceObject: {fileID: 162488, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2253429921509615840}
@@ -638,62 +789,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 113666, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4826461108740677500}
-    - targetCorrespondingSourceObject: {fileID: 155056, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1496063815015091334}
-    - targetCorrespondingSourceObject: {fileID: 155056, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6853744862813100049}
   m_SourcePrefab: {fileID: 100100000, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
 --- !u!95 &9201546432697575306 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 9567366, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
   m_PrefabInstance: {fileID: 9201546432704830220}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &9201546432704677564 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 155056, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
-  m_PrefabInstance: {fileID: 9201546432704830220}
-  m_PrefabAsset: {fileID: 0}
---- !u!64 &1496063815015091334
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9201546432704677564}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300010, guid: cfeff1d67ecb92245941b957cebd290e, type: 3}
---- !u!114 &6853744862813100049
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9201546432704677564}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onBulletHit:
-    m_PersistentCalls:
-      m_Calls: []
-  damageRatio: 20
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
 --- !u!1 &9201546432704684468 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 162488, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
@@ -711,11 +812,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ignore: 0
   onBulletHit:
     m_PersistentCalls:
       m_Calls: []
   damageRatio: 1
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
 --- !u!1 &9201546432704687416 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 161332, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
@@ -734,7 +835,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   relax: 0
---- !u!114 &5493618518210120074
+--- !u!114 &655996331055801107
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -743,27 +844,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 9201546432704687416}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96024a3450fde26439da929886b5d333, type: 3}
+  m_Script: {fileID: 11500000, guid: c741b11f546dd574a8a051268742e811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  avaterIKGoal: 2
-  anchor: {fileID: 0}
-  positionWeight: 1
-  rotationWeight: 1
---- !u!114 &1939777625768312644
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9201546432704687416}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ab54c1ad6cea184894baa2c5a1d4e64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lookAtPosition: {x: 0, y: 0, z: 0}
-  lookAtWeight: 1
+  lookAtIKControlLayerName: LegsLayer
+  lookAtWeight: 0.4
+  lookAtBodyWeight: 1
+  lookAtClampWeight: 0.5
+  leftHandIKControlLayerName: HandsLayer
+  leftHandPositionWeight: 1
+  leftHandRotationWeight: 1
+  rightHandIKControlLayerName: HandsLayer
+  rightHandPositionWeight: 1
+  rightHandRotationWeight: 1
+  equipmentFollowRightHandPositionWeight: 0
+  equipmentFollowRightHandRotationWeight: 0
+  onAnimatorIK:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &9201546432704694442 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 136102, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
@@ -781,11 +879,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ignore: 0
   onBulletHit:
     m_PersistentCalls:
       m_Calls: []
   damageRatio: 3
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
 --- !u!1 &9201546432704721024 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 191372, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
@@ -803,11 +901,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ignore: 0
   onBulletHit:
     m_PersistentCalls:
       m_Calls: []
   damageRatio: 1
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
 --- !u!1 &9201546432704727380 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 168536, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
@@ -825,11 +923,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ignore: 0
   onBulletHit:
     m_PersistentCalls:
       m_Calls: []
   damageRatio: 20
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
 --- !u!1 &9201546432704733698 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 178446, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
@@ -847,11 +945,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ignore: 0
   onBulletHit:
     m_PersistentCalls:
       m_Calls: []
   damageRatio: 1
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
 --- !u!1 &9201546432704734144 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 178380, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
@@ -869,11 +967,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ignore: 0
   onBulletHit:
     m_PersistentCalls:
       m_Calls: []
   damageRatio: 1
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
 --- !u!1 &9201546432704917174 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 128442, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
@@ -891,11 +989,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ignore: 0
   onBulletHit:
     m_PersistentCalls:
       m_Calls: []
   damageRatio: 1
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
 --- !u!1 &9201546432704926538 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100422, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
@@ -913,11 +1011,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ignore: 0
   onBulletHit:
     m_PersistentCalls:
       m_Calls: []
   damageRatio: 1
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
 --- !u!1 &9201546432704926684 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100560, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
@@ -935,11 +1033,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ignore: 0
   onBulletHit:
     m_PersistentCalls:
       m_Calls: []
   damageRatio: 1
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
 --- !u!1 &9201546432704926954 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 102374, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
@@ -957,11 +1055,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ignore: 0
   onBulletHit:
     m_PersistentCalls:
       m_Calls: []
   damageRatio: 1
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
 --- !u!1 &9201546432704931598 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 113666, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}
@@ -979,11 +1077,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ignore: 0
   onBulletHit:
     m_PersistentCalls:
       m_Calls: []
   damageRatio: 1
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
 --- !u!4 &9201546432704955886 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 401122, guid: 4045ab46594095b41ad7a0f08cfd554c, type: 3}

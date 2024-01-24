@@ -53,6 +53,7 @@ MonoBehaviour:
     identifyName: Recover Cell (RecoverCell)#Prefab-0
     prefabRoot: {fileID: 169552650108100380}
   recoverAmount: 50
+  _useSE: {fileID: 8300000, guid: b070477cebd3b4524a492071abc076d6, type: 3}
 --- !u!114 &169552650108100380
 MonoBehaviour:
   m_ObjectHideFlags: 0

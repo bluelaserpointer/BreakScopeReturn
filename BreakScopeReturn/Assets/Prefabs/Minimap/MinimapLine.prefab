@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _originalOrderInLayer: 1
-  _color: {r: 0.03137255, g: 0.2627451, b: 0.05490196, a: 1}
+  _color: {r: 0.5019608, g: 0.3529412, b: 0.11372549, a: 1}
   _verticalSizeReferenceCollider: {fileID: 0}
 --- !u!120 &8459828948120700943
 LineRenderer:
@@ -95,7 +95,7 @@ LineRenderer:
   - {x: 0, y: 3, z: 0}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 1
+    widthMultiplier: 0.5
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -122,8 +122,8 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.030900663, g: 0.26415092, b: 0.053114943, a: 1}
-      key1: {r: 0.03137255, g: 0.2627451, b: 0.05490196, a: 1}
+      key0: {r: 0.5018867, g: 0.35166955, b: 0.11268772, a: 1}
+      key1: {r: 0.5019608, g: 0.3529412, b: 0.11372549, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}

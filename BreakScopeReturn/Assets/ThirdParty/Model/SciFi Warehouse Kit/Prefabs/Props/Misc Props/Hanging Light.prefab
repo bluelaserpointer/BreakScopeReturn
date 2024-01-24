@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 3470092910961130467}
   - component: {fileID: 2125947554577182160}
   - component: {fileID: 6779380336776852517}
+  - component: {fileID: 1863230087215441814}
+  - component: {fileID: 4436911093855773633}
   m_Layer: 0
   m_Name: SciFi_light_bulb
   m_TagString: Untagged
@@ -83,6 +85,41 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &1863230087215441814
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5310423022416273761}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300002, guid: 07fb4dd6bfd07084eb4a81e9086f354b, type: 3}
+--- !u!114 &4436911093855773633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5310423022416273761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b71066946a50ad4cb89b15c92daac19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundSet: {fileID: 11400000, guid: d0d68a65e09c4d04eb5b50bd8f3e4ec3, type: 2}
 --- !u!1 &6104761224871856876
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,6 +283,8 @@ GameObject:
   - component: {fileID: 6334703646002381663}
   - component: {fileID: 2339939283047696056}
   - component: {fileID: 6193422828958321067}
+  - component: {fileID: 3379347863002356282}
+  - component: {fileID: 5449884024658636430}
   m_Layer: 0
   m_Name: SciFi_light_fixture
   m_TagString: Untagged
@@ -318,3 +357,38 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &3379347863002356282
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8747961930683674639}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 07fb4dd6bfd07084eb4a81e9086f354b, type: 3}
+--- !u!114 &5449884024658636430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8747961930683674639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b71066946a50ad4cb89b15c92daac19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundSet: {fileID: 11400000, guid: d1c0ae1133f0a8f46804c9a761f17197, type: 2}

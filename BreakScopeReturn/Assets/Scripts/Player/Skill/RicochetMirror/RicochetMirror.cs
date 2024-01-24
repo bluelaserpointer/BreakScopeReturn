@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,6 +25,7 @@ public class RicochetMirror : MonoBehaviour
     public HitSound HitSound => _hitSound;
 
     [HideInInspector]
+    [NonSerialized]
     public bool expand;
     private Transform PlayerCameraPose => GameManager.Instance.Player.Camera.transform;
 
@@ -62,19 +64,29 @@ public class RicochetMirror : MonoBehaviour
         bool foundValidHit = false;
         foreach (var hitInfo in hits)
         {
-            bool leftFlat = FlatCheck(hitInfo, _flatCheckDistance * new Vector2(-1, 0), out bool leftHit);
-            bool rightFlat = FlatCheck(hitInfo, _flatCheckDistance * new Vector2(1, 0), out bool rightHit);
-            bool downFlat = FlatCheck(hitInfo, _flatCheckDistance * new Vector2(0, -1), out bool downHit);
-            bool upFlat = FlatCheck(hitInfo, _flatCheckDistance * new Vector2(0, 1), out bool upHit);
-            if ((leftFlat || rightFlat) && (downFlat || upFlat)) //Valid flat surface
+            if (hitInfo.collider.TryGetComponent<RicochetMirrorIgnoreLayer>(out var ignoreLayer))
+            {
+                foundValidHit = !ignoreLayer.ignore;
+            }
+            else if (_flatCheckDistance > 0)
+            {
+                bool leftFlat = FlatCheck(hitInfo, _flatCheckDistance * new Vector2(-1, 0), out bool leftHit);
+                bool rightFlat = FlatCheck(hitInfo, _flatCheckDistance * new Vector2(1, 0), out bool rightHit);
+                bool downFlat = FlatCheck(hitInfo, _flatCheckDistance * new Vector2(0, -1), out bool downHit);
+                bool upFlat = FlatCheck(hitInfo, _flatCheckDistance * new Vector2(0, 1), out bool upHit);
+                if (leftHit && rightHit && downHit && upHit)
+                    break; //TODO: Improve this behavior 
+                foundValidHit = (leftFlat || rightFlat) && (downFlat || upFlat);
+            }
+            else
             {
                 foundValidHit = true;
+            }
+            if (foundValidHit)
+            {
                 renderParent.SetActive(true);
                 transform.position = hitInfo.point;
                 transform.forward = hitInfo.normal;
-                break;
-            }
-            if (leftHit && rightHit && downHit && upHit) { //Interrupt searching
                 break;
             }
         }

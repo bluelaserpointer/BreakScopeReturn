@@ -10,16 +10,18 @@ namespace IzumiTools
     [System.Serializable]
     public class ReuseNest<T> where T : Component
     {
-        public Transform nest;
+        public Transform container;
         public T prefab;
         public System.Action<T> actionForNewGeneration;
         public System.Action<T> actionForReactivated;
+        public T FirstChild => container.GetChild(0)?.GetComponent<T>();
+        public T LastChild => container.GetChild(container.childCount - 1)?.GetComponent<T>();
         public int ActiveCount
         {
             get
             {
                 int count = 0;
-                foreach(Transform t in nest)
+                foreach(Transform t in container)
                 {
                     if(t.gameObject.activeSelf)
                         ++count;
@@ -31,39 +33,63 @@ namespace IzumiTools
         {
             get
             {
-                for(int i = nest.childCount - 1; i >= 0; --i)
+                for(int i = container.childCount - 1; i >= 0; --i)
                 {
-                    if (nest.GetChild(i).gameObject.activeSelf)
+                    if (container.GetChild(i).gameObject.activeSelf)
                         return i;
                 }
                 return 0;
             }
         }
-        public T Get()
+        public T EnableOne()
+        {
+            return Reuse() ?? Generate();
+        }
+        public T Reuse()
         {
             T returnObject;
-            foreach (Transform childTf in nest)
+            foreach (Transform childTf in container)
             {
                 if (childTf.gameObject.activeSelf)
                     continue;
-                if((returnObject = childTf.GetComponent<T>()) != null)
+                if ((returnObject = childTf.GetComponent<T>()) != null)
                 {
                     returnObject.gameObject.SetActive(true);
                     actionForReactivated?.Invoke(returnObject);
                     return returnObject;
                 }
             }
-            (returnObject = Object.Instantiate(prefab)).transform.SetParent(nest, false);
-            actionForNewGeneration?.Invoke(returnObject);
+            return null;
+        }
+        public T Generate()
+        {
+            T returnObject = Object.Instantiate(prefab);
+            returnObject.transform.SetParent(container, false);
+            returnObject.gameObject.SetActive(true);
             return returnObject;
         }
-        public void InactivateAll()
+        public T PickEnabledFirst()
         {
-            nest.ActiveAllChidren(false);
+            foreach (Transform childTf in container)
+            {
+                if (childTf.gameObject.activeSelf)
+                    return childTf.GetComponent<T>();
+            }
+            return null;
+        }
+        public void DisableFirst()
+        {
+            T picked = PickEnabledFirst();
+            if (picked != null)
+                picked.gameObject.SetActive(false);
+        }
+        public void DisableAll()
+        {
+            container.SetActiveAllChidren(false);
         }
         public void DestroyAll()
         {
-            nest.DestroyAllChildren();
+            container.DestroyAllChildren();
         }
     }
 

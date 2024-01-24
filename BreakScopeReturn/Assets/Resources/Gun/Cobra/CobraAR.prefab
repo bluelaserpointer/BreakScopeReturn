@@ -234,7 +234,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 736a6ee94d8a94aef925851d18125a0c, type: 3}
+  m_audioClip: {fileID: 8300000, guid: be64544bade297e4d872dd74c66256d2, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5
   m_Pitch: 2
@@ -480,8 +480,6 @@ MonoBehaviour:
     aimTime: 0.05
     cameraZoomRatio_notAiming: 60
     cameraZoomRatio_aiming: 30
-    hudCameraZoomRatio_notAiming: 60
-    hudCameraZoomRatio_aiming: 30
     mouseSensitivity_aiming: 0.5
     fireMode: 0
     bulletPrefab: {fileID: 11440490, guid: c9e619a669d974fd28b5c89e43f2bce2, type: 3}
@@ -505,11 +503,7 @@ MonoBehaviour:
   _shootSESource: {fileID: 8890081993750035698}
   _reloadSESource: {fileID: 5515849133754307580}
   muzzleFlashes:
-  - {fileID: 199458, guid: 51b76f616384d4946bed4ecc9a6c2c3e, type: 3}
-  - {fileID: 199458, guid: 487eef9aff9d0f543836d5af5ab26430, type: 3}
-  - {fileID: 199458, guid: 7b6a7e40bd9ccc0489274923930761c7, type: 3}
-  - {fileID: 199458, guid: 29d86feb88bf925428f9d7de6d4b401f, type: 3}
-  - {fileID: 199458, guid: 4aa4c63f0f9d6a84dbaeed6b9caeca80, type: 3}
+  - {fileID: 209673154359558427, guid: b0517cb286b3e8044a7fa93ca15469b5, type: 3}
   onFire:
     m_PersistentCalls:
       m_Calls: []
@@ -588,7 +582,7 @@ MeshRenderer:
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
+  m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
@@ -671,7 +665,7 @@ MeshRenderer:
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
+  m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0

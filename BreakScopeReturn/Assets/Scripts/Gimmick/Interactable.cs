@@ -25,7 +25,6 @@ public class Interactable : MonoBehaviour
     {
         if (GameManager.Instance.Player.IsMyCollider(other))
         {
-            print(name);
             onStepIn.Invoke();
             if (oneTime)
                 gameObject.SetActive(false);

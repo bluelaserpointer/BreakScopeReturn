@@ -57,7 +57,7 @@ public class Player : Unit
     public bool HasAimRaycastHit { get; private set; }
     public Vector3 AimPosition { get; private set; }
     public Interactable AimingInteractable { get; private set; }
-    public Vector3 FootPosition => transform.position + Vector3.down * movement.CharacterController.height / 2;
+    public Vector3 FootPosition => transform.position;
     public Transform AbilityContainer => _abilityContainer;
     private Vignette _bloodVignette;
     private float _respawnWaitedTime;
