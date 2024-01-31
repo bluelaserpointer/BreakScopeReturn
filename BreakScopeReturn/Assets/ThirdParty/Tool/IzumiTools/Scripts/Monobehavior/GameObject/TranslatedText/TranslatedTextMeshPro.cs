@@ -8,6 +8,7 @@ public class TranslatedTextMeshPro : MonoBehaviour
     [SerializeField]
     LanguageTMPFontSO _languageFontSO;
     public TranslatableSentence sentence;
+    public Language DisplayedLanguage {  get; private set; }
     private void UpdateText()
     {
         TextMeshProUGUI text = GetComponent<TextMeshProUGUI>();
@@ -17,10 +18,12 @@ public class TranslatedTextMeshPro : MonoBehaviour
                 text.font = _languageFontSO.GetCurrentLanguageFont();
             text.text = sentence.ToString();
         }
+        DisplayedLanguage = LanguageExtension.currentLanguage;
     }
-    private void Awake()
+    private void Update()
     {
-        UpdateText();
+        if (!DisplayedLanguage.IsCurrentLanguage())
+            UpdateText();
     }
     void OnValidate()
     {
