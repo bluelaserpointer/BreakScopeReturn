@@ -43,7 +43,8 @@ public class Cutscene : MonoBehaviour
     {
         _onStop.Invoke();
         gameObject.SetActive(false);
-        GameManager.Instance.CutsceneUI.SetActive(false);
+        if (GameManager.Instance.CutsceneUI)
+            GameManager.Instance.CutsceneUI.SetActive(false);
         //TODO: detect application quit
         if (GameManager.Instance.Player != null)
         {

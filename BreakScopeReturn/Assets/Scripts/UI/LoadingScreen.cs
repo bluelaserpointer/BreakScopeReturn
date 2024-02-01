@@ -43,7 +43,6 @@ public class LoadingScreen : MonoBehaviour
         float newloadingProgress = _asyncOperation.progress;
         if (newloadingProgress == 0.9f)
         {
-            print("allowed");
             newloadingProgress = 1;
             _asyncOperation.allowSceneActivation = true;
         }
