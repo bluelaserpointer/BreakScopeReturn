@@ -4,6 +4,13 @@ namespace IzumiTools
 {
     public static class ExtendedMath
     {
+        public static Quaternion SmoothDampQuaternion(Quaternion current, Quaternion target, ref float currentAngleVelocity, float smoothTime)
+        {
+            float delta = Quaternion.Angle(current, target);
+            if (delta == 0f)
+                return current;
+            return Quaternion.Slerp(target, current, Mathf.SmoothDampAngle(delta, 0.0f, ref currentAngleVelocity, smoothTime) / delta);
+        }
         /// <summary>
         /// Get signed overflow upon clamping a value. (ex. 5 clampes in [8, 10] gets -3)
         /// </summary>

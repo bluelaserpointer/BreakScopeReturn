@@ -165,24 +165,4 @@ public class GameManager : MonoBehaviour
     {
         playerDeathBlackout.SetActive(cond);
     }
-    public void SetEnablePlayerCameras(bool cond)
-    {
-        Player.SetEnableCameras(cond);
-    }
-    public void SetEnablePlayerAI(bool cond)
-    {
-        Player.SetEnableAI(cond);
-    }
-    public void SetPlayerWeaponIndex(int index)
-    {
-        Player.GunInventory.SwitchWeaponUpdate(index);
-    }
-    public void OrderPlayerAimAction(Transform aimTarget)
-    {
-        Player.OrderAimAction(aimTarget);
-    }
-    public void OrderPlayerFireAction()
-    {
-        Player.OrderFireAction();
-    }
 }

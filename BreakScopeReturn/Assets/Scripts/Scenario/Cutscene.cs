@@ -9,6 +9,8 @@ using UnityEngine.Playables;
 public class Cutscene : MonoBehaviour
 {
     [SerializeField]
+    bool _hideOnAwake;
+    [SerializeField]
     UnityEvent _onStop;
     public PlayableDirector PlayableDirector { get; private set; }
     public bool Playing => PlayableDirector.state == PlayState.Playing;
@@ -17,6 +19,8 @@ public class Cutscene : MonoBehaviour
     {
         PlayableDirector = GetComponent<PlayableDirector>();
         PlayableDirector.stopped += _ => OnStoppedInternal();
+        if (_hideOnAwake)
+            gameObject.SetActive(false);
     }
     public void Play()
     {

@@ -68,7 +68,7 @@ public class Grenade : MonoBehaviour
 
             if (distance > explosionDistance)
                 continue;
-            if (unit.RaycastableFrom(transform.position, out _))
+            if (unit.HasExposedDetectAnchor(transform.position, out _))
             {
                 DamageSource damageSource = new DamageSource.ExplosionDamage(this);
                 float distanceRatio = 1 - distance / explosionDistance;

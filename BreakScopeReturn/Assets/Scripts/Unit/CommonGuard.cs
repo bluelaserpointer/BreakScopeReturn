@@ -1,6 +1,6 @@
+using IzumiTools;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -26,7 +26,10 @@ public class CommonGuard : Unit
     Vector3 _orderAimPosition;
 
     [Header("Performance")]
-    public float aimSmoothTime = 1;
+    [SerializeField]
+    float _lookSmoothDampTime = 1;
+    [SerializeField]
+    float _aimSmoothDampTime = 1;
 
     [Header("Strategy")]
     [SerializeField]
@@ -109,8 +112,8 @@ public class CommonGuard : Unit
     public bool NeverFoundEnemy { get; private set; }
 
     Vector3 _targetAimPosition;
-    Vector3 _aimVelocity;
-    Vector3 _currentAimPosition;
+    Quaternion _currentLookRotation, _currentAimRotation;
+    float _lookAngleVelocity, _aimAngleVelocity;
     Vector3 _lastFoundPosition;
     Vector3 _suspiciousPosition; //TODO: merge into above?
     float _suspiciousPositionSearchedTime;
@@ -150,10 +153,19 @@ public class CommonGuard : Unit
         {
             if (layer == Animator.GetLayerIndex("LegsLayer"))
             {
-                Animator.SetLookAtPosition(_currentAimPosition);
+                Animator.SetLookAtPosition(viewAnchor.position + _currentLookRotation * Vector3.forward);
+                return;
             }
-            else if (layer == Animator.GetLayerIndex("HandsLayer"))
+            if (layer == Animator.GetLayerIndex("HandsLayer"))
+            {
+                Gun.transform.position = Gun.CentreRelHead.GetChildPosition(viewAnchor);
+                Gun.transform.rotation = _currentAimRotation;
+                Animator.SetIKPosition(AvatarIKGoal.RightHand, Gun.RightHandAnchor.position);
+                Animator.SetIKRotation(AvatarIKGoal.RightHand, Gun.RightHandAnchor.rotation);
                 Animator.SetIKPosition(AvatarIKGoal.LeftHand, Gun.LeftHandAnchor.position);
+                Animator.SetIKRotation(AvatarIKGoal.LeftHand, Gun.LeftHandAnchor.rotation);
+                return;
+            }
         });
     }
     public override void LoadInit()
@@ -162,7 +174,9 @@ public class CommonGuard : Unit
         Gun = Instantiate(_gunPrefab, transform);
         Gun.Init(this);
         SetModelFiringCD(Gun.FireCD.Capacity);
-        _currentAimPosition = TargetAimPosition = viewAnchor.position + transform.forward;
+        TargetAimPosition = viewAnchor.position + transform.forward;
+        _currentLookRotation = transform.rotation;
+        _currentAimRotation = Quaternion.LookRotation(TargetAimPosition - Gun.transform.position, viewAnchor.up);
         MovePosition = transform.position;
         navMeshAgent.enabled = true;
         navMeshAgent.destination = transform.position;
@@ -195,15 +209,14 @@ public class CommonGuard : Unit
         if (!Player.stealth
             && Vector3.Distance(Player.ViewPosition, ViewPosition) < viewRange
             && viewAngleDifference < viewAngle / 2
-            && RaycastableTo(ViewPosition, Player, out Vector3 raycastablePosition))
+            && TryDetect(ViewPosition, Player, out Vector3 raycastablePosition))
         {
             FoundEnemy = true;
             NeverFoundEnemy = false;
             _lastFoundPosition = raycastablePosition;
             _lastFoundTime = Time.timeSinceLevelLoad;
             _chaseLastFoundPositionWaitTime = Random.Range(chaseLastFoundPositionWaitTimeRange.x, chaseLastFoundPositionWaitTimeRange.y);
-            //TODO: model spine vend vertically
-            float horzGunAngleDifference = Vector3.Angle(Gun.MuzzleAnchor.forward.Set(y: 0), (Gun.MuzzleAnchor.position - ViewPosition).Set(y: 0));
+            float horzGunAngleDifference = Vector3.Angle(Gun.transform.forward, TargetAimPosition - Gun.transform.position);
             if (horzGunAngleDifference < _fireConeMaxAngle)
                 Trigger();
             GuardState = GuardStateEnum.Defend;
@@ -213,7 +226,6 @@ public class CommonGuard : Unit
             FoundEnemy = false;
             //_animator.SetBool("Fire", false);
         }
-        Gun.transform.SetPositionAndRotation(_weaponAnchor.transform.position, _weaponAnchor.transform.rotation);
         Gun.Aim(TargetAimPosition);
         if (navMeshAgent.remainingDistance > navMeshAgent.stoppingDistance)
         {
@@ -224,14 +236,17 @@ public class CommonGuard : Unit
             _animator.SetBool("isMoving", false);
         }
         float footDistance = Vector3.Distance(transform.position, _targetAimPosition);
-        Vector3 aimPosition = _targetAimPosition;
+        Vector3 targetlookPosition = _targetAimPosition;
+        /* //suppress head angle to horizontal
         if (footDistance < 2)
         {
-            //suppress head angle to horizontal
-            aimPosition = Vector3.Lerp(aimPosition, viewAnchor.position + transform.forward, (2 - footDistance) / 2);
-        }
-        _currentAimPosition = Vector3.SmoothDamp(_currentAimPosition, aimPosition, ref _aimVelocity, aimSmoothTime);
-        _lookLineDebug.SetPositions(new Vector3[] { viewAnchor.position, _currentAimPosition });
+            targetlookPosition = Vector3.Lerp(targetlookPosition, viewAnchor.position + transform.forward, (2 - footDistance) / 2);
+        }*/
+        _currentLookRotation = ExtendedMath.SmoothDampQuaternion(_currentLookRotation,
+            Quaternion.LookRotation(targetlookPosition - viewAnchor.position), ref _lookAngleVelocity, _lookSmoothDampTime * Time.deltaTime);
+        _currentAimRotation = ExtendedMath.SmoothDampQuaternion(_currentAimRotation,
+            Quaternion.LookRotation(_targetAimPosition - Gun.transform.position), ref _aimAngleVelocity, _aimSmoothDampTime * Time.deltaTime);
+        _lookLineDebug.SetPositions(new Vector3[] { viewAnchor.position, targetlookPosition });
     }
     private void FixedUpdate()
     {
@@ -252,7 +267,7 @@ public class CommonGuard : Unit
             {
             }*/
 
-            transform.eulerAngles = transform.eulerAngles.Set(y: Mathf.SmoothDamp(oldYRotation, newYRotation, ref _modelYRotateVelocity, _modelRotateSmoothTime));
+            transform.eulerAngles = transform.eulerAngles.Set(y: Mathf.SmoothDamp(oldYRotation, newYRotation, ref _modelYRotateVelocity, _modelRotateSmoothTime * Time.fixedDeltaTime));
         }
     }
     public override void SetEnableAI(bool cond)
@@ -337,7 +352,7 @@ public class CommonGuard : Unit
             bool stay = true;
             if (FoundEnemy)
             {
-                if (Gun.CheckRaycast(Player, out Vector3 gunRaycastablePosition))
+                if (Gun.EnsureBulletLineClear(Player, out Vector3 gunRaycastablePosition))
                 {
                     TargetAimPosition = gunRaycastablePosition;
                     stay = true;
@@ -420,7 +435,8 @@ public class CommonGuard : Unit
     {
         public string commonUnitSave;
         public bool neverFoundEnemy;
-        public Vector3 aimPosition;
+        public Quaternion lookEulerAngle;
+        public Quaternion aimEulerAngle;
     }
     public override string Serialize()
     {
@@ -428,14 +444,16 @@ public class CommonGuard : Unit
         {
             commonUnitSave = base.Serialize(),
             neverFoundEnemy = NeverFoundEnemy,
-            aimPosition = _currentAimPosition
+            lookEulerAngle = _currentLookRotation,
+            aimEulerAngle = _currentAimRotation
         });
     }
     public override void Deserialize(string json)
     {
         NpcEnemySave save = JsonUtility.FromJson<NpcEnemySave>(json);
         NeverFoundEnemy = save.neverFoundEnemy;
-        _currentAimPosition = save.aimPosition;
+        _currentLookRotation = save.lookEulerAngle;
+        _currentAimRotation = save.aimEulerAngle;
         base.Deserialize(save.commonUnitSave);
     }
 }

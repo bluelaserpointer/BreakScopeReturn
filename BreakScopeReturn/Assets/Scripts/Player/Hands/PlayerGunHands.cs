@@ -40,7 +40,6 @@ public class PlayerGunHands : PlayerHands
     public Vector3 BulletSpawnPosition => Gun.MuzzleAnchor.position;
     private Player Player => GameManager.Instance.Player;
     private Camera MainCamera => Player.Camera;
-    private Camera HUDCamera => Player.HUDCamera;
     private PlayerMovement PlayerMovement => Player.Movement;
     private MouseLook PlayerLook => Player.MouseLook;
 
@@ -61,13 +60,24 @@ public class PlayerGunHands : PlayerHands
 		FireCD = new Cooldown(GunSpec.fireCD);
         FireCD.IsReady = true;
 		ReloadCD = new Cooldown(GunSpec.reloadCD);
+        InitAnimatorParameters();
         //rotationLast = PlayerLook.currentRotation;
-        Animator.SetFloat("reloadSpeedMultiplier", Gun.ReloadAnimationClipLength / Mathf.Max(ReloadCD.Capacity, 0.1F));
-        Animator.SetFloat("reloadAnimationType", Gun.ReloadAnimationID);
         _rightHandBone = Animator.GetBoneTransform(HumanBodyBones.RightHand);
         Gun.onFireCDSet.Invoke(FireCD.Capacity);
         Gun.gameObject.SetActive(true);
         Player.IKEventExposure.onAnimatorIK.AddListener(AnimatorIK);
+    }
+    private void OnEnable()
+    {
+        if (Gun == null)
+            return;
+        //animator parameters will be lost after gameobject disable.
+        InitAnimatorParameters();
+    }
+    private void InitAnimatorParameters()
+    {
+        Animator.SetFloat("reloadSpeedMultiplier", Gun.ReloadAnimationClipLength / Mathf.Max(ReloadCD.Capacity, 0.1F));
+        Animator.SetFloat("reloadAnimationType", Gun.ReloadAnimationID);
     }
     private void AnimatorIK(int layerIndex)
     {

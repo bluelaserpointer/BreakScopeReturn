@@ -369,7 +369,7 @@ MonoBehaviour:
   _initialHealthRatio: 1
   stealth: 0
   viewAnchor: {fileID: 431846}
-  detectAnchors:
+  _detectTargets:
   - {fileID: 6821942263241531375}
   - {fileID: 1940610242533396102}
   - {fileID: 3885993602084879714}

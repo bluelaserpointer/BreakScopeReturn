@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,7 +15,7 @@ public class Unit : SaveTarget
     [SerializeField] float _initialHealthRatio = 1;
     public bool stealth;
     [SerializeField] protected Transform viewAnchor;
-    [SerializeField] List<Transform> detectAnchors;
+    [SerializeField] List<Transform> _detectTargets;
     [SerializeField] protected Animator _animator;
     [SerializeField] AnimationClip _firingAnimationClip;
 
@@ -91,54 +92,35 @@ public class Unit : SaveTarget
     {
 
     }
-    public bool RaycastableFrom(Vector3 raycastOrigin, out Vector3 raycastablePosition)
+    public bool HasExposedDetectAnchor(Vector3 origin, out Vector3 detectPosition, Predicate<Collider> colliderPredicate = null)
     {
-        foreach (Transform detectAnchor in detectAnchors)
+        foreach (Transform detectTarget in _detectTargets)
         {
-            Vector3 detectPosition = detectAnchor.position;
+            Vector3 _detectPosition = detectTarget.position;
             bool blocked = false;
-            foreach (RaycastHit hit in Physics.RaycastAll(raycastOrigin, detectPosition - raycastOrigin, Vector3.Distance(raycastOrigin, detectPosition)))
+            foreach (RaycastHit hit in Physics.RaycastAll(origin, _detectPosition - origin, Vector3.Distance(origin, _detectPosition)))
             {
                 if (hit.collider.isTrigger)
                     continue;
                 if (IsMyCollider(hit.collider))
                     continue;
+                if (colliderPredicate != null && !colliderPredicate.Invoke(hit.collider))
+                    continue;
                 blocked = true;
                 break;
             }
             if (!blocked)
             {
-                raycastablePosition = detectPosition;
+                detectPosition = _detectPosition;
                 return true;
             }
         }
-        raycastablePosition = Vector3.zero;
+        detectPosition = Vector3.zero;
         return false;
     }
-    public bool RaycastableTo(Vector3 raycastOrigin, Unit otherUnit, out Vector3 raycastablePosition)
+    public bool TryDetect(Vector3 raycastOrigin, Unit otherUnit, out Vector3 detectPosition)
     {
-        foreach (Transform detectAnchor in otherUnit.detectAnchors)
-        {
-            Vector3 detectPosition = detectAnchor.position;
-            bool blocked = false;
-            foreach (RaycastHit hit in Physics.RaycastAll(raycastOrigin, detectPosition - raycastOrigin, Vector3.Distance(raycastOrigin, detectPosition)))
-            {
-                if (hit.collider.isTrigger)
-                    continue;
-                if (hit.collider.TryGetComponent(out UnitDamageCollider damageCollider)
-                    && (damageCollider.Unit == this || damageCollider.Unit == otherUnit))
-                    continue;
-                blocked = true;
-                break;
-            }
-            if (!blocked)
-            {
-                raycastablePosition = detectPosition;
-                return true;
-            }
-        }
-        raycastablePosition = Vector3.zero;
-        return false;
+        return otherUnit.HasExposedDetectAnchor(raycastOrigin, out detectPosition, collider => !IsMyCollider(collider));
     }
     public virtual bool IsMyCollider(Collider collider)
     {

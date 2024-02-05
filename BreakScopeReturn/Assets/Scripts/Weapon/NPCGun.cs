@@ -6,10 +6,19 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class NPCGun : MonoBehaviour
 {
+    [Header("Debug")]
+    [SerializeField]
+    bool _realtimeIK;
+
+    [Header("Misc")]
     [SerializeField]
     float damage;
     [SerializeField]
     float speed;
+    [SerializeField]
+    Transform _headAnchor;
+    [SerializeField]
+    Transform _rightHandAnchor;
     [SerializeField]
     Transform _leftHandAnchor;
     [SerializeField]
@@ -19,8 +28,6 @@ public class NPCGun : MonoBehaviour
     [SerializeField]
     Cooldown fireCD = new(0.2F);
     [SerializeField]
-    List<Transform> penetrationCheckAnchors;
-    [SerializeField]
     List<GameObject> _muzzleFlushes;
     [SerializeField]
     AudioSource _fireSESouce;
@@ -28,9 +35,25 @@ public class NPCGun : MonoBehaviour
     Vector3 aimPosition;
 
     public Unit OwnerUnit { get; private set; }
+    public TransformRelator CentreRelHead {  get; private set; }
+    public Transform RightHandAnchor => _rightHandAnchor;
     public Transform LeftHandAnchor => _leftHandAnchor;
     public Transform MuzzleAnchor => muzzleAnchor;
     public Cooldown FireCD => fireCD;
+    private void Awake()
+    {
+        UpdateAnchorRelation();
+    }
+    private void Update()
+    {
+        if (_realtimeIK)
+            UpdateAnchorRelation();
+        fireCD.AddDeltaTime();
+    }
+    public void UpdateAnchorRelation()
+    {
+        CentreRelHead = new TransformRelator(transform, _headAnchor);
+    }
     public void Init(Unit owner)
     {
         OwnerUnit = owner;
@@ -39,10 +62,6 @@ public class NPCGun : MonoBehaviour
     public void Aim(Vector3 aimPosition)
     {
         this.aimPosition = aimPosition;
-    }
-    private void Update()
-    {
-        fireCD.AddDeltaTime();
     }
     public void Trigger()
     {
@@ -64,23 +83,9 @@ public class NPCGun : MonoBehaviour
             flash.transform.parent = muzzleAnchor.transform;
         }
     }
-    public bool CheckRaycast(Unit targetUnit, out Vector3 gunRaycastablePosition)
+    public bool EnsureBulletLineClear(Unit targetUnit, out Vector3 recommendAimPosition)
     {
-        gunRaycastablePosition = targetUnit.transform.position; // no effect
-        if (penetrationCheckAnchors.Count > 0)
-        {
-            foreach (var anchor in penetrationCheckAnchors)
-            {
-                if (!OwnerUnit.RaycastableTo(anchor.position, targetUnit, out gunRaycastablePosition))
-                    return false;
-            }
-        }
-        else
-        {
-            if (!OwnerUnit.RaycastableTo(MuzzleAnchor.position, targetUnit, out gunRaycastablePosition))
-                return false;
-        }
-        return true;
+        return OwnerUnit.TryDetect(MuzzleAnchor.position, targetUnit, out recommendAimPosition);
     }
     public void SetCollision(bool cond)
     {
