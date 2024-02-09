@@ -8,6 +8,8 @@ public abstract class Stage : MonoBehaviour
 {
     [Header("Start")]
     [SerializeField]
+    Player _player;
+    [SerializeField]
     Transform _initialSpawnAnchor;
 
     [Header("EventSignal")]
@@ -26,14 +28,10 @@ public abstract class Stage : MonoBehaviour
     readonly List<Unit> _npcUnits = new();
     readonly List<Unit> _aliveNpcUnits = new();
 
-    [SerializeField, HideInInspector]
-    Player _player;
-
-    public void Init(Player playerPrefab)
+    public void Init()
     {
-        _player = Instantiate(playerPrefab, transform);
         _player.InitialInit();
-        Player.transform.SetPositionAndRotation(InitialSpawnAnchor.position, InitialSpawnAnchor.rotation);
+        Player.transform.SetPositionAndRotation(InitialSpawnAnchor);
         _npcUnits.Clear();
         _aliveNpcUnits.Clear();
         foreach (var unitObj in GameObject.FindGameObjectsWithTag(Unit.TAG_NPC_UNIT))

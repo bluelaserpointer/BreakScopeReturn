@@ -9,6 +9,7 @@ TagManager:
   - RespawnAnchor
   - SecondCamera
   - Weapon
+  - RicochetMirror
   layers:
   - Default
   - TransparentFX

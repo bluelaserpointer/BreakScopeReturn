@@ -54,16 +54,16 @@ public class Player : Unit
     public GunInventory GunInventory => gunInventory;
     public Transform GunEyeAnchor => _gunEyeAnchor;
     public Transform GunEyeNoZRotAnchor => _gunEyeNoZRotAnchor;
-    public bool HasAimRaycastHit { get; private set; }
+    public Collider AimCollider { get; private set; }
     public Vector3 AimPosition { get; private set; }
-    public Interactable AimingInteractable { get; private set; }
+    public float AimDistance { get; private set; }
+    public Interactable AimInteractable { get; private set; }
     public Vector3 FootPosition => transform.position;
     public Transform AbilityContainer => _abilityContainer;
     private Vignette _bloodVignette;
     private float _respawnWaitedTime;
-    private void Awake()
+    public override void InitialInit()
     {
-        Controllable = true;
         _bloodVignette = (Vignette)_cameraVolumeProfile.components.Find(component => component.GetType() == typeof(Vignette));
         onDamage.AddListener(damageSource => {
             OnHealthChange();
@@ -79,28 +79,14 @@ public class Player : Unit
             _respawnWaitedTime = 0;
             AudioSource.PlayClipAtPoint(_deathSE, Camera.transform.position);
         });
-    }
-    public void SetEnableCameras(bool cond)
-    {
-        Camera.enabled = cond;
-        HUDCamera.enabled = cond;
-    }
-    public override bool IsMyCollider(Collider collider)
-    {
-        return collider.gameObject.Equals(Movement.CharacterController.gameObject);
-    }
-    public void OnHealthChange()
-    {
-        _bloodVignette.intensity.value = Mathf.Lerp(0, _bloodVignetteMaxIntencity, 1 - Health.Ratio);
-    }
-    public override void InitialInit()
-    {
         base.InitialInit();
         GunInventory.InitialInit();
+        gameObject.SetActive(true);
     }
     public override void LoadInit()
     {
         base.LoadInit();
+        Controllable = true;
         GameManager.Instance.SetBlackout(false);
         Movement.enabled = true;
         MouseLook.enabled = true;
@@ -121,116 +107,93 @@ public class Player : Unit
             }
             return;
         }
-        RaycastTargetUpdate();
+        AimPositionUpdate();
         InteractUpdate();
     }
-    private void RaycastTargetUpdate()
+    public override bool IsMyCollider(Collider collider)
     {
-        HasAimRaycastHit = false;
+        return collider.gameObject.Equals(Movement.CharacterController.gameObject);
+    }
+    public void OnHealthChange()
+    {
+        _bloodVignette.intensity.value = Mathf.Lerp(0, _bloodVignetteMaxIntencity, 1 - Health.Ratio);
+    }
+    private void AimPositionUpdate()
+    {
         Ray ray = new(Camera.transform.position, Camera.transform.forward);
-        RicochetMirror latestReflectedMirror = null;
-        bool rayHitPredicate(RaycastHit hitInfo)
+        Collider latestReflectedMirrorCollider = null;
+        bool rayHitFilter(RaycastHit hitInfo, out bool isMirror)
         {
+            isMirror = false;
+            if (hitInfo.collider == latestReflectedMirrorCollider)
+                return false;
+            if (RicochetMirror.IsRicochetMirrorCollider(hitInfo.collider))
+            {
+                isMirror = true;
+                return true;
+            }
             if (hitInfo.collider.isTrigger)
-            {
-                RicochetMirror mirror = hitInfo.collider.GetComponentInParent<RicochetMirror>();
-                return mirror != null && mirror != latestReflectedMirror;
-            }
-            else
-            {
-                return hitInfo.collider.GetComponentInParent<Player>() == null;
-            }
+                return false;
+            return !IsMyCollider(hitInfo.collider);
         }
-        Vector3 virtualAimPosition = ray.origin;
-        List<Vector3> aimLinePositions = new()
-        {
-            Camera.transform.position
-        };
+        Vector3 firstRayOrigin = ray.origin;
+        float totalRayDistance = 0;
+        List<Vector3> aimLinePositions = new() { Camera.transform.position };
         do
         {
-            if (ClosestRaycastHit(ray, rayHitPredicate, out var hit))
+            RaycastHit closestHit = new() { distance = float.MaxValue };
+            bool isMirror = false;
+            foreach (var hitInfo in Physics.RaycastAll(ray))
             {
-                aimLinePositions.Add(hit.point);
-                virtualAimPosition += Camera.transform.forward * hit.distance;
-                RicochetMirror mirror = hit.collider.GetComponentInParent<RicochetMirror>();
-                if (mirror == null)
-                {
-                    HasAimRaycastHit = true;
-                    AimPosition = virtualAimPosition;
-                    GameManager.Instance.MinimapUI.SetAimLine(aimLinePositions.ToArray());
-                    break;
-                }
-                else
-                {
-                    latestReflectedMirror = mirror;
-                    ray.origin = hit.point;
-                    ray.direction = Vector3.Reflect(ray.direction, hit.normal);
-                }
+                if (hitInfo.distance > closestHit.distance)
+                    continue;
+                if (!rayHitFilter(hitInfo, out bool _isMirror))
+                    continue;
+                closestHit = hitInfo;
+                isMirror = _isMirror;
             }
-            else
+            if (closestHit.collider == null)
             {
-                HasAimRaycastHit = false;
-                AimPosition = Camera.transform.position + Camera.transform.forward * 100;
-                GameManager.Instance.MinimapUI.SetAimLine(aimLinePositions[0], AimPosition);
+                AimCollider = null;
+                aimLinePositions.Add(ray.origin + ray.direction * 100);
+                totalRayDistance += 100;
                 break;
             }
+            aimLinePositions.Add(closestHit.point);
+            totalRayDistance += closestHit.distance;
+            if (!isMirror)
+            {
+                AimCollider = closestHit.collider;
+                break;
+            }
+            latestReflectedMirrorCollider = closestHit.collider;
+            ray.origin = closestHit.point;
+            ray.direction = Vector3.Reflect(ray.direction, closestHit.normal);
         } while (true);
+        AimDistance = totalRayDistance;
+        AimPosition = firstRayOrigin + Camera.transform.forward * AimDistance;
+        GameManager.Instance.MinimapUI.SetAimLine(aimLinePositions.ToArray());
     }
     private void InteractUpdate()
     {
-        Interactable closestInteractable = null;
-        RaycastHit closestValidHit = new()
+        if (AimDistance < _interactionDistance && AimCollider.TryGetComponent(out Interactable interactable)
+             && interactable.ContainsActiveInteract)
         {
-            distance = float.MaxValue
-        };
-        foreach (var hit in Physics.RaycastAll(Camera.transform.position, Camera.transform.forward, _interactionDistance))
-        {
-            if (hit.distance > closestValidHit.distance)
-                continue;
-            if (hit.collider.TryGetComponent(out Interactable interactable) && interactable.ContainsActiveInteract)
-            {
-                closestInteractable = interactable;
-                closestValidHit = hit;
-            }
-            if (!hit.collider.isTrigger)
-            {
-                closestValidHit = hit; // block interaction raycast
-            }
-        }
-        if (closestInteractable != null && closestInteractable.gameObject.Equals(closestValidHit.collider.gameObject))
-        {
-            AimingInteractable = closestInteractable;
+            AimInteractable = interactable;
             GameManager.Instance.InteractIconViewer.SetActive(true);
             //GameManager.Instance.InteractIconViewer.transform.position = Camera.WorldToScreenPoint(closestValidHit.collider.bounds.center);
             GameManager.Instance.InteractIconViewer.transform.position = new Vector2(Screen.width / 2, Screen.height / 2);
-            GameManager.Instance.InteractIconViewer.GetComponentInChildren<Image>().sprite = AimingInteractable.InteractIcon;
+            GameManager.Instance.InteractIconViewer.GetComponentInChildren<Image>().sprite = AimInteractable.InteractIcon;
             if (Controllable && Input.GetKeyDown(KeyCode.E))
             {
-                AimingInteractable.Interact();
+                AimInteractable.Interact();
             }
         }
         else
         {
-            AimingInteractable = null;
+            AimInteractable = null;
             GameManager.Instance.InteractIconViewer.SetActive(false);
         }
-    }
-    private bool ClosestRaycastHit(Ray ray, Predicate<RaycastHit> predicate, out RaycastHit closestHit)
-    {
-        closestHit = new()
-        {
-            distance = float.MaxValue
-        };
-        foreach (var hitInfo in Physics.RaycastAll(ray))
-        {
-            if (!predicate.Invoke(hitInfo))
-                continue;
-            if (hitInfo.distance < closestHit.distance)
-            {
-                closestHit = hitInfo;
-            }
-        }
-        return closestHit.collider != null;
     }
     public override void SetEnableAI(bool cond)
     {
@@ -245,6 +208,7 @@ public class Player : Unit
             GunInventory.Hands.enabled = cond;
         }
     }
+    /*
     public void OrderAimAction(Transform aimTarget)
     {
         Vector3 lookRotationEuler = Quaternion.LookRotation(aimTarget.position - MouseLook.transform.position).eulerAngles;
@@ -255,6 +219,7 @@ public class Player : Unit
     {
         ((PlayerGunHands)GunInventory.Hands).Trigger();
     }
+    */
     struct PlayerSave
     {
         public List<PrefabCloneSave> equipmentSaves;

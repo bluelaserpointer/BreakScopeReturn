@@ -29,6 +29,10 @@ public class RicochetMirror : MonoBehaviour
     public bool expand;
     private Transform PlayerCameraPose => GameManager.Instance.Player.Camera.transform;
 
+    public static bool IsRicochetMirrorCollider(Collider collider)
+    {
+        return collider.CompareTag(nameof(RicochetMirror));
+    }
     public void Init()
     {
         mirrorScript.cameraLookingAtThisMirror = GameManager.Instance.Player.Camera;

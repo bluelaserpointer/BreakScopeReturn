@@ -40,8 +40,7 @@ public class Cutscene : MonoBehaviour
     public void Skip()
     {
         SkipOrder = true;
-        PlayableDirector.Stop();
-        GameManager.Instance.ActiveCutscene = null;
+        PlayableDirector.time = PlayableDirector.duration - Time.deltaTime;
     }
     private void OnStoppedInternal()
     {

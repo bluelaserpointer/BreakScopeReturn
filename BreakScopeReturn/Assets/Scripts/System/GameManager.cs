@@ -13,7 +13,6 @@ public class GameManager : MonoBehaviour
 
     [Header("Reference")]
     [SerializeField] Stage _stage;
-    [SerializeField] Player playerPrefab;
     [SerializeField] GameObject _cutsceneUI;
     [SerializeField] DialogUI dialogUI;
     [SerializeField] GameObject playerDeathBlackout;
@@ -41,8 +40,9 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
         LanguageExtension.currentLanguage = _startLanguage;
-        InitStage();
+        CurrentStage.Init();
         Player.stealth = _playerStealth;
+        SaveStage();
     }
     public void Update()
     {
@@ -54,11 +54,6 @@ public class GameManager : MonoBehaviour
         {
             LoadStage();
         }
-    }
-    public void InitStage()
-    {
-        CurrentStage.Init(playerPrefab);
-        SaveStage();
     }
     public void SkipCutScene()
     {
@@ -153,10 +148,10 @@ public class GameManager : MonoBehaviour
         }
         foreach (var dump in reusablePrefabClones)
             Destroy(dump.gameObject);
-        foreach (var abonormalDump in reusableSceneBasedComponents)
+        foreach (var abnormalDump in reusableSceneBasedComponents)
         {
-            Debug.Log("<!> A scene based reusable component is not reused: + \"" + abonormalDump + "\"");
-            Destroy(abonormalDump.gameObject);
+            Debug.Log("<!> A scene based reusable component is not reused: + \"" + abnormalDump + "\"");
+            Destroy(abnormalDump.gameObject);
         }
         //refresh ui
         dialogUI.SetDialog(null);

@@ -73,6 +73,8 @@ public class CommonGuard : Unit
 
     [Header("Sound")]
     [SerializeField]
+    float _foundVoiceCD = 5F;
+    [SerializeField]
     AudioSource _voiceSource;
     [SerializeField]
     AudioClip _attackVoice;
@@ -110,6 +112,7 @@ public class CommonGuard : Unit
     public enum GuardStateEnum { Patrol, PatrolStay, Defend, Search, ObeyActionOrder }
     public GuardStateEnum GuardState { get; private set; }
     public bool NeverFoundEnemy { get; private set; }
+    public float TimePassedAfterLastFound => Time.timeSinceLevelLoad - _lastFoundTime;
 
     Vector3 _targetAimPosition;
     Quaternion _currentLookRotation, _currentAimRotation;
@@ -128,7 +131,7 @@ public class CommonGuard : Unit
         navMeshAgent.stoppingDistance = stoppingDistance;
         onFoundEnemyChangedTo.AddListener(found =>
         {
-            if (found)
+            if (found && TimePassedAfterLastFound > _foundVoiceCD)
             {
                 VoicePlay(_attackVoice);
             }
@@ -371,7 +374,7 @@ public class CommonGuard : Unit
             {
                 stay = false;
             }
-            else if (Time.timeSinceLevelLoad - _lastFoundTime > _chaseLastFoundPositionWaitTime)
+            else if (TimePassedAfterLastFound > _chaseLastFoundPositionWaitTime)
             {
                 stay = false;
             }

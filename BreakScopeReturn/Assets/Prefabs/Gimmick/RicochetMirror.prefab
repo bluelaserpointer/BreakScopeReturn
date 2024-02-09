@@ -88,7 +88,6 @@ MonoBehaviour:
   renderParent: {fileID: 550291176980372662}
   mirrorScript: {fileID: 5771171306407108806}
   expandAnchor: {fileID: 550291176980372662}
-  expand: 0
 --- !u!1 &5771171306418290230
 GameObject:
   m_ObjectHideFlags: 0
@@ -105,7 +104,7 @@ GameObject:
   - component: {fileID: 3138860370911564900}
   m_Layer: 0
   m_Name: MirrorPlane
-  m_TagString: Untagged
+  m_TagString: RicochetMirror
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -138,8 +137,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77b7fc7cdbba2b4489915a8923a46f91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  oldPosAnchor: {fileID: 0}
-  newPosAnchor: {fileID: 0}
   cameraLookingAtThisMirror: {fileID: 0}
   _additionalCullingMask:
     serializedVersion: 2
@@ -222,7 +219,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 0.045}
+  m_Size: {x: 1, y: 1, z: 0.15}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3138860370911564900
 MonoBehaviour:
