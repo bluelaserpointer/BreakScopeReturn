@@ -120,7 +120,7 @@ public class GunInventory : MonoBehaviour
         newEquipmentIndex = Mathf.Clamp(newEquipmentIndex, 0, equipments.Count - 1);
         if (HoldingEquipmentIndex == newEquipmentIndex && (Hands != null || HoldingEquipment == null))
 			yield break;
-        _switchWeaponCD.Reset();
+        _switchWeaponCD.Clear();
         if (weaponChanging != null)
 			weaponChanging.Play();
 		if(Hands != null)

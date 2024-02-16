@@ -69,7 +69,7 @@ namespace IzumiTools
             {
                 if (IsGrounded)
                 {
-                    jumpCD.Reset();
+                    jumpCD.Clear();
                     if (_jumpSE != null)
                         OneShotSound.PlayAtAnchor(_jumpSE, transform);
                     Rigidbody.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y), ForceMode.VelocityChange);

@@ -8,11 +8,13 @@ public class Interactable : MonoBehaviour
 {
     [SerializeField] protected bool oneTime;
     [SerializeField] protected Sprite interactIcon;
+    [SerializeField] protected TranslatableSentenceSO actionName;
     public UnityEvent onInteract;
     public UnityEvent onStepIn;
     public UnityEvent onStepOut;
 
     public Sprite InteractIcon => interactIcon;
+    public TranslatableSentence ActionName => actionName;
     public bool ContainsActiveInteract => onInteract.GetPersistentEventCount() > 0;
 
     public void Interact()

@@ -20,6 +20,6 @@ public class LanguageTMPFontSO : ScriptableObject
     }
     public TMP_FontAsset GetCurrentLanguageFont()
     {
-        return GetFont(LanguageExtension.currentLanguage);
+        return GetFont(LanguageExtension.CurrentLanguage);
     }
 }

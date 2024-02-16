@@ -3,7 +3,7 @@ using UnityEngine;
 namespace IzumiTools
 {
     /// <summary>
-    /// Toplimited positive float value for representing things like health point, magazine, and <see cref="Cooldown"/>, etc.
+    /// Toplimited positive float value for representing things such as health point, magazine, and <see cref="Cooldown"/>, etc.
     /// </summary>
     [System.Serializable]
     public class CappedValue
@@ -38,17 +38,42 @@ namespace IzumiTools
             }
         }
         /// <summary>
-        /// eauals Max - Value
+        /// <see cref="Capacity"/> - <see cref="Value"/>
         /// </summary>
-        public float Space  => _max - _value;
+        public float Space
+        {
+            get => _max - _value;
+            set => Value = _max - value;
+        }
+        /// <summary>
+        /// <see cref="Value"/> / <see cref="Capacity"/>
+        /// </summary>
         public float Ratio
         {
             get => _value / _max;
             set => _value = _max * Mathf.Clamp01(value);
         }
-        public void Maximize()
+        /// <summary>
+        /// <see cref="Value"/> == <see cref="Capacity"/>
+        /// </summary>
+        public bool Full => _value == _max;
+        /// <summary>
+        /// <see cref="Value"/> == 0
+        /// </summary>
+        public bool Empty => _value == 0;
+        /// <summary>
+        /// <see cref="Value"/> = <see cref="Capacity"/>
+        /// </summary>
+        public void Fill()
         {
-            Value = Capacity;
+            _value = _max;
+        }
+        /// <summary>
+        /// <see cref="Value"/> = 0
+        /// </summary>
+        public void Clear()
+        {
+            Value = 0;
         }
         public float AddAndGetOverflow(float value)
         {

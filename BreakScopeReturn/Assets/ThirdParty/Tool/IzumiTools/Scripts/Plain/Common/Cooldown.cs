@@ -21,20 +21,16 @@ namespace IzumiTools
             set
             {
                 if (value)
-                    Maximize();
+                    Fill();
                 else
-                    Reset();
+                    Clear();
             }
-        }
-        public void Reset()
-        {
-            Value = 0;
         }
         public bool Eat()
         {
             if (IsReady)
             {
-                Reset();
+                Clear();
                 return true;
             }
             return false;

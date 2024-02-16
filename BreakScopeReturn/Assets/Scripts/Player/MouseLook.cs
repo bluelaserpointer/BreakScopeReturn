@@ -7,15 +7,13 @@ public class MouseLook : MonoBehaviour
     [Header("Internal Reference")]
 	[SerializeField] public new Camera camera;
 	public Camera Camera => camera;
-	/*
-	 * Hiding the cursor.
-	 */
-	void Awake(){
+	private Player Player => GameManager.Instance.Player;
+    void Awake(){
+		baseMouseSensitivity = PlayerPrefs.GetFloat(Setting.MOUSE_SENSITIVITY, 1F);
 		LoadInit();
 	}
 	public void LoadInit()
     {
-        Cursor.lockState = CursorLockMode.Locked;
         currentRotation = baseRotation = Vector2.up * transform.eulerAngles.y;
 		recoilRotation = Vector2.zero;
     }
@@ -26,26 +24,20 @@ public class MouseLook : MonoBehaviour
 	*/
 	private void Update(){
         MouseSensitvity = baseMouseSensitivity;
-        PlayerHands playerHands = GameManager.Instance.Player.GunInventory.Hands;
+        PlayerHands playerHands = Player.GunInventory.Hands;
         if (playerHands != null)
         {
             MouseSensitvity *= playerHands.MouseSensitivityModify;
         }
         MouseInputMovement();
 
-		if (Input.GetKeyDown (KeyCode.L)) {
-			Cursor.lockState = CursorLockMode.Locked;
-
-		}
-		deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
-
-		if(GameManager.Instance.Player.Movement.HasInputXZ)
+		if(Player.Movement.HasInputXZ)
 			HeadMovement ();
     }
     void FixedUpdate()
     {
         currentRotation = baseRotation + recoilRotation;
-        GameManager.Instance.Player.transform.rotation = Quaternion.Euler(0, currentRotation.y, 0);
+        Player.transform.rotation = Quaternion.Euler(0, currentRotation.y, 0);
         transform.localRotation = Quaternion.Euler(currentRotation.x, 0, zRotation);
     }
 
@@ -94,45 +86,13 @@ public class MouseLook : MonoBehaviour
 	 * Clamping the camera rotation X to top and bottom angles.
 	 */
 	void MouseInputMovement(){
-
 		baseRotation.y += Input.GetAxis("Mouse X") * MouseSensitvity;
-
 		baseRotation.x -= Input.GetAxis("Mouse Y") * MouseSensitvity;
-
 		baseRotation.x = Mathf.Clamp(baseRotation.x, bottomAngleView, topAngleView);
-
 	}
 	public void OverrideRecoil()
 	{
 		baseRotation += recoilRotation;
 		recoilRotation = Vector2.zero;
-	}
-	float deltaTime = 0.0f;
-	[Tooltip("Shows FPS in top left corner.")]
-	public bool showFps = true;
-	/*
-	* Shows fps if its set to true.
-	*/
-	void OnGUI(){
-		if(showFps){
-			FPSCounter();
-		}
-	}
-	/*
-	* Calculating real fps because unity status tab shows too much fps even when its not that mutch so i made my own.
-	*/
-	void FPSCounter(){
-		int w = Screen.width, h = Screen.height;
-
-		GUIStyle style = new GUIStyle();
-
-		Rect rect = new Rect(0, 0, w, h * 2 / 100);
-		style.alignment = TextAnchor.UpperLeft;
-		style.fontSize = h * 2 / 100;
-		style.normal.textColor = Color.white;
-		float msec = deltaTime * 1000.0f;
-		float fps = 1.0f / deltaTime;
-		string text = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
-		GUI.Label(rect, text, style);
 	}
 }

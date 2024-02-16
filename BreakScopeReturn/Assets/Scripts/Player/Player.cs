@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.UI;
 
 [DisallowMultipleComponent]
 public class Player : Unit
@@ -44,7 +43,6 @@ public class Player : Unit
     [SerializeField]
     AudioClip _deathSE;
 
-    public bool Controllable { get; private set; }
     public Camera Camera => MouseLook.Camera;
     public Camera HUDCamera => _hudCamera;
     public EquipmentSidePreview EquipmentSidePreview => _equipmentSidePreview;
@@ -62,35 +60,31 @@ public class Player : Unit
     public Transform AbilityContainer => _abilityContainer;
     private Vignette _bloodVignette;
     private float _respawnWaitedTime;
-    public override void InitialInit()
+    protected override void Internal_Init(bool isInitialInit)
     {
-        _bloodVignette = (Vignette)_cameraVolumeProfile.components.Find(component => component.GetType() == typeof(Vignette));
-        onDamage.AddListener(damageSource => {
-            OnHealthChange();
-            if (damageSource.GetType() == typeof(DamageSource.BulletDamage))
-                GameManager.Instance.DirectionIndicator.SetHitDirection((DamageSource.BulletDamage)damageSource);
-        });
-        onHeal.AddListener(healAmount => OnHealthChange());
-        onDead.AddListener(() =>
+        if (isInitialInit)
         {
-            GameManager.Instance.SetBlackout(true);
-            Movement.enabled = false;
-            MouseLook.enabled = false;
-            _respawnWaitedTime = 0;
-            AudioSource.PlayClipAtPoint(_deathSE, Camera.transform.position);
-        });
-        base.InitialInit();
+            _bloodVignette = (Vignette)_cameraVolumeProfile.components.Find(component => component.GetType() == typeof(Vignette));
+            onDamage.AddListener(damageSource => {
+                OnHealthChange();
+                if (damageSource.GetType() == typeof(DamageSource.BulletDamage))
+                    GameManager.Instance.DirectionIndicator.SetHitDirection((DamageSource.BulletDamage)damageSource);
+            });
+            onHeal.AddListener(healAmount => OnHealthChange());
+            onDead.AddListener(() =>
+            {
+                GameManager.Instance.SetBlackout(true);
+                Movement.enabled = false;
+                MouseLook.enabled = false;
+                _respawnWaitedTime = 0;
+                AudioSource.PlayClipAtPoint(_deathSE, Camera.transform.position);
+            });
+        }
+        base.Internal_Init(isInitialInit);
+        OnHealthChange();
+        GameManager.Instance.SetBlackout(false); //TODO: dont do this in player script
         GunInventory.InitialInit();
         gameObject.SetActive(true);
-    }
-    public override void LoadInit()
-    {
-        base.LoadInit();
-        Controllable = true;
-        GameManager.Instance.SetBlackout(false);
-        Movement.enabled = true;
-        MouseLook.enabled = true;
-        OnHealthChange();
     }
     private void Update()
     {
@@ -180,32 +174,27 @@ public class Player : Unit
              && interactable.ContainsActiveInteract)
         {
             AimInteractable = interactable;
-            GameManager.Instance.InteractIconViewer.SetActive(true);
-            //GameManager.Instance.InteractIconViewer.transform.position = Camera.WorldToScreenPoint(closestValidHit.collider.bounds.center);
-            GameManager.Instance.InteractIconViewer.transform.position = new Vector2(Screen.width / 2, Screen.height / 2);
-            GameManager.Instance.InteractIconViewer.GetComponentInChildren<Image>().sprite = AimInteractable.InteractIcon;
-            if (Controllable && Input.GetKeyDown(KeyCode.E))
+            GameManager.Instance.InteractUI.SetInfo(interactable);
+            if (Input.GetKeyDown(KeyCode.E))
             {
                 AimInteractable.Interact();
             }
+            GameManager.Instance.InteractUI.gameObject.SetActive(true);
         }
         else
         {
             AimInteractable = null;
-            GameManager.Instance.InteractIconViewer.SetActive(false);
+            GameManager.Instance.InteractUI.gameObject.SetActive(false);
         }
     }
-    public override void SetEnableAI(bool cond)
+    protected override void OnAIEnableChange()
     {
-        //monobehavior update method will keep working
-        Controllable = cond;
-        MouseLook.enabled = cond;
-        Movement.enabled = cond;
-        //Movement.Rigidbody.isKinematic = !cond;
-        GunInventory.enabled = cond;
+        Cursor.lockState = AIEnable ? CursorLockMode.Locked : CursorLockMode.None;
+        MouseLook.enabled = Movement.enabled = AIEnable;
+        GunInventory.enabled = AIEnable;
         if (GunInventory.Hands)
         {
-            GunInventory.Hands.enabled = cond;
+            GunInventory.Hands.enabled = AIEnable;
         }
     }
     /*
@@ -236,10 +225,10 @@ public class Player : Unit
         });
         return json;
     }
-    public override void Deserialize(string json)
+    protected override void Internal_Deserialize(string json)
     {
         PlayerSave save = JsonUtility.FromJson<PlayerSave>(json);
-        base.Deserialize(save.commonUnitSave);
+        base.Internal_Deserialize(save.commonUnitSave);
         List<SaveTargetPrefabRoot> reuseCandidates = gunInventory.equipments.ConvertAll(equpiment => equpiment.saveProperty.prefabRoot);
         gunInventory.equipments.Clear();
         foreach (var equipmentSave in save.equipmentSaves)

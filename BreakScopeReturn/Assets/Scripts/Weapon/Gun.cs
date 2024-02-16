@@ -96,7 +96,7 @@ public class Gun : HandEquipment
 
     private void Awake()
     {
-        magazine.Maximize();
+        magazine.Fill();
         UpdateAnchorRelation();
     }
     private void Update()

@@ -146,9 +146,8 @@ public class Stage1Scenario : Stage
     public override void GameClear()
     {
         base.GameClear();
-        Player.SetEnableAI(false);
-        GameManager.Instance.CurrentStage.NpcUnits.ForEach(unit => unit.SetEnableAI(false));
-        Cursor.lockState = CursorLockMode.None;
+        Player.CutscenePause = true;
+        GameManager.Instance.CurrentStage.NpcUnits.ForEach(unit => unit.CutscenePause = true);
         _resultScreen.SetActive(true);
         float enemyCount = GameManager.Instance.CurrentStage.NpcUnits.Count;
         achievements[0].SetAchivement("achiv1", _scenario.shieldManKillCount >= 2);

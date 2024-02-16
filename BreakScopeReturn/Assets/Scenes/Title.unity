@@ -151,7 +151,7 @@ PlayableDirector:
   serializedVersion: 3
   m_PlayableAsset: {fileID: 11400000, guid: 756f96c741d1fbe4d8f7ee70d0cc281c, type: 2}
   m_InitialState: 1
-  m_WrapMode: 2
+  m_WrapMode: 0
   m_DirectorUpdateMode: 1
   m_InitialTime: 0
   m_SceneBindings:
@@ -886,7 +886,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -1152,14 +1152,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f20532ea88dee942bf57bdb2588dd37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _languageFontSO: {fileID: 11400000, guid: 77e93ca786b559f4086871cc2390843e, type: 2}
+  fontSO: {fileID: 11400000, guid: 77e93ca786b559f4086871cc2390843e, type: 2}
+  sentenceSO: {fileID: 11400000, guid: f78c8cb310cf82d4abf2d0ee2992f902, type: 2}
+  prefix: 
+  suffix: 
   sentence:
-    defaultString: Start mission
+    defaultString: Exit Game
     languageAndSentences:
-    - language: 2
-      sentence: "\u4EFB\u52D9\u7D42\u4E86"
     - language: 0
       sentence: "\u9000\u51FA\u6E38\u620F"
+    - language: 2
+      sentence: "\u7D42\u4E86"
 --- !u!114 &933172445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1180,10 +1183,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u9000\u51FA\u6E38\u620F"
+  m_text: "\u7D42\u4E86"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 80dc722490430904ebfc4319ce32ac2a, type: 2}
-  m_sharedMaterial: {fileID: -5324559690973671317, guid: 80dc722490430904ebfc4319ce32ac2a, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 155260995651ddf44abca1ea87597232, type: 2}
+  m_sharedMaterial: {fileID: 1605893388174776586, guid: 155260995651ddf44abca1ea87597232, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1315,10 +1318,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Language: \u4E2D\u6587"
+  m_text: "Language: \u65E5\u672C\u8A9E"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 80dc722490430904ebfc4319ce32ac2a, type: 2}
-  m_sharedMaterial: {fileID: -5324559690973671317, guid: 80dc722490430904ebfc4319ce32ac2a, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 155260995651ddf44abca1ea87597232, type: 2}
+  m_sharedMaterial: {fileID: 1605893388174776586, guid: 155260995651ddf44abca1ea87597232, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1404,14 +1407,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f20532ea88dee942bf57bdb2588dd37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _languageFontSO: {fileID: 11400000, guid: 77e93ca786b559f4086871cc2390843e, type: 2}
+  fontSO: {fileID: 11400000, guid: 77e93ca786b559f4086871cc2390843e, type: 2}
+  sentenceSO: {fileID: 11400000, guid: 57c400803ca085348a150e7ec4ba9e3e, type: 2}
+  prefix: 'Language: '
+  suffix: 
   sentence:
-    defaultString: 'Language: English'
+    defaultString: Language
     languageAndSentences:
+    - language: 1
+      sentence: English
     - language: 0
-      sentence: "Language: \u4E2D\u6587"
+      sentence: "\u4E2D\u6587"
     - language: 2
-      sentence: "Language: \u65E5\u672C\u8A9E"
+      sentence: "\u65E5\u672C\u8A9E"
 --- !u!1 &1040391253
 GameObject:
   m_ObjectHideFlags: 0
@@ -2018,14 +2026,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f20532ea88dee942bf57bdb2588dd37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _languageFontSO: {fileID: 11400000, guid: 77e93ca786b559f4086871cc2390843e, type: 2}
+  fontSO: {fileID: 11400000, guid: 77e93ca786b559f4086871cc2390843e, type: 2}
+  sentenceSO: {fileID: 11400000, guid: c3dabfc07626ff745823f36411caab42, type: 2}
+  prefix: 
+  suffix: 
   sentence:
-    defaultString: Start mission
+    defaultString: Game Start
     languageAndSentences:
-    - language: 2
-      sentence: "\u4EFB\u52D9\u958B\u59CB"
     - language: 0
-      sentence: "\u4EFB\u52A1\u5F00\u59CB"
+      sentence: "\u5F00\u59CB\u6E38\u620F"
+    - language: 2
+      sentence: "\u521D\u3081\u304B\u3089"
 --- !u!114 &1439476309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2046,10 +2057,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u4EFB\u52A1\u5F00\u59CB"
+  m_text: "\u521D\u3081\u304B\u3089"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 80dc722490430904ebfc4319ce32ac2a, type: 2}
-  m_sharedMaterial: {fileID: -5324559690973671317, guid: 80dc722490430904ebfc4319ce32ac2a, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 155260995651ddf44abca1ea87597232, type: 2}
+  m_sharedMaterial: {fileID: 1605893388174776586, guid: 155260995651ddf44abca1ea87597232, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2279,8 +2290,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _initialStageSceneName: Stage1
-  _loadingWindow: {fileID: 0}
-  _loadingProgressImage: {fileID: 0}
 --- !u!4 &1945326633
 Transform:
   m_ObjectHideFlags: 0

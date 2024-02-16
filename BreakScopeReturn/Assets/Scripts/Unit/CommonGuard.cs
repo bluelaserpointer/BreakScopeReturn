@@ -81,7 +81,6 @@ public class CommonGuard : Unit
     [SerializeField]
     AudioClip _deathVoice;
 
-    public bool AIEnabled { get; private set; }
     public NPCGun Gun { get; private set; }
     public readonly UnityEvent<bool> onFoundEnemyChangedTo = new UnityEvent<bool>();
     Player Player => GameManager.Instance.Player;
@@ -171,9 +170,9 @@ public class CommonGuard : Unit
             }
         });
     }
-    public override void LoadInit()
+    protected override void Internal_Init(bool isInitialInit)
     {
-        base.LoadInit();
+        base.Internal_Init(isInitialInit);
         Gun = Instantiate(_gunPrefab, transform);
         Gun.Init(this);
         SetModelFiringCD(Gun.FireCD.Capacity);
@@ -273,10 +272,9 @@ public class CommonGuard : Unit
             transform.eulerAngles = transform.eulerAngles.Set(y: Mathf.SmoothDamp(oldYRotation, newYRotation, ref _modelYRotateVelocity, _modelRotateSmoothTime * Time.fixedDeltaTime));
         }
     }
-    public override void SetEnableAI(bool cond)
+    protected override void OnAIEnableChange()
     {
-        AIEnabled = cond;
-        _ragdollRelax.enabled = cond;
+        base.OnAIEnableChange();
     }
     public void OrderAction(UnitActionOrder order)
     {
@@ -451,12 +449,12 @@ public class CommonGuard : Unit
             aimEulerAngle = _currentAimRotation
         });
     }
-    public override void Deserialize(string json)
+    protected override void Internal_Deserialize(string json)
     {
         NpcEnemySave save = JsonUtility.FromJson<NpcEnemySave>(json);
         NeverFoundEnemy = save.neverFoundEnemy;
         _currentLookRotation = save.lookEulerAngle;
         _currentAimRotation = save.aimEulerAngle;
-        base.Deserialize(save.commonUnitSave);
+        base.Internal_Deserialize(save.commonUnitSave);
     }
 }

@@ -549,6 +549,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   oneTime: 0
   interactIcon: {fileID: 21300000, guid: 137c605350849a743b8a4644b7de27be, type: 3}
+  actionName: {fileID: 11400000, guid: a8cb109e7a5cdad48b43e93dfbce8b91, type: 2}
   onInteract:
     m_PersistentCalls:
       m_Calls:

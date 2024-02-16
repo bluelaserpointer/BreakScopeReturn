@@ -346,7 +346,6 @@ MonoBehaviour:
     excludeFromSave: 0
     identifyName: Player (Player)#Prefab-0
     prefabRoot: {fileID: 0}
-  _disableAIOnAwake: 0
   _health:
     _max: 200
   _initialHealthRatio: 1
@@ -402,12 +401,9 @@ MonoBehaviour:
   accelLerp: 0.8
   jumpHeight: 4
   _moveAudioSource: {fileID: 82248981901151284}
-  _oralAudioSource: {fileID: 82190838427811640}
   _jumpSE: {fileID: 8300000, guid: fb859d907317d2446a59ffdeb1807e15, type: 3}
   _walkSE: {fileID: 8300000, guid: 3519e1b49b777a34d8674238d3c71350, type: 3}
   _runSE: {fileID: 8300000, guid: 258857b6c358d0644a339892e0212203, type: 3}
-  been_to_meele_anim: 0
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
 --- !u!54 &5427112
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6770,7 +6766,7 @@ GameObject:
   m_Icon: {fileID: -5397416234189338067, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6429879721942063055
 Transform:
   m_ObjectHideFlags: 0

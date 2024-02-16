@@ -3,19 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class TranslatableSentence
+public struct TranslatableSentence
 {
-    public TranslatableSentence() { }
-    public TranslatableSentence(TranslatableSentence sample)
-    {
-        defaultString = sample.defaultString;
-        foreach(LanguageAndSentence pair in sample.languageAndSentences)
-        {
-            languageAndSentences.Add(new LanguageAndSentence(pair.language, pair.sentence));
-        }
-    }
     [Serializable]
-    public class LanguageAndSentence
+    public struct LanguageAndSentence
     {
         public Language language;
         [TextArea]
@@ -26,27 +17,34 @@ public class TranslatableSentence
             this.sentence = sentence;
         }
     }
-    public string defaultString = "?missing?";
-    public List<LanguageAndSentence> languageAndSentences = new List<LanguageAndSentence>();
+    public string defaultString;
+    public LanguageAndSentence[] languageAndSentences;
     public override string ToString() {
-        LanguageAndSentence pair = languageAndSentences.Find(eachPair => eachPair.language.Equals(LanguageExtension.currentLanguage));
-        return pair != null ? pair.sentence : defaultString;
+        int pairID = Array.FindIndex(languageAndSentences, eachPair => eachPair.language.Equals(LanguageExtension.CurrentLanguage));
+        return pairID == -1 ? defaultString : languageAndSentences[pairID].sentence;
     }
     public static implicit operator string(TranslatableSentence sentence)
     {
         return sentence.ToString();
     }
+    public TranslatableSentence Clone()
+    {
+        return new TranslatableSentence
+        {
+            defaultString = defaultString,
+            languageAndSentences = (LanguageAndSentence[])languageAndSentences.Clone()
+        };
+    }
     public void PutSentence(Language language, string str)
     {
-        foreach(LanguageAndSentence pair in languageAndSentences)
+        int pairID = Array.FindIndex(languageAndSentences, eachPair => eachPair.language.Equals(language));
+        if (pairID != -1)
         {
-            if(pair.language.Equals(language))
-            {
-                pair.sentence = str;
-                return;
-            }
+            languageAndSentences[pairID].sentence = str;
+            return;
         }
-        languageAndSentences.Add(new LanguageAndSentence(language, str));
+        Array.Resize(ref languageAndSentences, languageAndSentences.Length + 1);
+        languageAndSentences[languageAndSentences.Length + 1] = new LanguageAndSentence(language, str);
     }
     public void PutSentence_EmptyStrMeansRemove(Language language, string str)
     {

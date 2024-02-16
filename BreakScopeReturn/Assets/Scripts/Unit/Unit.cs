@@ -9,7 +9,6 @@ public class Unit : SaveTarget
 {
     public static string TAG_NPC_UNIT => "NpcUnit";
     [Header("Unit Common Stats")]
-    [SerializeField] bool _disableAIOnAwake;
     [SerializeField] IzumiTools.CappedValue _health;
     [Range(0f, 1f)]
     [SerializeField] float _initialHealthRatio = 1;
@@ -19,46 +18,88 @@ public class Unit : SaveTarget
     [SerializeField] protected Animator _animator;
     [SerializeField] AnimationClip _firingAnimationClip;
 
+    public UnityEvent<DamageSource> onDamage = new();
+    public UnityEvent<float> onHeal = new();
+    public UnityEvent onDead = new();
+
+    /// <summary>
+    /// Set this true to always pass value change check during initialize phase. <br/>
+    /// </summary>
+    public bool Initializing { get; private set; }
+    /// <summary>
+    /// If an enemy AI or controllings of the player are avaliable. <br/>
+    /// Set <see cref="CutscenePause"/> = false to stop its AI.
+    /// </summary>
+    public bool AIEnable { get; private set; }
+    public bool CutscenePause
+    {
+        get => _cutscenePause;
+        set
+        {
+            _cutscenePause = value;
+            AIEnableUpdate();
+        }
+    }
+    public bool MenuPause => GameManager.Instance.MenuPause;
     public Animator Animator => _animator;
     public IzumiTools.CappedValue Health => _health;
     public Vector3 ViewPosition => viewAnchor.position;
     public bool IsDead { get; private set; }
     public readonly List<UnitDamageCollider> damageColliders = new List<UnitDamageCollider>();
 
-    public UnityEvent<DamageSource> onDamage = new();
-    public UnityEvent<float> onHeal = new();
-    public UnityEvent onDead = new();
+    private bool _cutscenePause;
 
     /// <summary>
     /// Called on initial stgage load after <see cref="GameManager.Instance"/> is loaded
     /// </summary>
-    public virtual void InitialInit()
+    public void Init(bool isInitialInit)
+    {
+        Initializing = true;
+        AIEnable = true;
+        Internal_Init(isInitialInit);
+        Initializing = false;
+    }
+    protected virtual void Internal_Init(bool isInitialInit)
     {
         damageColliders.AddRange(GetComponentsInChildren<UnitDamageCollider>());
         damageColliders.ForEach(collider => collider.Init(this));
         Health.Ratio = _initialHealthRatio;
-        IsDead = false;
-        if (Health.Value <= 0)
-        {
-            Dead();
+        if (isInitialInit)
+        {   
+            IsDead = false;
+            if (Health.Value <= 0)
+            {
+                Dead();
+            }
         }
-        if (_disableAIOnAwake)
-            SetEnableAI(false);
-        LoadInit();
+        else
+        {
+            IsDead = Health.Value <= 0;
+        }
+        _cutscenePause = false;
+        AIEnableUpdate();
     }
-    /// <summary>
-    /// Called on initial stage load and reuse
-    /// </summary>
-    public virtual void LoadInit()
+    public void AIEnableUpdate()
     {
-        IsDead = Health.Value <= 0;
+        bool newAIState = !CutscenePause && !MenuPause;
+        if (AIEnable != newAIState || Initializing)
+        {
+            AIEnable = newAIState;
+            OnAIEnableChange();
+        }
     }
+    protected virtual void OnAIEnableChange()
+    {
+        enabled = AIEnable;
+    }
+
     public void SetModelFiringCD(float time)
     {
         if (time <= 0)
             time = 0.1F;
         if (_animator)
         {
+            //TODO: add NPC shoot animation
             //_animator.SetFloat("FiringSpeedMultiplier", _firingAnimationClip.length / time);
         }
     }
@@ -68,9 +109,9 @@ public class Unit : SaveTarget
             return;
         Health.Value -= damageSource.damage;
         onDamage.Invoke(damageSource);
-        if (Health.Value == 0)
+        if (Health.Empty)
         {
-            Dead();  //TODO: immediately finish posing of dead body
+            Dead(); //TODO: immediately finish posing of dead body
         }
     }
     public virtual void Heal(float amount)
@@ -126,11 +167,6 @@ public class Unit : SaveTarget
     {
         return collider.transform.IsChildOf(transform);
     }
-    public virtual void SetEnableAI(bool cond)
-    {
-        enabled = false;
-    }
-
     protected struct UnitCommonSave
     {
         public float health;
@@ -147,11 +183,17 @@ public class Unit : SaveTarget
         });
     }
 
-    public override void Deserialize(string json)
+    public sealed override void Deserialize(string json)
+    {
+        Initializing = true;
+        Internal_Deserialize(json);
+        Internal_Init(false);
+        Initializing = false;
+    }
+    protected virtual void Internal_Deserialize(string json)
     {
         var save = JsonUtility.FromJson<UnitCommonSave>(json);
         transform.SetPositionAndRotation(save.position, save.rotation);
         Health.Value = save.health;
-        LoadInit();
     }
 }

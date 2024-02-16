@@ -30,7 +30,7 @@ public abstract class Stage : MonoBehaviour
 
     public void Init()
     {
-        _player.InitialInit();
+        _player.Init(true);
         Player.transform.SetPositionAndRotation(InitialSpawnAnchor);
         _npcUnits.Clear();
         _aliveNpcUnits.Clear();
@@ -39,6 +39,7 @@ public abstract class Stage : MonoBehaviour
             if (unitObj.GetComponentInParent<Stage>() == this && unitObj.TryGetComponent(out Unit unit))
             {
                 _npcUnits.Add(unit);
+                unit.Init(true);
                 if (!unit.IsDead)
                 {
                     _aliveNpcUnits.Add(unit);
@@ -49,7 +50,6 @@ public abstract class Stage : MonoBehaviour
                 }
             }
         }
-        _npcUnits.ForEach(unit => unit.InitialInit());
     }
     protected virtual void Start()
     {

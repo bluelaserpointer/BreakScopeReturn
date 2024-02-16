@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,50 +8,70 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [Header("Test")]
-    [SerializeField] Language _startLanguage;
+    [SerializeField] Language _editorLanguage;
     [SerializeField] bool _logSaveLoad;
     [SerializeField] bool _playerStealth;
 
     [Header("Reference")]
     [SerializeField] Stage _stage;
     [SerializeField] GameObject _cutsceneUI;
-    [SerializeField] DialogUI dialogUI;
-    [SerializeField] GameObject playerDeathBlackout;
+    [SerializeField] DialogUI _dialogUI;
+    [SerializeField] GameObject _playerDeathBlackout;
     [SerializeField] FadingBlackout _cutsceneBlackout;
-    [SerializeField] CheckPointNotifiactionUI checkPointNotification;
-    [SerializeField] DirectionIndicator directionIndicator;
-    [SerializeField] GameObject interactIconViewer;
-    [SerializeField] MinimapUI minimapUI;
-
+    [SerializeField] CheckPointNotifiactionUI _checkPointNotification;
+    [SerializeField] DirectionIndicator _directionIndicator;
+    [SerializeField] InteractUI _interactUI;
+    [SerializeField] MinimapUI _minimapUI;
+    [SerializeField] PauseUI _pauseUI;
     public static GameManager Instance { get; private set; }
+    public bool InitDone { get; private set; }
     public Cutscene ActiveCutscene { get; set; }
     public bool PlayingCutscene => ActiveCutscene != null && ActiveCutscene.Playing;
     public Stage CurrentStage => _stage;
     public FadingBlackout CutsceneBlackout => _cutsceneBlackout;
     public Player Player => CurrentStage.Player;
-    public DialogUI DialogUI => dialogUI;
+    public DialogUI DialogUI => _dialogUI;
     public GameObject CutsceneUI => _cutsceneUI;
-    public GameObject InteractIconViewer => interactIconViewer;
-    public MinimapUI MinimapUI => minimapUI;
-    public CheckPointNotifiactionUI CheckPointNotification => checkPointNotification;
-    public DirectionIndicator DirectionIndicator => directionIndicator;
+    public InteractUI InteractUI => _interactUI;
+    public MinimapUI MinimapUI => _minimapUI;
+    public PauseUI PauseUI => _pauseUI;
+    public bool MenuPause => PauseUI.Paused;
+    public CheckPointNotifiactionUI CheckPointNotification => _checkPointNotification;
+    public DirectionIndicator DirectionIndicator => _directionIndicator;
 
     private string _savedStageData;
+    private List<Action> _afterInitActions = new List<Action>();
     private void Awake()
     {
         Instance = this;
-        LanguageExtension.currentLanguage = _startLanguage;
+#if UNITY_EDITOR
+        Cursor.SetCursor(Resources.Load<Texture2D>("Cursor/Cursor"), Vector2.zero, CursorMode.Auto);
+        Setting.SetDefault();
+        Setting.Set(Setting.LANGUAGE, _editorLanguage);
+#endif
         CurrentStage.Init();
         Player.stealth = _playerStealth;
         SaveStage();
+        InitDone = true;
+        _afterInitActions.ForEach(action => action.Invoke());
+        _afterInitActions.Clear();
+    }
+    public void DoAfterInit(Action action)
+    {
+        if (InitDone)
+        {
+            action.Invoke();
+            return;
+        }
+        _afterInitActions.Add(action);
     }
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F1))
+        if (Input.GetKeyDown(KeyCode.F4))
         {
             SaveStage();
         }
-        else if (Input.GetKeyDown(KeyCode.F2))
+        else if (Input.GetKeyDown(KeyCode.F5))
         {
             LoadStage();
         }
@@ -154,10 +175,10 @@ public class GameManager : MonoBehaviour
             Destroy(abnormalDump.gameObject);
         }
         //refresh ui
-        dialogUI.SetDialog(null);
+        _dialogUI.SetDialog(null);
     }
     public void SetBlackout(bool cond)
     {
-        playerDeathBlackout.SetActive(cond);
+        _playerDeathBlackout.SetActive(cond);
     }
 }

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13f6bc1912b56ba48aa6189bf3c6e169, type: 3}
+  m_Name: ConfirmBackToTitle
+  m_EditorClassIdentifier: 
+  sentence:
+    defaultString: ConfirmBackToTitle
+    languageAndSentences:
+    - language: 1
+      sentence: Confirm back to title
+    - language: 0
+      sentence: "\u786E\u8BA4\u8FD4\u56DE\u6807\u9898"
+    - language: 2
+      sentence: "\u30BF\u30A4\u30C8\u30EB\u753B\u9762\u306B\u623B\u308A\u307E\u3059\u3002"

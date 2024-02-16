@@ -3,18 +3,16 @@ using UnityEngine.UI;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Text))]
-public class TranslatedText : MonoBehaviour
+public class TranslatedText : MonoBehaviour, ILanguageTranslator
 {
-    [SerializeField]
-    bool alwaysUpdate;
     [SerializeField]
     TranslatableSentenceSO so_sentence;
     [SerializeField]
     TranslatableSentence sentence;
 
-    // Update is called once per frame
-    private void Start()
+    private void Awake()
     {
+        LanguageExtension.AddLanguageTranslator(this);
         UpdateText();
     }
     public void SetText(TranslatableSentence sentence)
@@ -27,18 +25,13 @@ public class TranslatedText : MonoBehaviour
     {
         if (so_sentence != null)
         {
-            sentence = new TranslatableSentence(so_sentence.sentence);
+            sentence = so_sentence.sentence.Clone();
         }
         else if (sentence == null)
             return;
         UpdateText();
     }
-    private void Update()
-    {
-        if (alwaysUpdate)
-            UpdateText();
-    }
-    private void UpdateText()
+    public void UpdateText()
     {
         Text text = GetComponent<Text>();
         if (text != null)

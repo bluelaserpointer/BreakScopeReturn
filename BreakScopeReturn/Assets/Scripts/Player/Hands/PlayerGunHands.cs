@@ -155,7 +155,7 @@ public class PlayerGunHands : PlayerHands
     void AimUpdate()
 	{
 		//TODO: consider meeleAttack state
-		IsAiming = Input.GetButton("Fire2") && !IsReloading && !(PlayerMovement.HasInputXZ && PlayerMovement.MovingState == MovingStateEnum.Run);
+		IsAiming = Player.AIEnable && Input.GetButton("Fire2") && !IsReloading && !(PlayerMovement.HasInputXZ && PlayerMovement.MovingState == MovingStateEnum.Run);
         if (IsAiming)
         {
             aimTransition.SmoothTowardsOne();
@@ -176,7 +176,7 @@ public class PlayerGunHands : PlayerHands
 	 * Used to expand position of the crosshair or make it dissapear when running
 	 */
 	void CrossHairUpdate() {
-        if (Player.Controllable)
+        if (Player.AIEnable)
         {
             _crosshairContainer.gameObject.SetActive(true);
         }
@@ -198,7 +198,7 @@ public class PlayerGunHands : PlayerHands
         {
             BashActionOccupyRemainTime -= Time.deltaTime;
         }
-        if (Player.Controllable && Input.GetKeyDown(KeyCode.V) && !IsBashing)
+        if (Player.AIEnable && Input.GetKeyDown(KeyCode.V) && !IsBashing)
         {
             Animator.SetTrigger("bash");
             BashActionOccupyRemainTime = _bashActionOccupyTime;
@@ -231,7 +231,7 @@ public class PlayerGunHands : PlayerHands
 	}
 	void ShootingUpdate() {
 		FireCD.AddDeltaTime();
-        if (!Player.Controllable || IsBashing)
+        if (!Player.AIEnable || IsBashing)
             return;
         if (GunSpec.fireMode == GunSpec.FireMode.Nonautomatic)
         {
@@ -296,14 +296,14 @@ public class PlayerGunHands : PlayerHands
         }
         IsReloading = true;
         Animator.SetTrigger("reload");
-		ReloadCD.Reset();
+		ReloadCD.Clear();
 		return true;
 	}
 	void ReloadUpdate()
 	{
 		if (!IsReloading)
 		{
-            if (Player.Controllable && Input.GetKeyDown(KeyCode.R) && !IsBashing)
+            if (Player.AIEnable && Input.GetKeyDown(KeyCode.R) && !IsBashing)
             {
                 TryReload();
             }
