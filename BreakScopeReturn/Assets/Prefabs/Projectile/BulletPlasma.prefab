@@ -50,17 +50,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultObstacleHitSoundSet: {fileID: 11400000, guid: d1c0ae1133f0a8f46804c9a761f17197, type: 2}
-  defaultBodyHitSoundSet: {fileID: 11400000, guid: fe8f9def720c0f74ba5936ef5c30ad3d, type: 2}
   hitNoiseDistance: 5
   _reinstanceOnReflection: {fileID: 7406033699860857590}
   _detachBeforeDestory: {fileID: 288643725233444679}
   _destoryVFXPrefab: {fileID: 7016203107194408406, guid: c54e346fdcddb3e4fadcfc5739e83646, type: 3}
   _reflectVFXPrefab: {fileID: 7016203107194408406, guid: e05db83e99c1de5468ca1ec965fd49bb, type: 3}
-  _bodyHitVFXPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
   floatInfrontOfWall: 0.001
   ignoreLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   damage: 0
   speed: 1
 --- !u!54 &3104317051409024675

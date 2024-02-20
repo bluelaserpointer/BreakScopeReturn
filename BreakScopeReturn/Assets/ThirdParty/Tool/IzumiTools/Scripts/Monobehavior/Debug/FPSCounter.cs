@@ -34,7 +34,7 @@ public class FPSCounter : MonoBehaviour
             _frameCount = 0;
             _prevTime = Time.realtimeSinceStartup;
         }
-        if (Input.GetKey(activationKey))
+        if (Input.GetKeyDown(activationKey))
         {
             show = !show;
         }

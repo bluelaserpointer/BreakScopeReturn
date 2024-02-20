@@ -46,7 +46,6 @@ public class MirrorScript : MonoBehaviour
     private Matrix4x4 reflectionMatrix;
     private int oldReflectionTextureSize;
     private static bool renderingMirror;
-    private bool willRenderMyself;
 
     private void Start()
     {
@@ -90,14 +89,6 @@ public class MirrorScript : MonoBehaviour
     {
         CreateRenderTexture();
         RenderMirror();
-        if (willRenderMyself)
-        {
-            willRenderMyself = false;
-        }
-    }
-    private void OnWillRenderObject()
-    {
-        willRenderMyself = true;
     }
     public void UpdateCameraProperties()
     {

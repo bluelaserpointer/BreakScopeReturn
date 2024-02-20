@@ -4,7 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
+  - hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

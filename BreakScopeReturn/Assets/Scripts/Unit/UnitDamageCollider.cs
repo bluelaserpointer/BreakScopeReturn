@@ -18,7 +18,7 @@ public class UnitDamageCollider : DamageCollider
     }
     public void Damage(DamageSource damageSource)
     {
-        damageSource.damage *= DamageRatio;
+        damageSource.damage *= damageRatio;
         Unit.Damage(damageSource);
     }
 }

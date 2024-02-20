@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42b568cdd2b96e9418321c8b4059101e, type: 3}
+  m_Name: Sparkle
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: efb44c26db3f65942af4b3a77a4c784a, type: 3}
+  - {fileID: 8300000, guid: 467cd7b12be4c3040bc058d75f0b1733, type: 3}

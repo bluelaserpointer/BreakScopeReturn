@@ -44,7 +44,7 @@ public class ProjectGrenade : MonoBehaviour
     }
     public Grenade GenerateGrenade()
     {
-        return Instantiate(grenadePrefab, GameManager.Instance.CurrentStage.transform);
+        return Instantiate(grenadePrefab, GameManager.Instance.Stage.transform);
     }
     public void Throw(Grenade grenade, Vector3 initialVelocity)
     {

@@ -25,24 +25,23 @@ public static class SaveTool
             }
             int resourcePathStartIndex = resourcesStrIndex + 10;
             assetPath = assetPath.Substring(resourcePathStartIndex, assetPath.Length - resourcePathStartIndex - 7); //erase ".../Resources/" and ".prefab"
-            var prefabRoot = prefabStage.prefabContentsRoot.GetComponent<SaveTargetPrefabRoot>();
-            if (prefabRoot == null)
+            if (!prefabStage.prefabContentsRoot.TryGetComponent(out SaveTargetPrefabRoot prefabRoot))
             {
                 Debug.Log("Prefab root should attach " + nameof(SaveTargetPrefabRoot) + " component.");
                 return;
             }
             prefabRoot.prefabPath = assetPath;
             prefabRoot.SaveTargets.Clear();
-            foreach (var saveTarget in prefabRoot.GetComponentsInChildren<SaveTarget>(true))
+            foreach (var saveTarget in prefabRoot.GetComponentsInChildren<ISaveTarget>(true))
             {
                 prefabRoot.SaveTargets.Add(saveTarget);
-                saveTarget.saveProperty = new SaveProperty()
+                saveTarget.SaveProperty = new SaveProperty()
                 {
-                    excludeFromSave = saveTarget.saveProperty.excludeFromSave,
+                    excludeFromSave = saveTarget.SaveProperty.excludeFromSave,
                     prefabRoot = prefabRoot,
                     identifyName = saveTarget + "#Prefab-" + id
                 };
-                EditorUtility.SetDirty(saveTarget);
+                EditorUtility.SetDirty((MonoBehaviour)saveTarget);
                 ++id;
             }
             EditorUtility.SetDirty(prefabRoot);
@@ -52,15 +51,15 @@ public static class SaveTool
         {
             foreach (GameObject obj in SceneManager.GetActiveScene().GetRootGameObjects())
             {
-                foreach (SaveTarget saveTarget in obj.GetComponentsInChildren<SaveTarget>(true))
+                foreach (ISaveTarget saveTarget in obj.GetComponentsInChildren<ISaveTarget>(true))
                 {
-                    if (!saveTarget.saveProperty.BasedOnPrefab)
+                    if (!saveTarget.SaveProperty.BasedOnPrefab)
                     {
-                        saveTarget.saveProperty = new SaveProperty()
+                        saveTarget.SaveProperty = new SaveProperty()
                         {
                             identifyName = saveTarget + "#Scene-" + id
                         };
-                        EditorUtility.SetDirty(saveTarget);
+                        EditorUtility.SetDirty((MonoBehaviour)saveTarget);
                         ++id;
                     }
                 }

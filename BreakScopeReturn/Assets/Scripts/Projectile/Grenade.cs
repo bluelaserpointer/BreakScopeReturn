@@ -62,7 +62,7 @@ public class Grenade : MonoBehaviour
     }
     public void Explode()
     {
-        foreach (Unit unit in new List<Unit>(GameManager.Instance.CurrentStage.AliveNpcUnits))
+        foreach (Unit unit in new List<Unit>(GameManager.Instance.Stage.AliveNpcUnits))
         {
             float distance = Vector3.Distance(unit.transform.position, transform.position);
 
@@ -79,7 +79,7 @@ public class Grenade : MonoBehaviour
         Destroy(gameObject);
         if (_explosionEffect)
         {
-            Instantiate(_explosionEffect, GameManager.Instance.CurrentStage.transform).transform.SetPositionAndRotation(transform.position, transform.rotation);
+            Instantiate(_explosionEffect, GameManager.Instance.Stage.transform).transform.SetPositionAndRotation(transform.position, transform.rotation);
         }
         if (_explosionSound)
         {

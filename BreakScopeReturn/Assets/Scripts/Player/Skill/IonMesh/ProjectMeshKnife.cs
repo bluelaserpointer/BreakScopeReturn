@@ -69,6 +69,6 @@ public class ProjectMeshKnife : MonoBehaviour
         generatedKnife.hitCondition = collider => !Player.IsMyCollider(collider);
         generatedKnife.transform.position = GameManager.Instance.Player.Camera.transform.position;
         generatedKnife.Eject(GameManager.Instance.Player.Camera.transform.forward * 40);
-        GameManager.Instance.CurrentStage.OnDestroy.AddListener(() => Destroy(generatedKnife.gameObject));
+        GameManager.Instance.Stage.OnDestroy.AddListener(() => Destroy(generatedKnife.gameObject));
     }
 }

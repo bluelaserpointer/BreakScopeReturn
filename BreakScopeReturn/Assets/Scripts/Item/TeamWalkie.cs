@@ -14,7 +14,7 @@ public class TeamWalkie : DropItem
     }
     public override void Deserialize(string data)
     {
-        eventSignal = GameManager.Instance.CurrentStage.FindEventSignal(data);
+        eventSignal = GameManager.Instance.Stage.FindEventSignal(data);
     }
 
     public override string Serialize()

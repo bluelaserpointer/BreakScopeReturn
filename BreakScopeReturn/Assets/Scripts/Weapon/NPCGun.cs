@@ -71,7 +71,7 @@ public class NPCGun : MonoBehaviour
     public void Fire()
     {
         Bullet bullet = Instantiate(bulletPrefab);
-        bullet.transform.SetParent(GameManager.Instance.CurrentStage.transform);
+        bullet.transform.SetParent(GameManager.Instance.Stage.transform);
         bullet.damage = damage;
         bullet.speed = speed;
         bullet.transform.SetPositionAndRotation(muzzleAnchor.position, Quaternion.LookRotation(aimPosition - muzzleAnchor.position));

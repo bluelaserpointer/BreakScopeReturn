@@ -8,7 +8,7 @@ public class ArmDrop : MonoBehaviour
 {
     public void Drop()
     {
-        transform.parent = GameManager.Instance.CurrentStage.transform;
+        transform.parent = GameManager.Instance.Stage.transform;
         foreach(var collider in transform.GetComponentsInChildren<Collider>())
         {
             collider.enabled = true;

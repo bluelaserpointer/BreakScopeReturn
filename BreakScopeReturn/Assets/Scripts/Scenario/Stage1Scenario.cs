@@ -29,6 +29,10 @@ public class Stage1Scenario : Stage
     [SerializeField]
     DialogNodeSet firstKillShieldManDialog;
 
+    [Header("Objective")]
+    [SerializeField]
+    Transform destoryTarget;
+
     [Header("Achivement & Result Screen")]
     [SerializeField]
     GameObject _resultScreen;
@@ -72,7 +76,7 @@ public class Stage1Scenario : Stage
                 _scenario.totalDamageTake += damageSouce.damage;
             }
         });
-        foreach (Unit unit in GameManager.Instance.CurrentStage.NpcUnits)
+        foreach (Unit unit in GameManager.Instance.Stage.NpcUnits)
         {
             if (unit.TryGetComponent(out CommonGuard guard))
             {
@@ -116,7 +120,7 @@ public class Stage1Scenario : Stage
         }
         if (!_scenario.didFirstContactGuide)
         {
-            foreach (var unit in GameManager.Instance.CurrentStage.NpcUnits)
+            foreach (var unit in GameManager.Instance.Stage.NpcUnits)
             {
                 if (unit.GetType() == typeof(CommonGuard) && !((CommonGuard)unit).FoundEnemy
                     &&  !((CommonGuard)unit).IsDead
@@ -130,7 +134,7 @@ public class Stage1Scenario : Stage
         }
         if (remainEnemyCounter.activeSelf)
         {
-            remainEnemyCounter.GetComponentInChildren<Text>().text = "Enemy: " + GameManager.Instance.CurrentStage.AliveNpcUnits.Count;
+            remainEnemyCounter.GetComponentInChildren<Text>().text = "Enemy: " + GameManager.Instance.Stage.AliveNpcUnits.Count;
         }
     }
     public void ActivateRemainEnemyCounter()
@@ -147,9 +151,9 @@ public class Stage1Scenario : Stage
     {
         base.GameClear();
         Player.CutscenePause = true;
-        GameManager.Instance.CurrentStage.NpcUnits.ForEach(unit => unit.CutscenePause = true);
+        GameManager.Instance.Stage.NpcUnits.ForEach(unit => unit.CutscenePause = true);
         _resultScreen.SetActive(true);
-        float enemyCount = GameManager.Instance.CurrentStage.NpcUnits.Count;
+        float enemyCount = GameManager.Instance.Stage.NpcUnits.Count;
         achievements[0].SetAchivement("achiv1", _scenario.shieldManKillCount >= 2);
         achievements[1].SetAchivement("achiv2", _scenario.killCount == enemyCount);
         achievements[2].SetAchivement("achiv3", _scenario.sneakKillCount / enemyCount >= 0.5F);

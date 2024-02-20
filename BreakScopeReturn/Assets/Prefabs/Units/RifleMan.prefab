@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7476345648426733325
 Transform:
   m_ObjectHideFlags: 0
@@ -66,8 +66,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
-  damageRatio: 0.75
+  ignore: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
+  damageRatio: 0.9
   onBulletHit:
     m_PersistentCalls:
       m_Calls: []
@@ -297,7 +298,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
   damageRatio: 5
   onBulletHit:
     m_PersistentCalls:
@@ -542,7 +544,6 @@ MonoBehaviour:
     excludeFromSave: 0
     identifyName: 
     prefabRoot: {fileID: 0}
-  _disableAIOnAwake: 0
   _health:
     _max: 100
   _initialHealthRatio: 1
@@ -586,6 +587,7 @@ MonoBehaviour:
   rotateQuickAngle: 1
   _modelRotateSmoothTime: 0.5
   aimModelYRotationFix: 66
+  _foundVoiceCD: 5
   _voiceSource: {fileID: 6418105057964254584}
   _attackVoice: {fileID: 8300000, guid: b9ae134ab7592fa49bad5230c8224840, type: 3}
   _deathVoice: {fileID: 8300000, guid: 9272b4fc0cf39f24f9d83d0d82049fd9, type: 3}
@@ -809,7 +811,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -876,7 +879,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
   damageRatio: 3
   onBulletHit:
     m_PersistentCalls:
@@ -898,7 +902,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -920,8 +925,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
-  damageRatio: 20
+  ignore: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
+  damageRatio: 15
   onBulletHit:
     m_PersistentCalls:
       m_Calls: []
@@ -942,7 +948,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -964,7 +971,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -986,7 +994,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -1008,7 +1017,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -1030,7 +1040,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -1052,7 +1063,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -1074,7 +1086,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:

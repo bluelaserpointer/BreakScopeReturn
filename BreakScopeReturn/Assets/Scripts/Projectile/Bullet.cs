@@ -1,23 +1,18 @@
 ﻿using UnityEngine;
-using UnityEngine.VFX;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
     public SoundSetSO defaultObstacleHitSoundSet;
-    public SoundSetSO defaultBodyHitSoundSet;
     public float hitNoiseDistance = 20;
     [SerializeField]
     GameObject _reinstanceOnReflection;
     [SerializeField]
     Transform _detachBeforeDestory;
-    [SerializeField]
-    GameObject _destoryVFXPrefab;
+    public GameObject _destoryVFXPrefab;
     [SerializeField]
     GameObject _reflectVFXPrefab;
-    [SerializeField]
-    GameObject _bodyHitVFXPrefab;
     [Tooltip("Decal will need to be sligtly infront of the wall so it doesnt cause rendeing problems so for best feel put from 0.01-0.1.")]
 	public float floatInfrontOfWall;
 	[Tooltip("Put Weapon layer and Player layer to ignore bullet raycast.")]
@@ -60,13 +55,13 @@ public class Bullet : MonoBehaviour
             bool isCandidate = false;
             if (hit.collider.TryGetComponent(out DamageCollider damageCollider))
             {
-                if (damageCollider.Ignore)
+                if (damageCollider.ignore)
                     continue;
                 isCandidate = true;
             }
             else
             {
-                RicochetMirror mirror = hit.collider.GetComponentInParent<RicochetMirror>();
+                RicochetMirror.TryGetRicochetMirror(hit.collider, out RicochetMirror mirror);
                 if (mirror == null)
                 {
                     isCandidate = !hit.collider.isTrigger;
@@ -114,20 +109,11 @@ public class Bullet : MonoBehaviour
             }
             else if (closestValidHit.collider.TryGetComponent(out DamageCollider damageCollider))
             {
-                if (hitSESet == null)
-                    hitSESet = defaultBodyHitSoundSet;
-                damageCollider.Hit(this);
-                if (damageCollider.DamageRatio > 0 && _bodyHitVFXPrefab)
-                {
-                    GameObject generatedEffect = Instantiate(_bodyHitVFXPrefab, closestValidHit.point, Quaternion.LookRotation(closestValidHit.normal));
-                    generatedEffect.transform.SetParent(closestValidHit.collider.transform);
-                }
+                damageCollider.BulletHit(this, closestValidHit);
                 Destroy();
             }
             else
             {
-                if (hitSESet == null)
-                    hitSESet = defaultObstacleHitSoundSet;
                 if (_destoryVFXPrefab)
                 {
                     GameObject generatedEffect = Instantiate(_destoryVFXPrefab, closestValidHit.point + closestValidHit.normal * floatInfrontOfWall, Quaternion.LookRotation(closestValidHit.normal));
@@ -135,8 +121,9 @@ public class Bullet : MonoBehaviour
                 }
                 Destroy();
             }
-            if (hitSESet != null)
-                AudioSource.PlayClipAtPoint(hitSESet.GetRandomClip(), closestValidHit.point);
+            if (hitSESet == null)
+                hitSESet = defaultObstacleHitSoundSet;
+            AudioSource.PlayClipAtPoint(hitSESet.GetRandomClip(), closestValidHit.point);
         }
         else
         {

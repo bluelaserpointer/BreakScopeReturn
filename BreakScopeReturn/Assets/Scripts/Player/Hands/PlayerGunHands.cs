@@ -261,7 +261,7 @@ public class PlayerGunHands : PlayerHands
 				FireCD.Eat();
 				Gun.onFire.Invoke();
                 Bullet bullet = Instantiate(GunSpec.bulletPrefab);
-				bullet.transform.SetParent(GameManager.Instance.CurrentStage.transform);
+				bullet.transform.SetParent(GameManager.Instance.Stage.transform);
                 bullet.transform.position = BulletSpawnPosition;
 				bullet.transform.forward = Player.AimPosition - bullet.transform.position;
 				Vector2 randomAberation = GunSpec.accuracy * _crosshairExpand * Random.insideUnitCircle;

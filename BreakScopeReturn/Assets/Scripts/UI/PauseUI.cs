@@ -47,7 +47,7 @@ public class PauseUI : MonoBehaviour
         Time.timeScale = Paused ? 0F : 1F;
         graphicRoot.gameObject.SetActive(Paused);
         Player.AIEnableUpdate();
-        GameManager.Instance.CurrentStage.NpcUnits.ForEach(unit => unit.AIEnableUpdate());
+        GameManager.Instance.Stage.NpcUnits.ForEach(unit => unit.AIEnableUpdate());
     }
     public void UpdateSettingUIDisplay()
     {

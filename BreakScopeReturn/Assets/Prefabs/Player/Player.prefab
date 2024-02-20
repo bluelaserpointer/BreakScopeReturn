@@ -14,8 +14,9 @@ GameObject:
   - component: {fileID: 8154184}
   - component: {fileID: 6217223339752521698}
   - component: {fileID: 2759938449847946735}
+  - component: {fileID: 3154091591114154363}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: PlayerMainCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,7 +68,6 @@ MonoBehaviour:
   recoilRotation: {x: 0, y: 0}
   topAngleView: 85
   bottomAngleView: -85
-  showFps: 1
 --- !u!20 &2006704
 Camera:
   m_ObjectHideFlags: 0
@@ -107,7 +107,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 311
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -184,11 +184,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IsGlobal: 1
+  m_IsGlobal: 0
   priority: 0
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: 4aad33375bd2791478aa8fefcda4dda8, type: 2}
+--- !u!135 &3154091591114154363
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102540}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.05
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &154458
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,6 +378,7 @@ MonoBehaviour:
   - {fileID: 3885993602084879714}
   _animator: {fileID: 6561959894146799332}
   _firingAnimationClip: {fileID: 0}
+  _pinCentre: {fileID: 0}
   onDamage:
     m_PersistentCalls:
       m_Calls: []
@@ -367,6 +389,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _abilityContainer: {fileID: 3492247211049752619}
+  _projectRicochetMirror: {fileID: 2436606513553853253}
   _respawnWaitTime: 2
   _interactionDistance: 3
   _cameraPositionTarget: {fileID: 2563071391471249063}
@@ -469,7 +492,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 1
+  ignore: 0
+  hitVfxPrefab: {fileID: 0}
+  useBulletHitDefaultVFX: 0
   damageRatio: 0
   onBulletHit:
     m_PersistentCalls:
@@ -486,7 +511,7 @@ GameObject:
   - component: {fileID: 2024722}
   - component: {fileID: 1223669317065361044}
   m_Layer: 7
-  m_Name: HUD_Camera
+  m_Name: PlayerHudCamera
   m_TagString: SecondCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -546,7 +571,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 896
+    m_Bits: 640
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -1309,7 +1334,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 0}
+  useBulletHitDefaultVFX: 0
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -4988,7 +5015,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 0}
+  useBulletHitDefaultVFX: 0
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -5093,7 +5122,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 0}
+  useBulletHitDefaultVFX: 0
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -5636,7 +5667,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 0}
+  useBulletHitDefaultVFX: 0
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -5710,7 +5743,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 0}
+  useBulletHitDefaultVFX: 0
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -6241,7 +6276,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 0}
+  useBulletHitDefaultVFX: 0
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -6481,7 +6518,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 0}
+  useBulletHitDefaultVFX: 0
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -6651,7 +6690,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 0}
+  useBulletHitDefaultVFX: 0
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -7908,7 +7949,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 0}
+  useBulletHitDefaultVFX: 0
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -8365,7 +8408,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 0}
+  useBulletHitDefaultVFX: 0
   damageRatio: 2
   onBulletHit:
     m_PersistentCalls:
@@ -8741,7 +8786,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 1
+  ignore: 0
+  hitVfxPrefab: {fileID: 0}
+  useBulletHitDefaultVFX: 0
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -8847,7 +8894,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8482d85551334438f895ccd366f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ignore: 0
+  ignore: 0
+  hitVfxPrefab: {fileID: 0}
+  useBulletHitDefaultVFX: 0
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:

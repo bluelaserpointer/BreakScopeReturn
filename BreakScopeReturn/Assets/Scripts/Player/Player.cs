@@ -11,6 +11,8 @@ public class Player : Unit
     [Header("Ability")]
     [SerializeField]
     Transform _abilityContainer;
+    [SerializeField]
+    ProjectRicochetMirror _projectRicochetMirror;
 
     [Header("Accessiblity")]
     [SerializeField]
@@ -45,6 +47,7 @@ public class Player : Unit
 
     public Camera Camera => MouseLook.Camera;
     public Camera HUDCamera => _hudCamera;
+    public ProjectRicochetMirror ProjectRicochetMirror => _projectRicochetMirror;
     public EquipmentSidePreview EquipmentSidePreview => _equipmentSidePreview;
     public AnimatorIKEventExposure IKEventExposure => _IKEventExposure;
     public PlayerMovement Movement => movement;
@@ -81,9 +84,10 @@ public class Player : Unit
             });
         }
         base.Internal_Init(isInitialInit);
+        if (isInitialInit)
+            GunInventory.InitialInit();
         OnHealthChange();
         GameManager.Instance.SetBlackout(false); //TODO: dont do this in player script
-        GunInventory.InitialInit();
         gameObject.SetActive(true);
     }
     private void Update()

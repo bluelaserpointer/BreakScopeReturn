@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [DisallowMultipleComponent]
-public class Unit : SaveTarget
+public class Unit : SaveTarget, IDamageReceiver
 {
     public static string TAG_NPC_UNIT => "NpcUnit";
     [Header("Unit Common Stats")]
@@ -17,6 +17,7 @@ public class Unit : SaveTarget
     [SerializeField] List<Transform> _detectTargets;
     [SerializeField] protected Animator _animator;
     [SerializeField] AnimationClip _firingAnimationClip;
+    [SerializeField] Transform _pinCentre;
 
     public UnityEvent<DamageSource> onDamage = new();
     public UnityEvent<float> onHeal = new();
@@ -42,8 +43,10 @@ public class Unit : SaveTarget
     }
     public bool MenuPause => GameManager.Instance.MenuPause;
     public Animator Animator => _animator;
+    public Transform PinCentre => _pinCentre != null ? _pinCentre : transform;
     public IzumiTools.CappedValue Health => _health;
     public Vector3 ViewPosition => viewAnchor.position;
+    public bool IsAlive => !IsDead;
     public bool IsDead { get; private set; }
     public readonly List<UnitDamageCollider> damageColliders = new List<UnitDamageCollider>();
 

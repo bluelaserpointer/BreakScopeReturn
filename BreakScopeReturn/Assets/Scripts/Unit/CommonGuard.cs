@@ -143,7 +143,7 @@ public class CommonGuard : Unit
             dropPrefabs.ForEach(dropPrefab =>
             {
                 GameObject drop = Instantiate(dropPrefab);
-                drop.transform.SetParent(GameManager.Instance.CurrentStage.transform);
+                drop.transform.SetParent(GameManager.Instance.Stage.transform);
                 drop.transform.position = transform.position + Vector3.up * 1;
             });
             if (_aliveDevice)

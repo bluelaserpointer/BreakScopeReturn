@@ -18,10 +18,12 @@ public class RicochetMirror : MonoBehaviour
     [SerializeField] float _flatCheckDistance;
 
     [Header("Internal Reference")]
+    [SerializeField] Collider _mirrorPlaneCollider;
     [SerializeField] GameObject renderParent;
     [SerializeField] MirrorScript mirrorScript;
     [SerializeField] GameObject expandAnchor;
 
+    public Collider MirrorPlaneCollider => _mirrorPlaneCollider;
     public HitSound HitSound => _hitSound;
 
     [HideInInspector]
@@ -32,6 +34,16 @@ public class RicochetMirror : MonoBehaviour
     public static bool IsRicochetMirrorCollider(Collider collider)
     {
         return collider.CompareTag(nameof(RicochetMirror));
+    }
+    public static bool TryGetRicochetMirror(Collider collider, out RicochetMirror mirror)
+    {
+        if (!IsRicochetMirrorCollider(collider))
+        {
+            mirror = null;
+            return false;
+        }
+        mirror = collider.GetComponentInParent<RicochetMirror>();
+        return true; 
     }
     public void Init()
     {
@@ -128,5 +140,9 @@ public class RicochetMirror : MonoBehaviour
             mirrorScript.UpdateCameraProperties();
             mirrorScript.RenderMirror();
         }
+    }
+    public Plane GetMirrorPlane()
+    {
+        return new Plane(transform.forward, transform.position);
     }
 }

@@ -8,12 +8,12 @@ public sealed class SaveTargetPrefabRoot : MonoBehaviour
     public bool excludeFromSave;
     public string prefabPath;
     [SerializeField]
-    List<SaveTarget> saveTargets = new();
+    List<ISaveTarget> saveTargets = new();
 
-    public List<SaveTarget> SaveTargets => saveTargets;
+    public List<ISaveTarget> SaveTargets => saveTargets;
 
     public static SaveTargetPrefabRoot Recreate(string prefabPath)
     {
-        return Instantiate(Resources.Load<SaveTargetPrefabRoot>(prefabPath), GameManager.Instance.CurrentStage.transform);
+        return Instantiate(Resources.Load<SaveTargetPrefabRoot>(prefabPath), GameManager.Instance.Stage.transform);
     }
 }
