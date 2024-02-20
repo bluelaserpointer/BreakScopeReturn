@@ -9,21 +9,32 @@ using UnityEngine.UI;
 public class LoadingScreen : MonoBehaviour
 {
     [SerializeField]
+    Transform _randomTipsContainer;
+    [SerializeField]
+    IzumiTools.Cooldown _randomTipsChangeCD;
+    [SerializeField]
+    GameObject _confirmButtonContainer;
+    [SerializeField]
     Image _loadingProgressImage;
     [SerializeField]
     TextMeshProUGUI _loadingProgressText;
 
     static string loadSceneName;
+    static bool longLoadStyle;
     private float _loadingProgress;
     private AsyncOperation _asyncOperation;
-    public static void LoadScene(string sceneName)
+    private GameObject _displayingTips;
+    public static void LoadScene(string sceneName, bool longLoadStyle)
     {
         loadSceneName = sceneName;
+        LoadingScreen.longLoadStyle = longLoadStyle;
         SceneManager.LoadScene("LoadingAdditive", LoadSceneMode.Additive);
     }
     private void Start()
     {
         StartCoroutine(LoadScene_Internal(loadSceneName));
+        _randomTipsContainer.gameObject.SetActive(longLoadStyle);
+        _randomTipsChangeCD.Fill();
     }
     private IEnumerator LoadScene_Internal(string sceneName)
     {
@@ -40,11 +51,29 @@ public class LoadingScreen : MonoBehaviour
         {
             return;
         }
+        if (longLoadStyle)
+        {
+            if (_randomTipsChangeCD.AddDeltaTimeAndEat())
+            {
+                if (_displayingTips != null)
+                    _displayingTips.SetActive(false);
+                _displayingTips = _randomTipsContainer.GetChild((int)(Random.value * _randomTipsContainer.childCount)).gameObject;
+                _displayingTips.SetActive(true);
+            }
+        }
         float newloadingProgress = _asyncOperation.progress;
         if (newloadingProgress == 0.9f)
         {
             newloadingProgress = 1;
-            _asyncOperation.allowSceneActivation = true;
+            if (longLoadStyle)
+            {
+                if (!_confirmButtonContainer.activeSelf)
+                    _confirmButtonContainer.SetActive(true);
+            }
+            else
+            {
+                _asyncOperation.allowSceneActivation = true;
+            }
         }
         if (_loadingProgress < newloadingProgress)
         {
@@ -53,5 +82,9 @@ public class LoadingScreen : MonoBehaviour
             _loadingProgressImage.fillAmount = _loadingProgress;
             _loadingProgressText.text = string.Format("{0:P}", _loadingProgress);
         }
+    }
+    public void UIEventAllowLoadedSceneActivation()
+    {
+        _asyncOperation.allowSceneActivation = true;
     }
 }

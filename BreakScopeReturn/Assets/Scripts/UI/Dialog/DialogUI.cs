@@ -66,7 +66,10 @@ public class DialogUI : MonoBehaviour
         if (CurrentNodeSet != null)
         {
             currentNodeDisplayedTime += Time.deltaTime;
-            if (currentNodeDisplayedTime > extraDisplayTimePerSentense + CurrentNodeSet.CurrentNodeDisplayTime)
+            float waitTime = CurrentNodeSet.CurrentNodeDisplayTime;
+            if (waitTime > 0)
+                waitTime += extraDisplayTimePerSentense;
+            if (currentNodeDisplayedTime > waitTime)
             {
                 currentNodeDisplayedTime = 0;
                 CurrentNodeSet.Next();

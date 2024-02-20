@@ -19,7 +19,7 @@ public class TitleScreen : MonoBehaviour
     }
     public void StartGame()
     {
-        LoadingScreen.LoadScene(_initialStageSceneName);
+        LoadingScreen.LoadScene(_initialStageSceneName, longLoadStyle: true);
     }
     public void NextLanguage()
     {

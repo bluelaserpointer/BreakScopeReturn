@@ -30,14 +30,14 @@ public class PauseUI : MonoBehaviour
         {
             if (!Paused)
                 SetPause(true);
-            else if (_pauseMenu.gameObject.activeSelf)
+            else if (_pauseMenu.activeSelf)
             {
                 SetPause(false);
             }
-            else if (_settingScreen.gameObject.activeSelf)
+            else if (_settingScreen.activeSelf)
             {
-                _settingScreen.gameObject.SetActive(false);
-                _pauseMenu.gameObject.SetActive(true);
+                _settingScreen.SetActive(false);
+                _pauseMenu.SetActive(true);
             }
         }
     }
@@ -58,7 +58,7 @@ public class PauseUI : MonoBehaviour
     }
     public void UIEventBackToTitle()
     {
-        LoadingScreen.LoadScene("Title");
+        LoadingScreen.LoadScene("Title", longLoadStyle: false);
     }
     public void UIEventResetSetting()
     {
