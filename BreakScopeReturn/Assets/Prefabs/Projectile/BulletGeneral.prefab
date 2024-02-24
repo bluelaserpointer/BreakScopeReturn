@@ -478,6 +478,7 @@ GameObject:
   - component: {fileID: 1647367863233974408}
   - component: {fileID: 6198360007125626313}
   - component: {fileID: 2230728124097826108}
+  - component: {fileID: 5394220420654821957}
   m_Layer: 0
   m_Name: TrailVFX
   m_TagString: Untagged
@@ -600,3 +601,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeToDestroy: 3
+--- !u!114 &5394220420654821957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7406033699860857590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5863628af21ecd47ae12dbfb323ef85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

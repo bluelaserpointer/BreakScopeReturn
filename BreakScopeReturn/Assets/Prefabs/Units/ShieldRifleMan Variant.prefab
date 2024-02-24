@@ -83,7 +83,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4857155310992490812, guid: 4a5256a371349884486c1e06cb363c26, type: 3}
       propertyPath: m_Name
-      value: vfx2_shield
+      value: SmallHexShield
       objectReference: {fileID: 0}
     - target: {fileID: 7836936622863382596, guid: 4a5256a371349884486c1e06cb363c26, type: 3}
       propertyPath: m_LocalScale.x

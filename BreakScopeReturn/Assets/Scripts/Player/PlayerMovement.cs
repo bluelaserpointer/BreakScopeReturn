@@ -134,7 +134,10 @@ public class PlayerMovement : MonoBehaviour {
 		Crouching();
 		WalkingSound();
 	}
-
+    public void SetPositionAndRotation(Transform anchor)
+    {
+        transform.SetPositionAndRotation(anchor);
+    }
 	/*
 	* Checks if player is grounded and plays the sound accorindlgy to his speed
 	*/

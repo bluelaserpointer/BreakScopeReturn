@@ -5,14 +5,20 @@ using UnityEngine.Events;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider))]
-public class DamageCollider : MonoBehaviour
+public class DamageCollider : MonoBehaviour, IHitSound
 {
     public IDamageReceiver damageReceiver;
     public bool ignore;
+    [Header("VFX")]
     public GameObject hitVfxPrefab;
     public bool useBulletHitDefaultVFX;
+    [Header("SFX")]
+    public SoundSetSO hitSoundSet;
+    [Header("Damage")]
     public float damageRatio = 1;
     public UnityEvent<Bullet> onBulletHit;
+
+    public SoundSetSO HitSoundSet => hitSoundSet;
 
     public void BulletHit(Bullet bullet, RaycastHit hitInfo)
     {

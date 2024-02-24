@@ -26,11 +26,17 @@ public class Gun : HandEquipment
 
     [Header("Animation")]
     [SerializeField]
-    Transform _leftHandGoal, _rightHandGoal;
+    Transform _leftHandGoal;
+    [SerializeField]
+    Transform _rightHandGoal;
     [SerializeField]
     ReloadAnimationType _reloadAnimationType;
     [SerializeField]
     AnimationClip _reloadAnimationClip;
+    [SerializeField]
+    Vector3 _modelRecoilHipAiming, _modelRecoilSightAiming;
+    [SerializeField]
+    float _modelRecoilReturnSpeed, _modelRecoilSnappiness;
 
     [Header("Positioning")]
     [SerializeField]
@@ -85,6 +91,10 @@ public class Gun : HandEquipment
     public Transform AimCameraAnchor => _aimCameraAnchor;
     public Transform LeftHandGoal => _leftHandGoal;
     public Transform RightHandGoal => _rightHandGoal;
+    public Vector3 ModelRecoilHipAiming => _modelRecoilHipAiming;
+    public Vector3 ModelRecoilSightAiming => _modelRecoilSightAiming;
+    public float ModelRecoilReturnSpeed => _modelRecoilReturnSpeed;
+    public float ModelRecoilSnappiness => _modelRecoilSnappiness;
     public Transform MagazineRoot => _magazineRoot;
     public int ReloadAnimationID => (int)_reloadAnimationType;
     public float ReloadAnimationClipLength => _reloadAnimationClip.length;

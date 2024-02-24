@@ -82,7 +82,7 @@ public class CommonGuard : Unit
     AudioClip _deathVoice;
 
     public NPCGun Gun { get; private set; }
-    public readonly UnityEvent<bool> onFoundEnemyChangedTo = new UnityEvent<bool>();
+    public readonly UnityEvent<bool> onFoundEnemyChangedTo = new();
     Player Player => GameManager.Instance.Player;
     PatrolAnchor _currentPatrolAnchor;
 
@@ -125,7 +125,6 @@ public class CommonGuard : Unit
     float _modelYRotateVelocity;
     private void Awake()
     {
-        NeverFoundEnemy = true;
         navMeshAgent.updateRotation = false;
         navMeshAgent.stoppingDistance = stoppingDistance;
         onFoundEnemyChangedTo.AddListener(found =>
@@ -147,7 +146,7 @@ public class CommonGuard : Unit
                 drop.transform.position = transform.position + Vector3.up * 1;
             });
             if (_aliveDevice)
-                _aliveDevice.gameObject.SetActive(false);
+                _aliveDevice.SetActive(false);
             if (_ragdollRelax)
                 _ragdollRelax.relax = true;
         });
@@ -160,8 +159,7 @@ public class CommonGuard : Unit
             }
             if (layer == Animator.GetLayerIndex("HandsLayer"))
             {
-                Gun.transform.position = Gun.CentreRelHead.GetChildPosition(viewAnchor);
-                Gun.transform.rotation = _currentAimRotation;
+                Gun.transform.SetPositionAndRotation(Gun.CentreRelHead.GetChildPosition(viewAnchor), _currentAimRotation);
                 Animator.SetIKPosition(AvatarIKGoal.RightHand, Gun.RightHandAnchor.position);
                 Animator.SetIKRotation(AvatarIKGoal.RightHand, Gun.RightHandAnchor.rotation);
                 Animator.SetIKPosition(AvatarIKGoal.LeftHand, Gun.LeftHandAnchor.position);
@@ -176,27 +174,42 @@ public class CommonGuard : Unit
         Gun = Instantiate(_gunPrefab, transform);
         Gun.Init(this);
         SetModelFiringCD(Gun.FireCD.Capacity);
-        TargetAimPosition = viewAnchor.position + transform.forward;
-        _currentLookRotation = transform.rotation;
-        _currentAimRotation = Quaternion.LookRotation(TargetAimPosition - Gun.transform.position, viewAnchor.up);
-        MovePosition = transform.position;
+        if (isInitialInit)
+        {
+            NeverFoundEnemy = true;
+            TargetAimPosition = transform.position + transform.forward * 100;
+            MovePosition = transform.position;
+            _currentLookRotation = transform.rotation;
+            _currentAimRotation = Quaternion.LookRotation(TargetAimPosition - Gun.transform.position, viewAnchor.up);
+        }
+        else if (_aliveDevice != null)
+        {
+            _aliveDevice.SetActive(IsAlive);
+        }
         navMeshAgent.enabled = true;
         navMeshAgent.destination = transform.position;
         FoundEnemy = false;
         if (!NeverFoundEnemy)
         {
-            _lastFoundPosition = _suspiciousPosition = transform.position; //stop chasing after stage saving
+            _lastFoundPosition = _suspiciousPosition = transform.position;
         }
         _ragdollRelax.relax = IsDead;
         _ragdollRelax.Check();
-        if (patrolAnchors.Count > 0)
+        if (isInitialInit)
         {
-            GuardState = GuardStateEnum.Patrol;
-            _currentPatrolAnchor = patrolAnchors[0];
+            if (patrolAnchors.Count > 0)
+            {
+                GuardState = GuardStateEnum.Patrol;
+                _currentPatrolAnchor = patrolAnchors[0];
+            }
+            else
+            {
+                GuardState = GuardStateEnum.Defend;
+            }
         }
         else
         {
-            GuardState = GuardStateEnum.Defend;
+            GuardState = GuardStateEnum.Defend; //TODO: save this data
         }
     }
     private void Update()
@@ -310,7 +323,7 @@ public class CommonGuard : Unit
             if (_currentPatrolAnchor == null)
             {
                 GuardState = GuardStateEnum.Defend;
-                TargetAimPosition = viewAnchor.position + transform.forward;
+                TargetAimPosition = transform.position + transform.forward * 100;
                 return;
             }
             MovePosition = _currentPatrolAnchor.transform.position;
@@ -322,7 +335,7 @@ public class CommonGuard : Unit
             }
             else
             {
-                TargetAimPosition = viewAnchor.position + transform.forward;
+                TargetAimPosition = transform.position + transform.forward * 100;
             }
             if (patrolAnchors.Count > 1)
             {
@@ -339,7 +352,7 @@ public class CommonGuard : Unit
         }
         else if (GuardState == GuardStateEnum.PatrolStay)
         {
-            TargetAimPosition = viewAnchor.position + transform.forward;
+            TargetAimPosition = transform.position + transform.forward * 100;
             _patrolAnchorStayedTime += Time.deltaTime;
             if (_patrolAnchorStayedTime > _currentPatrolAnchor.StayDuration)
             {
@@ -349,7 +362,6 @@ public class CommonGuard : Unit
         }
         else if (GuardState == GuardStateEnum.Defend)
         {
-            TargetAimPosition = viewAnchor.position + transform.forward;
             bool stay = true;
             if (FoundEnemy)
             {
@@ -395,7 +407,7 @@ public class CommonGuard : Unit
             if (damageSource.GetType() == typeof(DamageSource.BulletDamage))
             {
                 DamageSource.BulletDamage bulletDamage = (DamageSource.BulletDamage)damageSource;
-                TargetAimPosition = ViewPosition - bulletDamage.Bullet.transform.forward * viewRange;
+                TargetAimPosition = ViewPosition - bulletDamage.Bullet.transform.forward * 100;
             }
         }
     }
@@ -403,7 +415,7 @@ public class CommonGuard : Unit
     {
         base.ListenSound(soundSouce);
         bool shouldSearch = false;
-        if (FoundEnemy)
+        if (_mustHoldPosition || FoundEnemy)
         {
             shouldSearch = false;
         }
@@ -411,7 +423,7 @@ public class CommonGuard : Unit
         {
             shouldSearch = true;
         }
-        else if (soundSouce.suspicious && !_mustHoldPosition)
+        else if (soundSouce.suspicious)
         {
             shouldSearch = true;
         }
@@ -438,6 +450,12 @@ public class CommonGuard : Unit
         public bool neverFoundEnemy;
         public Quaternion lookEulerAngle;
         public Quaternion aimEulerAngle;
+        public Vector3 targetAimPosition;
+        public Vector3 movePosition;
+        public Vector3 lastFoundPosition;
+        public float lastFoundTime;
+        public Vector3 suspiciousPosition;
+        public float suspiciousPositionSearchedTime;
     }
     public override string Serialize()
     {
@@ -446,7 +464,14 @@ public class CommonGuard : Unit
             commonUnitSave = base.Serialize(),
             neverFoundEnemy = NeverFoundEnemy,
             lookEulerAngle = _currentLookRotation,
-            aimEulerAngle = _currentAimRotation
+            aimEulerAngle = _currentAimRotation,
+            targetAimPosition = TargetAimPosition,
+            movePosition = MovePosition,
+            lastFoundPosition = _lastFoundPosition,
+            lastFoundTime = _lastFoundTime,
+            suspiciousPosition = _suspiciousPosition,
+            suspiciousPositionSearchedTime = _suspiciousPositionSearchedTime,
+
         });
     }
     protected override void Internal_Deserialize(string json)
@@ -455,6 +480,12 @@ public class CommonGuard : Unit
         NeverFoundEnemy = save.neverFoundEnemy;
         _currentLookRotation = save.lookEulerAngle;
         _currentAimRotation = save.aimEulerAngle;
+        TargetAimPosition = save.targetAimPosition;
+        MovePosition = save.movePosition;
+        _lastFoundPosition = save.lastFoundPosition;
+        _lastFoundTime = save.lastFoundTime;
+        _suspiciousPosition = save.suspiciousPosition;
+        _suspiciousPositionSearchedTime = save.suspiciousPositionSearchedTime;
         base.Internal_Deserialize(save.commonUnitSave);
     }
 }

@@ -7,10 +7,15 @@ public sealed class SaveTargetPrefabRoot : MonoBehaviour
 {
     public bool excludeFromSave;
     public string prefabPath;
-    [SerializeField]
-    List<ISaveTarget> saveTargets = new();
+    public List<GameObject> saveTargetGameObjects = new();
 
-    public List<ISaveTarget> SaveTargets => saveTargets;
+    public List<ISaveTarget> GetSaveTargets()
+    {
+        List<ISaveTarget> saveTargets = new();
+        saveTargetGameObjects.ForEach(go => saveTargets.AddRange(go.GetComponents<ISaveTarget>()));
+        return saveTargets;
+    }
+    public bool ContainsSaveTarget(ISaveTarget saveTarget) => saveTargetGameObjects.Contains(saveTarget.gameObject);
 
     public static SaveTargetPrefabRoot Recreate(string prefabPath)
     {

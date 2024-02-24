@@ -154,7 +154,7 @@ Material:
     - _EmissionColorUI: {r: 1, g: 1, b: 1, a: 1}
     - _EmissiveColor: {r: 0.1, g: 0.1, b: 0.1, a: 1}
     - _ReflectColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ReflectionColor: {r: 0, g: 0.909091, b: 1, a: 1}
+    - _ReflectionColor: {r: 1, g: 1, b: 1, a: 1}
     - _ScrollDirection: {r: 1, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecularColor: {r: 0, g: 0, b: 0, a: 1}

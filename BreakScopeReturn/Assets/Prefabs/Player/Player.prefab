@@ -30,8 +30,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 102540}
   serializedVersion: 2
-  m_LocalRotation: {x: 2.4780886e-10, y: 1.7408294e-13, z: -2.835763e-12, w: 1}
-  m_LocalPosition: {x: 0, y: 1.602, z: 0}
+  m_LocalRotation: {x: 2.478089e-10, y: -0, z: -2.8357594e-12, w: 1}
+  m_LocalPosition: {x: 0, y: 1.6019993, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -236,9 +236,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 154458}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.015463568, y: -0.5467875, z: 0.034452666, w: 0.83641934}
-  m_LocalPosition: {x: -0.34000015, y: -0.1299994, z: 0.35000038}
-  m_LocalScale: {x: 0.008939617, y: 0.008939613, z: 0.0089396145}
+  m_LocalRotation: {x: 0.015463565, y: -0.5467875, z: 0.034452666, w: 0.83641934}
+  m_LocalPosition: {x: -0.3400001, y: -0.12999988, z: 0.35000032}
+  m_LocalScale: {x: 0.008939618, y: 0.008939613, z: 0.0089396145}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 431846}
@@ -376,8 +376,10 @@ MonoBehaviour:
   - {fileID: 6821942263241531375}
   - {fileID: 1940610242533396102}
   - {fileID: 3885993602084879714}
+  - {fileID: 1909350235001031994}
+  - {fileID: 8304445046484981101}
+  - {fileID: 3922002455510316051}
   _animator: {fileID: 6561959894146799332}
-  _firingAnimationClip: {fileID: 0}
   _pinCentre: {fileID: 0}
   onDamage:
     m_PersistentCalls:
@@ -391,6 +393,7 @@ MonoBehaviour:
   _abilityContainer: {fileID: 3492247211049752619}
   _projectRicochetMirror: {fileID: 2436606513553853253}
   _respawnWaitTime: 2
+  _respawnStealthTime: 1
   _interactionDistance: 3
   _cameraPositionTarget: {fileID: 2563071391471249063}
   _aimModelYRotationFix: 44
@@ -399,9 +402,9 @@ MonoBehaviour:
   _hudCamera: {fileID: 2024722}
   _equipmentSidePreview: {fileID: 5028964774237438486}
   _IKEventExposure: {fileID: 4831973008554542817}
-  movement: {fileID: 11415148}
-  mouseLook: {fileID: 4187842049964884708}
-  gunInventory: {fileID: 7137920044888000442}
+  _movement: {fileID: 11415148}
+  _mouseLook: {fileID: 4187842049964884708}
+  _gunInventory: {fileID: 7137920044888000442}
   _gunEyeAnchor: {fileID: 2563071391471249063}
   _gunEyeNoZRotAnchor: {fileID: 8638023923077164843}
   _deathSE: {fileID: 8300000, guid: e38254fadbcfbd64aa2c2ae056b5ffa6, type: 3}
@@ -493,9 +496,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignore: 0
-  hitVfxPrefab: {fileID: 0}
-  useBulletHitDefaultVFX: 0
-  damageRatio: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
+  useBulletHitDefaultVFX: 1
+  hitSoundSet: {fileID: 11400000, guid: fe8f9def720c0f74ba5936ef5c30ad3d, type: 2}
+  damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
       m_Calls: []
@@ -525,7 +529,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 196378}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 5.551115e-17, y: -1.7408294e-13, z: 3.6862874e-18, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1212,9 +1216,9 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 378783864009177407}
-  m_LocalRotation: {x: 0, y: 0.2919545, z: 0, w: 0.9564322}
-  m_LocalPosition: {x: 0, y: 0, z: 0.463}
-  m_LocalScale: {x: 0.0005, y: 0.0005, z: 0.0005}
+  m_LocalRotation: {x: -2.7755576e-17, y: 0.29195452, z: -1.3877788e-17, w: 0.9564322}
+  m_LocalPosition: {x: 0, y: 0, z: 0.46300134}
+  m_LocalScale: {x: 0.0005000001, y: 0.0005, z: 0.0005000001}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3684885505329038103}
@@ -1335,8 +1339,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignore: 0
-  hitVfxPrefab: {fileID: 0}
-  useBulletHitDefaultVFX: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
+  useBulletHitDefaultVFX: 1
+  hitSoundSet: {fileID: 11400000, guid: fe8f9def720c0f74ba5936ef5c30ad3d, type: 2}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -5016,8 +5021,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignore: 0
-  hitVfxPrefab: {fileID: 0}
-  useBulletHitDefaultVFX: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
+  useBulletHitDefaultVFX: 1
+  hitSoundSet: {fileID: 11400000, guid: fe8f9def720c0f74ba5936ef5c30ad3d, type: 2}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -5123,8 +5129,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignore: 0
-  hitVfxPrefab: {fileID: 0}
-  useBulletHitDefaultVFX: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
+  useBulletHitDefaultVFX: 1
+  hitSoundSet: {fileID: 11400000, guid: fe8f9def720c0f74ba5936ef5c30ad3d, type: 2}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -5668,8 +5675,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignore: 0
-  hitVfxPrefab: {fileID: 0}
-  useBulletHitDefaultVFX: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
+  useBulletHitDefaultVFX: 1
+  hitSoundSet: {fileID: 11400000, guid: fe8f9def720c0f74ba5936ef5c30ad3d, type: 2}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -5744,8 +5752,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignore: 0
-  hitVfxPrefab: {fileID: 0}
-  useBulletHitDefaultVFX: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
+  useBulletHitDefaultVFX: 1
+  hitSoundSet: {fileID: 11400000, guid: fe8f9def720c0f74ba5936ef5c30ad3d, type: 2}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -6277,8 +6286,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignore: 0
-  hitVfxPrefab: {fileID: 0}
-  useBulletHitDefaultVFX: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
+  useBulletHitDefaultVFX: 1
+  hitSoundSet: {fileID: 11400000, guid: fe8f9def720c0f74ba5936ef5c30ad3d, type: 2}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -6519,8 +6529,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignore: 0
-  hitVfxPrefab: {fileID: 0}
-  useBulletHitDefaultVFX: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
+  useBulletHitDefaultVFX: 1
+  hitSoundSet: {fileID: 11400000, guid: fe8f9def720c0f74ba5936ef5c30ad3d, type: 2}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -6691,8 +6702,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignore: 0
-  hitVfxPrefab: {fileID: 0}
-  useBulletHitDefaultVFX: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
+  useBulletHitDefaultVFX: 1
+  hitSoundSet: {fileID: 11400000, guid: fe8f9def720c0f74ba5936ef5c30ad3d, type: 2}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -7478,8 +7490,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7089307211728241280}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -18.50965, y: -8.63, z: 23.252335}
+  m_LocalRotation: {x: 5.551115e-17, y: -1.7408294e-13, z: 3.6862874e-18, w: 1}
+  m_LocalPosition: {x: -18.509655, y: -8.63, z: 23.252342}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7950,8 +7962,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignore: 0
-  hitVfxPrefab: {fileID: 0}
-  useBulletHitDefaultVFX: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
+  useBulletHitDefaultVFX: 1
+  hitSoundSet: {fileID: 11400000, guid: fe8f9def720c0f74ba5936ef5c30ad3d, type: 2}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -8409,8 +8422,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignore: 0
-  hitVfxPrefab: {fileID: 0}
-  useBulletHitDefaultVFX: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
+  useBulletHitDefaultVFX: 1
+  hitSoundSet: {fileID: 11400000, guid: fe8f9def720c0f74ba5936ef5c30ad3d, type: 2}
   damageRatio: 2
   onBulletHit:
     m_PersistentCalls:
@@ -8787,8 +8801,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignore: 0
-  hitVfxPrefab: {fileID: 0}
-  useBulletHitDefaultVFX: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
+  useBulletHitDefaultVFX: 1
+  hitSoundSet: {fileID: 11400000, guid: fe8f9def720c0f74ba5936ef5c30ad3d, type: 2}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -8895,8 +8910,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignore: 0
-  hitVfxPrefab: {fileID: 0}
-  useBulletHitDefaultVFX: 0
+  hitVfxPrefab: {fileID: 2467705789755889959, guid: a790128bad30e914a8b3034edbc3b4f8, type: 3}
+  useBulletHitDefaultVFX: 1
+  hitSoundSet: {fileID: 11400000, guid: fe8f9def720c0f74ba5936ef5c30ad3d, type: 2}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -9244,7 +9260,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9199664722266689526}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 5.551115e-17, y: -1.7408294e-13, z: 3.6862874e-18, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

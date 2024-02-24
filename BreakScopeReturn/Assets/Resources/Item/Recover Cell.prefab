@@ -68,9 +68,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   excludeFromSave: 0
   prefabPath: Item/Recover Cell
-  saveTargets:
-  - {fileID: 6529631098246839712}
-  - {fileID: 2907073791627224434}
+  saveTargetGameObjects:
+  - {fileID: 6529631098246839717}
 --- !u!114 &2907073791627224434
 MonoBehaviour:
   m_ObjectHideFlags: 0

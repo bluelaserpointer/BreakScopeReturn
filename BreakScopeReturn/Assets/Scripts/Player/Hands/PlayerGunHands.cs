@@ -44,6 +44,7 @@ public class PlayerGunHands : PlayerHands
     private MouseLook PlayerLook => Player.MouseLook;
 
     private Vector3 currentRecoil;
+    private Vector3 gunModelTargetRecoil, gunModelCurrentRecoil;
     float _crosshairExpand;
     Transform _rightHandBone;
 
@@ -56,9 +57,11 @@ public class PlayerGunHands : PlayerHands
         Gun = (Gun)equipment;
         _crosshair.CanvasGroup.alpha = 1;
         _scopeCanvasGroup.alpha = 0;
+        PrepareTakeDown = false;
         aimTransition = new SmoothDampTransition(GunSpec.aimTime);
 		FireCD = new Cooldown(GunSpec.fireCD);
         FireCD.IsReady = true;
+        IsReloading = false;
 		ReloadCD = new Cooldown(GunSpec.reloadCD);
         InitAnimatorParameters();
         //rotationLast = PlayerLook.currentRotation;
@@ -117,6 +120,7 @@ public class PlayerGunHands : PlayerHands
                         Player.IKEventExposure.equipmentFollowRightHandRotationWeight)
                     );
             }
+            Gun.transform.Translate(gunModelCurrentRecoil, Space.Self);
             //gun defines position of hands
             Animator.SetIKPosition(AvatarIKGoal.LeftHand, Gun.LeftHandGoal.position);
             Animator.SetIKRotation(AvatarIKGoal.LeftHand, Gun.LeftHandGoal.rotation);
@@ -146,16 +150,23 @@ public class PlayerGunHands : PlayerHands
 		_scopeCanvasGroup.alpha = aimTransition.value;
         AnimationUpdate();
     }
-    public override void WithdrawItemAndDisable()
+    public override void TakeDown()
     {
-		Gun.gameObject.SetActive(false);
+        base.TakeDown();
+        Animator.SetTrigger("takeDown");
+        Gun.ReloadSESource.Stop();
+        IsReloading = false;
+    }
+    public override void Disable()
+    {
+        Gun.gameObject.SetActive(false);
         GameManager.Instance.Player.IKEventExposure.onAnimatorIK.RemoveListener(AnimatorIK);
-        base.WithdrawItemAndDisable();
+        base.Disable();
     }
     void AimUpdate()
 	{
 		//TODO: consider meeleAttack state
-		IsAiming = Player.AIEnable && Input.GetButton("Fire2") && !IsReloading && !(PlayerMovement.HasInputXZ && PlayerMovement.MovingState == MovingStateEnum.Run);
+		IsAiming = !PrepareTakeDown && Player.AIEnable && Input.GetButton("Fire2") && !IsReloading && !(PlayerMovement.HasInputXZ && PlayerMovement.MovingState == MovingStateEnum.Run);
         if (IsAiming)
         {
             aimTransition.SmoothTowardsOne();
@@ -192,8 +203,10 @@ public class PlayerGunHands : PlayerHands
         _magazineGaugeFill.fillAmount = 0.25F * Gun.magazine.Ratio;
     }
 
-	void BashUpdate(){
-
+	void BashUpdate()
+    {
+        //wip
+        /*
         if (BashActionOccupyRemainTime > 0)
         {
             BashActionOccupyRemainTime -= Time.deltaTime;
@@ -203,6 +216,7 @@ public class PlayerGunHands : PlayerHands
             Animator.SetTrigger("bash");
             BashActionOccupyRemainTime = _bashActionOccupyTime;
         }
+        */
 	}
     private void PoseUpdate()
     {
@@ -217,21 +231,28 @@ public class PlayerGunHands : PlayerHands
     }
     private void RecoilUpdate()
     {
+        gunModelTargetRecoil = Vector3.Lerp(gunModelTargetRecoil, Vector3.zero, Gun.ModelRecoilReturnSpeed * Time.deltaTime);
+        gunModelCurrentRecoil = Vector3.Slerp(gunModelCurrentRecoil, gunModelTargetRecoil, Gun.ModelRecoilSnappiness * Time.deltaTime);
         currentRecoil = Vector3.SmoothDamp(currentRecoil, Vector3.zero, ref velocity_recoil, GunSpec.recoilOverTime);
         PlayerLook.recoilRotation.x = -Mathf.Abs(currentRecoil.y) * GunSpec.recoilRotateRatio;
         PlayerLook.recoilRotation.y = (currentRecoil.x) * GunSpec.recoilRotateRatio;
     }
 	public void ApplyRecoil(Vector3 recoil)
 	{
+        Vector3 modelRecoil = aimTransition.NearZero ? Gun.ModelRecoilHipAiming : Gun.ModelRecoilSightAiming;
+        modelRecoil.x *= Random.Range(-1F, 1F);
+        modelRecoil.y *= Random.Range(-1F, 1F);
+        gunModelTargetRecoil += modelRecoil;
         currentRecoil.z -= recoil.z;
 		currentRecoil.x -= (Random.value - 0.5f) * recoil.x;
 		currentRecoil.y -= (0.9F + Random.value * 0.2f) * recoil.y;
 		//PlayerLook.OverrideRecoil();
 		_crosshairExpand += 90;
 	}
-	void ShootingUpdate() {
+	void ShootingUpdate()
+    {
 		FireCD.AddDeltaTime();
-        if (!Player.AIEnable || IsBashing)
+        if (PrepareTakeDown || !Player.AIEnable || IsBashing)
             return;
         if (GunSpec.fireMode == GunSpec.FireMode.Nonautomatic)
         {
@@ -270,7 +291,8 @@ public class PlayerGunHands : PlayerHands
 				bullet.speed = GunSpec.bulletSpeed;
                 GameObject flash = Instantiate(Gun.muzzleFlashes.GetRandomElement(), Gun.MuzzleAnchor.position, Gun.MuzzleAnchor.rotation * Quaternion.Euler(0, 0, Random.value * 360));
 				flash.transform.parent = Gun.MuzzleAnchor;
-                Gun.ShootSESource?.Play();
+                if (Gun.ShootSESource != null)
+                    Gun.ShootSESource.Play();
                 ApplyRecoil(GunSpec.recoilAmount_aiming * RecoilPenalty);
 				Gun.magazine.Value--;
 			}
@@ -287,13 +309,8 @@ public class PlayerGunHands : PlayerHands
 	{
 		if (IsReloading || Gun.spareAmmo <= 0 || Gun.magazine.Value == Gun.magazine.Capacity)
 			return false;
-		if (Gun.ReloadSESource.isPlaying == false && Gun.ReloadSESource != null)
-		{
-			if (Gun.ReloadSESource)
-				Gun.ReloadSESource.Play ();
-			else
-				print ("'Reload Sound Source' missing.");
-        }
+        if (Gun.ReloadSESource != null)
+            Gun.ReloadSESource.Play();
         IsReloading = true;
         Animator.SetTrigger("reload");
 		ReloadCD.Clear();
@@ -301,6 +318,8 @@ public class PlayerGunHands : PlayerHands
 	}
 	void ReloadUpdate()
 	{
+        if (PrepareTakeDown)
+            return;
 		if (!IsReloading)
 		{
             if (Player.AIEnable && Input.GetKeyDown(KeyCode.R) && !IsBashing)
@@ -319,31 +338,7 @@ public class PlayerGunHands : PlayerHands
             Gun.spareAmmo = (int)Gun.magazine.AddAndGetOverflow(Gun.spareAmmo);
         }
 	}
-
-	/*
-	 * Setting the number of bullets to the hud UI gameobject if there is one.
-	 * And drawing CrossHair from here.
-	 */
-	TextMesh HUD_bullets;
-	void OnGUI(){
-        /*
-		if(!HUD_bullets){
-			try{
-				HUD_bullets = GameObject.Find("HUD_bullets").GetComponent<TextMesh>();
-			}
-			catch(System.Exception ex){
-				print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
-			}
-		}
-		if(PlayerLook && HUD_bullets)
-			HUD_bullets.text = Gun.spareAmmo.ToString() + " - " + Gun.magazine.Value.ToString();
-        */
-	}
-	/*
-	* Fetching if any current animation is running.
-	* Setting the reload animation upon pressing R.
-	*/
-	void AnimationUpdate()
+	private void AnimationUpdate()
     {
         Animator.SetBool("isMoving", PlayerMovement.HasInputXZ);
         Animator.SetFloat("ADSTransition", aimTransition.value);

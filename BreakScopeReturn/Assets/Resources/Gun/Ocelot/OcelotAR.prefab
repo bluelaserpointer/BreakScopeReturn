@@ -1375,6 +1375,10 @@ MonoBehaviour:
   _rightHandGoal: {fileID: 3826465156432886640}
   _reloadAnimationType: 0
   _reloadAnimationClip: {fileID: 7400000, guid: 7246d867d8341e04ca4bc0c5a4a3092e, type: 2}
+  _modelRecoilHipAiming: {x: 0.012, y: 0.012, z: -0.2}
+  _modelRecoilSightAiming: {x: 0.01, y: 0.01, z: -0.12}
+  _modelRecoilReturnSpeed: 24
+  _modelRecoilSnappiness: 32
   _muzzleAnchor: {fileID: 400516968194910224}
   _armCameraAnchor: {fileID: 526872210221615562}
   _aimCameraAnchor: {fileID: 1318549994455374098}
@@ -1437,8 +1441,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   excludeFromSave: 0
   prefabPath: Gun/Ocelot/OcelotAR
-  saveTargets:
-  - {fileID: 2368907029985930688}
+  saveTargetGameObjects:
+  - {fileID: 1296605364670726625}
 --- !u!1 &1413918597966023905
 GameObject:
   m_ObjectHideFlags: 0

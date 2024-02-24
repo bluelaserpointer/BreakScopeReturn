@@ -39,7 +39,7 @@ MonoBehaviour:
   stickyNoteInfos: []
   categories:
   - name: Movement
-    collapsed: 1
+    collapsed: 0
   - name: Texture
     collapsed: 1
   - name: Shape

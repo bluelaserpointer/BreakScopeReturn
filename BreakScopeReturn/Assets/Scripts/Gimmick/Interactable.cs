@@ -3,42 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+public interface IInteractable : IComponentInterface
+{
+    public Sprite InteractIcon { get; }
+    public TranslatableSentence ActionName { get; }
+    public void Interact();
+}
 [DisallowMultipleComponent]
-public class Interactable : MonoBehaviour
+public class Interactable : MonoBehaviour, IInteractable
 {
     [SerializeField] protected bool oneTime;
     [SerializeField] protected Sprite interactIcon;
     [SerializeField] protected TranslatableSentenceSO actionName;
     public UnityEvent onInteract;
-    public UnityEvent onStepIn;
-    public UnityEvent onStepOut;
 
     public Sprite InteractIcon => interactIcon;
     public TranslatableSentence ActionName => actionName;
-    public bool ContainsActiveInteract => onInteract.GetPersistentEventCount() > 0;
 
     public void Interact()
     {
-        onInteract.Invoke();
         if (oneTime)
             gameObject.SetActive(false);
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        if (GameManager.Instance.Player.IsMyCollider(other))
-        {
-            onStepIn.Invoke();
-            if (oneTime)
-                gameObject.SetActive(false);
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (GameManager.Instance.Player.IsMyCollider(other))
-        {
-            onStepOut.Invoke();
-            if (oneTime)
-                gameObject.SetActive(false);
-        }
+        onInteract.Invoke();
     }
 }

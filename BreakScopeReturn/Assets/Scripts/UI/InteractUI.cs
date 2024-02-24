@@ -9,7 +9,7 @@ public class InteractUI : MonoBehaviour
     [SerializeField]
     TranslatedTMP _actionNameText; 
 
-    public void SetInfo(Interactable interactable)
+    public void SetInfo(IInteractable interactable)
     {
         _actionNameText.sentence = interactable.ActionName;
         _actionNameText.UpdateText();

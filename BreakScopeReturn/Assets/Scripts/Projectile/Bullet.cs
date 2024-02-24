@@ -85,22 +85,24 @@ public class Bullet : MonoBehaviour
             SoundSource.MakeSound(hitNoise);
             //make SE
             SoundSetSO hitSESet = null;
-            if (closestValidHit.transform.TryGetComponent(out HitSound hitSound))
+            if (closestValidHit.transform.TryGetComponent(out IHitSound hitSound))
             {
-                hitSESet = hitSound.SoundSet;
+                hitSESet = hitSound.HitSoundSet;
             }
             //mirror reflection / damage dealt / decal spawn
             if (validMirror != null)
             {
                 latestRicochetMirror = validMirror;
                 //detach and reinstance trail visual effect on every reflections
-                Transform parent = _reinstanceOnReflection.transform.parent;
-                Vector3 pos = _reinstanceOnReflection.transform.localPosition;
-                Quaternion rot = _reinstanceOnReflection.transform.localRotation;
-                _reinstanceOnReflection.transform.SetParent(transform.parent);
-                transform.forward = Vector3.Reflect(transform.forward, closestValidHit.normal);
-                GameObject copyOnEveryReflection = Instantiate(_reinstanceOnReflection, parent);
-                copyOnEveryReflection.transform.SetLocalPositionAndRotation(pos, rot);
+                if (_reinstanceOnReflection != null)
+                {
+                    Transform parent = _reinstanceOnReflection.transform.parent;
+                    _reinstanceOnReflection.transform.GetLocalPositionAndRotation(out Vector3 pos, out Quaternion rot);
+                    _reinstanceOnReflection.transform.SetParent(transform.parent);
+                    transform.forward = Vector3.Reflect(transform.forward, closestValidHit.normal);
+                    GameObject copyOnEveryReflection = Instantiate(_reinstanceOnReflection, parent);
+                    copyOnEveryReflection.transform.SetLocalPositionAndRotation(pos, rot);
+                }
                 if (_reflectVFXPrefab)
                 {
                     GameObject generatedEffect = Instantiate(_reflectVFXPrefab, closestValidHit.point + closestValidHit.normal * floatInfrontOfWall, Quaternion.LookRotation(closestValidHit.normal));
@@ -127,14 +129,17 @@ public class Bullet : MonoBehaviour
         }
         else
         {
-            transform.position += transform.forward * speed * Time.fixedDeltaTime;
+            transform.position += speed * Time.fixedDeltaTime * transform.forward;
         }
     }
     public void Destroy()
     {
         if (_detachBeforeDestory)
         {
-            _detachBeforeDestory.DetachChildren();
+            foreach (Transform child in _detachBeforeDestory)
+            {
+                child.SetParent(GameManager.Instance.Stage.transform);
+            }
             Destroy(_detachBeforeDestory.gameObject);
         }
         Destroy(gameObject);

@@ -123,6 +123,7 @@ MonoBehaviour:
   ignore: 0
   hitVfxPrefab: {fileID: 0}
   useBulletHitDefaultVFX: 1
+  hitSoundSet: {fileID: 11400000, guid: 0688ab142e3ec424ba5dfa6ca03f4b90, type: 2}
   damageRatio: 1
   onBulletHit:
     m_PersistentCalls:
@@ -372,7 +373,7 @@ GameObject:
   - component: {fileID: 7692623748832402452}
   - component: {fileID: 7303128406009810965}
   m_Layer: 0
-  m_Name: SparkleBurst_Single
+  m_Name: SparkleBurst_Repeat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

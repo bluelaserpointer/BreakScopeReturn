@@ -496,6 +496,10 @@ MonoBehaviour:
   _rightHandGoal: {fileID: 2551023139951256338}
   _reloadAnimationType: 0
   _reloadAnimationClip: {fileID: 7400000, guid: 7246d867d8341e04ca4bc0c5a4a3092e, type: 2}
+  _modelRecoilHipAiming: {x: 0.012, y: 0.012, z: -0.2}
+  _modelRecoilSightAiming: {x: 0.01, y: 0.01, z: -0.06}
+  _modelRecoilReturnSpeed: 32
+  _modelRecoilSnappiness: 18
   _muzzleAnchor: {fileID: 8612565670990384700}
   _armCameraAnchor: {fileID: 3942226365965629950}
   _aimCameraAnchor: {fileID: 1208807120707029778}
@@ -524,8 +528,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   excludeFromSave: 0
   prefabPath: Gun/Cobra/CobraAR
-  saveTargets:
-  - {fileID: -1304875388897963182}
+  saveTargetGameObjects:
+  - {fileID: 6344733570861491214}
 --- !u!1 &6510991950403298821
 GameObject:
   m_ObjectHideFlags: 0

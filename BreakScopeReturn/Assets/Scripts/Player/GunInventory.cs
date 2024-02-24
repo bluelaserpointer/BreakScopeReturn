@@ -44,7 +44,7 @@ public class GunInventory : MonoBehaviour
     {
         if (Hands != null)
         {
-            Hands.WithdrawItemAndDisable();
+            Hands.Disable();
             Hands = null;
         }
         _switchWeaponCD.IsReady = true;
@@ -125,9 +125,9 @@ public class GunInventory : MonoBehaviour
 			weaponChanging.Play();
 		if(Hands != null)
         {
-            Hands.Animator.SetTrigger("takeDown");
+            Hands.TakeDown();
             yield return new WaitForSeconds(0.8f);//0.8 time to change waepon, but since there is no change weapon animation there is no need to wait fo weapon taken down
-            Hands.WithdrawItemAndDisable();
+            Hands.Disable();
             Hands = null;
         }
         HoldingEquipmentIndex = newEquipmentIndex;

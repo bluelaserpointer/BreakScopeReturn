@@ -18,6 +18,8 @@ public class Player : Unit
     [SerializeField]
     float _respawnWaitTime;
     [SerializeField]
+    float _respawnStealthTime;
+    [SerializeField]
     float _interactionDistance;
 
     [Header("Graphic")]
@@ -35,9 +37,9 @@ public class Player : Unit
     [SerializeField] Camera _hudCamera;
     [SerializeField] EquipmentSidePreview _equipmentSidePreview;
     [SerializeField] AnimatorIKEventExposure _IKEventExposure;
-    [SerializeField] PlayerMovement movement;
-    [SerializeField] MouseLook mouseLook;
-    [SerializeField] GunInventory gunInventory;
+    [SerializeField] PlayerMovement _movement;
+    [SerializeField] MouseLook _mouseLook;
+    [SerializeField] GunInventory _gunInventory;
     [SerializeField] Transform _gunEyeAnchor;
     [SerializeField] Transform _gunEyeNoZRotAnchor;
 
@@ -50,21 +52,24 @@ public class Player : Unit
     public ProjectRicochetMirror ProjectRicochetMirror => _projectRicochetMirror;
     public EquipmentSidePreview EquipmentSidePreview => _equipmentSidePreview;
     public AnimatorIKEventExposure IKEventExposure => _IKEventExposure;
-    public PlayerMovement Movement => movement;
-    public MouseLook MouseLook => mouseLook;
-    public GunInventory GunInventory => gunInventory;
+    public PlayerMovement Movement => _movement;
+    public MouseLook MouseLook => _mouseLook;
+    public GunInventory GunInventory => _gunInventory;
     public Transform GunEyeAnchor => _gunEyeAnchor;
     public Transform GunEyeNoZRotAnchor => _gunEyeNoZRotAnchor;
     public Collider AimCollider { get; private set; }
     public Vector3 AimPosition { get; private set; }
     public float AimDistance { get; private set; }
-    public Interactable AimInteractable { get; private set; }
+    public IInteractable AimInteractable { get; private set; }
     public Vector3 FootPosition => transform.position;
     public Transform AbilityContainer => _abilityContainer;
     private Vignette _bloodVignette;
     private float _respawnWaitedTime;
+    private float _remainRespawnStealthTime;
     protected override void Internal_Init(bool isInitialInit)
     {
+        stealth = true;
+        _remainRespawnStealthTime = _respawnStealthTime;
         if (isInitialInit)
         {
             _bloodVignette = (Vignette)_cameraVolumeProfile.components.Find(component => component.GetType() == typeof(Vignette));
@@ -92,9 +97,19 @@ public class Player : Unit
     }
     private void Update()
     {
+        if (GameManager.Instance.PlayerAlwaysStealth)
+        {
+            stealth = true;
+        }
+        else if (_remainRespawnStealthTime > 0)
+        {
+            if ((_remainRespawnStealthTime -= Time.deltaTime) <= 0)
+            {
+                stealth = false;
+            }
+        }
         Animator.transform.localEulerAngles = Vector3.up * _aimModelYRotationFix;
-        _gunEyeNoZRotAnchor.position = _gunEyeAnchor.position;
-        _gunEyeNoZRotAnchor.rotation = Camera.transform.rotation;
+        _gunEyeNoZRotAnchor.SetPositionAndRotation(_gunEyeAnchor.position, Camera.transform.rotation);
         Camera.transform.position = _cameraPositionTarget.position;
         if (IsDead)
         {
@@ -174,8 +189,7 @@ public class Player : Unit
     }
     private void InteractUpdate()
     {
-        if (AimDistance < _interactionDistance && AimCollider.TryGetComponent(out Interactable interactable)
-             && interactable.ContainsActiveInteract)
+        if (AimDistance < _interactionDistance && AimCollider.TryGetComponent(out IInteractable interactable))
         {
             AimInteractable = interactable;
             GameManager.Instance.InteractUI.SetInfo(interactable);
@@ -223,7 +237,7 @@ public class Player : Unit
     {
         string json = JsonUtility.ToJson(new PlayerSave()
         {
-            equipmentSaves = gunInventory.equipments.ConvertAll(equipment => new PrefabCloneSave(equipment.saveProperty.prefabRoot)),
+            equipmentSaves = _gunInventory.equipments.ConvertAll(equipment => new PrefabCloneSave(equipment.saveProperty.prefabRoot)),
             holdingEquipmentIndex = GunInventory.HoldingEquipmentIndex,
             commonUnitSave = base.Serialize()
         });
@@ -233,16 +247,16 @@ public class Player : Unit
     {
         PlayerSave save = JsonUtility.FromJson<PlayerSave>(json);
         base.Internal_Deserialize(save.commonUnitSave);
-        List<SaveTargetPrefabRoot> reuseCandidates = gunInventory.equipments.ConvertAll(equpiment => equpiment.saveProperty.prefabRoot);
-        gunInventory.equipments.Clear();
+        List<SaveTargetPrefabRoot> reuseCandidates = _gunInventory.equipments.ConvertAll(equpiment => equpiment.saveProperty.prefabRoot);
+        _gunInventory.equipments.Clear();
         foreach (var equipmentSave in save.equipmentSaves)
         {
             SaveTargetPrefabRoot equipmentPrefabRoot = equipmentSave.Deserialize(reuseCandidates, out bool reused);
             HandEquipment equipment = equipmentPrefabRoot.GetComponent<HandEquipment>();
-            gunInventory.AddEquipment(equipment);
+            _gunInventory.AddEquipment(equipment);
         }
-        gunInventory.InitHoldingWeaponIndex(save.holdingEquipmentIndex);
-        gunInventory.LoadInit();
+        _gunInventory.InitHoldingWeaponIndex(save.holdingEquipmentIndex);
+        _gunInventory.LoadInit();
         reuseCandidates.ForEach(candidate => Destroy(candidate.gameObject));
         MouseLook.LoadInit();
     }

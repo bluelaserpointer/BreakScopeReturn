@@ -16,7 +16,7 @@ MonoBehaviour:
     defaultString: Language
     languageAndSentences:
     - language: 1
-      sentence: English
+      sentence: English(wip)
     - language: 0
       sentence: "\u4E2D\u6587"
     - language: 2

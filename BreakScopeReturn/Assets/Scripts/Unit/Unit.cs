@@ -16,7 +16,6 @@ public class Unit : SaveTarget, IDamageReceiver
     [SerializeField] protected Transform viewAnchor;
     [SerializeField] List<Transform> _detectTargets;
     [SerializeField] protected Animator _animator;
-    [SerializeField] AnimationClip _firingAnimationClip;
     [SerializeField] Transform _pinCentre;
 
     public UnityEvent<DamageSource> onDamage = new();
@@ -48,7 +47,7 @@ public class Unit : SaveTarget, IDamageReceiver
     public Vector3 ViewPosition => viewAnchor.position;
     public bool IsAlive => !IsDead;
     public bool IsDead { get; private set; }
-    public readonly List<UnitDamageCollider> damageColliders = new List<UnitDamageCollider>();
+    public readonly List<UnitDamageCollider> damageColliders = new();
 
     private bool _cutscenePause;
 
@@ -64,11 +63,11 @@ public class Unit : SaveTarget, IDamageReceiver
     }
     protected virtual void Internal_Init(bool isInitialInit)
     {
-        damageColliders.AddRange(GetComponentsInChildren<UnitDamageCollider>());
-        damageColliders.ForEach(collider => collider.Init(this));
-        Health.Ratio = _initialHealthRatio;
         if (isInitialInit)
-        {   
+        {
+            damageColliders.AddRange(GetComponentsInChildren<UnitDamageCollider>());
+            damageColliders.ForEach(collider => collider.Init(this));
+            Health.Ratio = _initialHealthRatio;
             IsDead = false;
             if (Health.Value <= 0)
             {

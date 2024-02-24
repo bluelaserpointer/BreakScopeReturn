@@ -32,15 +32,17 @@ public class LoadingScreen : MonoBehaviour
     }
     private void Start()
     {
-        StartCoroutine(LoadScene_Internal(loadSceneName));
         _randomTipsContainer.gameObject.SetActive(longLoadStyle);
         _randomTipsChangeCD.Fill();
-    }
-    private IEnumerator LoadScene_Internal(string sceneName)
-    {
         _loadingProgress = 0;
         _loadingProgressImage.fillAmount = 0;
         _loadingProgressText.text = "0 %";
+        StartCoroutine(LoadScene_Internal(loadSceneName));
+    }
+    private IEnumerator LoadScene_Internal(string sceneName)
+    {
+        if (longLoadStyle)
+            yield return new WaitForSeconds(0.5f); //Ensure Loading Screen Tips loaded before the freeze
         _asyncOperation = SceneManager.LoadSceneAsync(sceneName);
         _asyncOperation.allowSceneActivation = false;
         yield return _asyncOperation;

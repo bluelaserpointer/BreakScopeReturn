@@ -70,9 +70,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   excludeFromSave: 0
   prefabPath: Item/TeamWalkie
-  saveTargets:
-  - {fileID: 4274220906311418817}
-  - {fileID: 2034957267675702735}
+  saveTargetGameObjects:
+  - {fileID: 1756438538067288}
 --- !u!114 &2034957267675702735
 MonoBehaviour:
   m_ObjectHideFlags: 0

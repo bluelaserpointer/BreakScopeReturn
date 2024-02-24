@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     [Header("Test")]
     [SerializeField] Language _editorLanguage;
     [SerializeField] bool _logSaveLoad;
-    [SerializeField] bool _playerStealth;
+    [SerializeField] bool _playerAlwaysStealth;
 
     [Header("Save / Load")]
     [SerializeField] Transform[] _saveTargetContainers;
@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] DialogUI _dialogUI;
     [SerializeField] GameObject _playerDeathBlackout;
     [SerializeField] FadingBlackout _cutsceneBlackout;
-    [SerializeField] CheckPointNotifiactionUI _checkPointNotification;
+    [SerializeField] CheckPointUI _checkPointNotification;
     [SerializeField] DirectionIndicator _directionIndicator;
     [SerializeField] InteractUI _interactUI;
     [SerializeField] MinimapUI _minimapUI;
@@ -42,8 +42,9 @@ public class GameManager : MonoBehaviour
     public ObjectiveUI ObjectiveUI => _objectiveUI;
     public PauseUI PauseUI => _pauseUI;
     public bool MenuPause => PauseUI.Paused;
-    public CheckPointNotifiactionUI CheckPointNotification => _checkPointNotification;
+    public CheckPointUI CheckPointUI => _checkPointNotification;
     public DirectionIndicator DirectionIndicator => _directionIndicator;
+    public bool PlayerAlwaysStealth => _playerAlwaysStealth;
 
     private readonly List<Action> _afterInitActions = new();
     private string _savedStageData;
@@ -57,7 +58,6 @@ public class GameManager : MonoBehaviour
         Setting.Set(Setting.LANGUAGE, _editorLanguage);
 #endif
         Stage.Init();
-        Player.stealth = _playerStealth;
         SaveStage();
         InitDone = true;
         _afterInitActions.ForEach(action => action.Invoke());
@@ -160,7 +160,7 @@ public class GameManager : MonoBehaviour
         foreach (var prefabRoot in reusablePrefabClones)
         {
             //for those let prefab roots do deserialize
-            reusableSceneBasedComponents.RemoveAll(component => prefabRoot.SaveTargets.Contains(component));
+            reusableSceneBasedComponents.RemoveAll(component => prefabRoot.ContainsSaveTarget(component));
         }
         StageSave stageSave = JsonConvert.DeserializeObject<StageSave>(_savedStageData);
         //deserialize stage progress / records / events

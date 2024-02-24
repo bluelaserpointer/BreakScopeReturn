@@ -2,20 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CheckPoint : Interactable
+public class CheckPoint : EnterEventBase
 {
-    [SerializeField]
-    int _priority;
+    public override bool DisableAfterStepIn => true;
+    public override bool DisableAfterStepOut => false;
 
-    public int Priority => _priority;
-    private void Awake()
+    public override void OnStepIn()
     {
-        onStepIn.AddListener(SetCheckPoint);
+        GameManager.Instance.CheckPointUI.ReachNewCheckPoint();
     }
-    public void SetCheckPoint()
+    public override void OnStepOut()
     {
-        GameManager.Instance.CheckPointNotification.gameObject.SetActive(true);
-        GameManager.Instance.SaveStage();
-        gameObject.SetActive(false);
     }
 }

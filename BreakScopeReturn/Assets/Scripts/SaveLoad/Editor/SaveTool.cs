@@ -31,10 +31,11 @@ public static class SaveTool
                 return;
             }
             prefabRoot.prefabPath = assetPath;
-            prefabRoot.SaveTargets.Clear();
+            prefabRoot.saveTargetGameObjects.Clear();
             foreach (var saveTarget in prefabRoot.GetComponentsInChildren<ISaveTarget>(true))
             {
-                prefabRoot.SaveTargets.Add(saveTarget);
+                if (!prefabRoot.saveTargetGameObjects.Contains(saveTarget.gameObject))
+                    prefabRoot.saveTargetGameObjects.Add(saveTarget.gameObject);
                 saveTarget.SaveProperty = new SaveProperty()
                 {
                     excludeFromSave = saveTarget.SaveProperty.excludeFromSave,

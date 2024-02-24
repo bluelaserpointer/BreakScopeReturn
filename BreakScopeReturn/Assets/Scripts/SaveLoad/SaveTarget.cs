@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ISaveTarget
+public interface ISaveTarget : IComponentInterface
 {
     public SaveProperty SaveProperty { get; set; }
     public abstract string Serialize();
@@ -56,7 +56,7 @@ struct PrefabCloneSave
     {
         prefabPath = prefabRoot.prefabPath;
         components = new();
-        foreach (var saveTarget in prefabRoot.SaveTargets)
+        foreach (var saveTarget in prefabRoot.GetSaveTargets())
         {
             if (saveTarget == null)
             {
