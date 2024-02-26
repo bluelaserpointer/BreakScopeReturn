@@ -29,40 +29,37 @@ public class Stage1Scenario : Stage
     [SerializeField]
     DialogNodeSet firstKillShieldManDialog;
 
-    [Header("Objective")]
-    [SerializeField]
-    Transform destoryTarget;
-
     [Header("Achivement & Result Screen")]
     [SerializeField]
     GameObject _resultScreen;
     [SerializeField]
     Achievement[] achievements;
     [SerializeField]
-    Text _killCountText;
+    Text _clearTime;
     [SerializeField]
-    Text _sneakKillCountText;
+    Text _sneakKillRateText;
     [SerializeField]
     Text _totalDamageTakeText;
 
     [Header("Others")]
     [SerializeField]
-    TeamWalkie firstKillDropWalkie;
+    EventDropItem _firstKillDropWalkiePrefab;
     [SerializeField]
     GameObject remainEnemyCounter;
 
     ProjectRicochetMirror _projectRicochetMirror;
-    struct Scenario
+    struct ScenarioData
     {
+        public float stageStartedTime;
         public bool didFirstContactGuide;
         public bool didFirstKill;
         public bool didFirstKillShieldMan;
         public int shieldManKillCount;
         public int killCount;
         public int sneakKillCount;
-        public float totalDamageTake;
+        public float totalDamageTaken;
     }
-    Scenario _scenario;
+    ScenarioData _scenario;
 
     protected override void Start()
     {
@@ -73,7 +70,7 @@ public class Stage1Scenario : Stage
         {
             if (damageSouce.damage > 0)
             {
-                _scenario.totalDamageTake += damageSouce.damage;
+                _scenario.totalDamageTaken += damageSouce.damage;
             }
         });
         foreach (Unit unit in GameManager.Instance.Stage.NpcUnits)
@@ -95,7 +92,7 @@ public class Stage1Scenario : Stage
                     if (!_scenario.didFirstKill)
                     {
                         _scenario.didFirstKill = true;
-                        TeamWalkie walkie = Instantiate(firstKillDropWalkie, transform);
+                        EventDropItem walkie = Instantiate(_firstKillDropWalkiePrefab, transform);
                         walkie.eventSignal = _activeRemainEnemyCounter;
                         walkie.transform.position = guard.transform.position + Vector3.up * 1;
                     }
@@ -111,6 +108,7 @@ public class Stage1Scenario : Stage
                 });
             }
         }
+        GameManager.Instance.DoAfterInit(() => _scenario.stageStartedTime = Time.timeSinceLevelLoad);
     }
     private void Update()
     {
@@ -157,9 +155,9 @@ public class Stage1Scenario : Stage
         achievements[0].SetAchivement("achiv1", _scenario.shieldManKillCount >= 2);
         achievements[1].SetAchivement("achiv2", _scenario.killCount == enemyCount);
         achievements[2].SetAchivement("achiv3", _scenario.sneakKillCount / enemyCount >= 0.5F);
-        _killCountText.text = _scenario.killCount + " (" + string.Format("{0:F1}", _scenario.killCount / enemyCount * 100) + "%)";
-        _sneakKillCountText.text = _scenario.sneakKillCount + " (" + string.Format("{0:F1}", _scenario.sneakKillCount / enemyCount * 100) + "%)";
-        _totalDamageTakeText.text = _scenario.totalDamageTake.ToString();
+        _clearTime.text = string.Format("{0:F1}", Time.timeSinceLevelLoad - _scenario.stageStartedTime) + "s";
+        _sneakKillRateText.text = string.Format("{0:P2}", _scenario.sneakKillCount / _scenario.killCount);
+        _totalDamageTakeText.text = _scenario.totalDamageTaken.ToString();
     }
 
     public override string Serialize()
@@ -169,6 +167,6 @@ public class Stage1Scenario : Stage
 
     public override void Deserialize(string data)
     {
-        _scenario = JsonUtility.FromJson<Scenario>(data);
+        _scenario = JsonUtility.FromJson<ScenarioData>(data);
     }
 }

@@ -3,7 +3,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [DisallowMultipleComponent]
 public class GameManager : MonoBehaviour
@@ -12,6 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Language _editorLanguage;
     [SerializeField] bool _logSaveLoad;
     [SerializeField] bool _playerAlwaysStealth;
+    [SerializeField] Text _errorText;
 
     [Header("Save / Load")]
     [SerializeField] Transform[] _saveTargetContainers;
@@ -51,17 +55,28 @@ public class GameManager : MonoBehaviour
     private readonly Dictionary<string, ISaveTarget> _nameMapSaveTarget = new();
     private void Awake()
     {
-        Instance = this;
+        try
+        {
+            Instance = this;
 #if UNITY_EDITOR
-        Cursor.SetCursor(Resources.Load<Texture2D>("Cursor/Cursor"), Vector2.zero, CursorMode.Auto);
-        Setting.SetDefault();
-        Setting.Set(Setting.LANGUAGE, _editorLanguage);
+            Cursor.SetCursor(Resources.Load<Texture2D>("Cursor/Cursor"), Vector2.zero, CursorMode.Auto);
+            Setting.SetDefault();
+            Setting.Set(Setting.LANGUAGE, _editorLanguage);
 #endif
-        Stage.Init();
+            Stage.Init();
+            InitDone = true;
+            _afterInitActions.ForEach(action => action.Invoke());
+            _afterInitActions.Clear();
+        }
+        catch (Exception ex)
+        {
+            _errorText.gameObject.SetActive(true);
+            _errorText.text = ex.Message + "\r\n" + ex.StackTrace;
+        }
+    }
+    private void Start()
+    {
         SaveStage();
-        InitDone = true;
-        _afterInitActions.ForEach(action => action.Invoke());
-        _afterInitActions.Clear();
     }
     /// <summary>
     /// Ensure various init run after stage init.
@@ -69,14 +84,22 @@ public class GameManager : MonoBehaviour
     /// <param name="action"></param>
     public void DoAfterInit(Action action)
     {
-        if (InitDone)
+        try
         {
-            action.Invoke();
-            return;
+            if (InitDone)
+            {
+                action.Invoke();
+                return;
+            }
+            _afterInitActions.Add(action);
         }
-        _afterInitActions.Add(action);
+        catch (Exception ex)
+        {
+            _errorText.gameObject.SetActive(true);
+            _errorText.text = ex.Message + "\r\n" + ex.StackTrace;
+        }
     }
-    public void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F4))
         {

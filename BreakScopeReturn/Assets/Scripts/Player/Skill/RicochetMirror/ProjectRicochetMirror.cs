@@ -31,4 +31,8 @@ public class ProjectRicochetMirror : MonoBehaviour
         _moduleAudioSource.Play();
         Mirror.expand = cond;
     }
+    public void CloseMirrorImmediate()
+    {
+        Mirror.CloseImmediate();
+    }
 }

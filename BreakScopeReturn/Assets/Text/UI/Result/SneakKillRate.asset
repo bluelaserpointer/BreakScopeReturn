@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13f6bc1912b56ba48aa6189bf3c6e169, type: 3}
+  m_Name: SneakKillRate
+  m_EditorClassIdentifier: 
+  sentence:
+    defaultString: Sneak Kill Rate
+    languageAndSentences:
+    - language: 0
+      sentence: "\u6F5C\u884C\u51FB\u6740\u7387"
+    - language: 2
+      sentence: "\u30B9\u30CB\u30FC\u30AF\u30AD\u30EB\u7387"

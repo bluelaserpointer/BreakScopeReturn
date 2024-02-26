@@ -26,7 +26,7 @@ public static class LanguageExtension
         for (int i = 0; i < _translators.Count;)
         {
             ILanguageTranslator translator = _translators[i];
-            if (translator == null)
+            if (translator.gameObject == null)
             {
                 _translators.RemoveAt(i);
                 continue;
@@ -37,7 +37,8 @@ public static class LanguageExtension
     }
     public static void AddLanguageTranslator(ILanguageTranslator translator)
     {
-        _translators.Add(translator);
+        if (!_translators.Contains(translator))
+            _translators.Add(translator);
     }
     public static void SetAsCurrentLanguage(this Language language)
     {

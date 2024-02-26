@@ -14,14 +14,21 @@ public class TranslatedTMP : MonoBehaviour, ILanguageTranslator
     public TranslatableSentence sentence;
     public Language DisplayedLanguage {  get; private set; }
     public TextMeshProUGUI Text { get; private set; }
+    public bool InitDone { get; private set; }
     private void Awake()
+    {
+        UpdateText();
+    }
+    public void Init()
     {
         LanguageExtension.AddLanguageTranslator(this);
         Text = GetComponent<TextMeshProUGUI>();
-        UpdateText();
+        InitDone = true;
     }
     public void UpdateText()
     {
+        if (!InitDone)
+            Init();
         if (fontSO != null)
         {
             Text.font = fontSO.GetCurrentLanguageFont();

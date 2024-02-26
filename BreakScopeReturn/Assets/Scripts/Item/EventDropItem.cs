@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class TeamWalkie : DropItem
+public class EventDropItem : DropItem
 {
     public EventSignal eventSignal; 
     public override bool TryPickUp()

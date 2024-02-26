@@ -50,8 +50,12 @@ public class CommonGuard : Unit
     List<PatrolAnchor> patrolAnchors;
 
     [Header("Drop")]
+    [Tooltip("Duplicate prefabs and moves here")]
     [SerializeField]
     List<GameObject> dropPrefabs;
+    [Tooltip("Set Active GameObjects and moves here")]
+    [SerializeField]
+    List<GameObject> dropObjects;
 
     [Header("Model")]
     [SerializeField]
@@ -127,6 +131,7 @@ public class CommonGuard : Unit
     {
         navMeshAgent.updateRotation = false;
         navMeshAgent.stoppingDistance = stoppingDistance;
+        navMeshAgent.autoBraking = true;
         onFoundEnemyChangedTo.AddListener(found =>
         {
             if (found && TimePassedAfterLastFound > _foundVoiceCD)
@@ -139,11 +144,17 @@ public class CommonGuard : Unit
             VoicePlay(_deathVoice);
             Gun.GetComponent<ArmDrop>().Drop(); //TODO: combine the function to NPCGun
             navMeshAgent.enabled = false;
+            Vector3 itemDropPosition = transform.position + Vector3.up * 1; //TODO: read this from empty gameobject's position in inspector
             dropPrefabs.ForEach(dropPrefab =>
             {
-                GameObject drop = Instantiate(dropPrefab);
-                drop.transform.SetParent(GameManager.Instance.Stage.transform);
-                drop.transform.position = transform.position + Vector3.up * 1;
+                GameObject drop = Instantiate(dropPrefab, GameManager.Instance.Stage.transform);
+                drop.transform.position = itemDropPosition;
+                drop.SetActive(true);
+            });
+            dropObjects.ForEach(dropObject =>
+            {
+                dropObject.transform.position = itemDropPosition;
+                dropObject.SetActive(true);
             });
             if (_aliveDevice)
                 _aliveDevice.SetActive(false);
@@ -242,7 +253,7 @@ public class CommonGuard : Unit
             //_animator.SetBool("Fire", false);
         }
         Gun.Aim(TargetAimPosition);
-        if (navMeshAgent.remainingDistance > navMeshAgent.stoppingDistance)
+        if (Vector3.Distance(navMeshAgent.pathEndPosition, transform.position) > navMeshAgent.stoppingDistance)
         {
             _animator.SetBool("isMoving", true);
         }
@@ -306,11 +317,17 @@ public class CommonGuard : Unit
         }
         else if (GuardState == GuardStateEnum.Search)
         {
-            MovePosition = _suspiciousPosition;
-            navMeshAgent.destination = MovePosition;
-            TargetAimPosition = _suspiciousPosition;
-            if (navMeshAgent.remainingDistance < stoppingDistance)
+            bool waitNavMeshGeneretePath = false;
+            if (MovePosition != _suspiciousPosition)
             {
+                MovePosition = _suspiciousPosition;
+                navMeshAgent.destination = _suspiciousPosition;
+                waitNavMeshGeneretePath = true;
+            }
+            TargetAimPosition = _suspiciousPosition;
+            if (!waitNavMeshGeneretePath && navMeshAgent.remainingDistance < stoppingDistance)
+            {
+                navMeshAgent.destination = transform.position;
                 _suspiciousPositionSearchedTime += Time.deltaTime;
                 if (_suspiciousPositionSearchedTime > _suspiciousPositionSearchTime)
                 {

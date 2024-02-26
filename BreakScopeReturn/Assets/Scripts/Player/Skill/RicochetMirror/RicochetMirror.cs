@@ -61,6 +61,12 @@ public class RicochetMirror : MonoBehaviour
             UpdatePose();
         }
     }
+    public void CloseImmediate()
+    {
+        expand = false;
+        _expanding.value = 0;
+        renderParent.SetActive(false);
+    }
     private void UpdatePose()
     {
         expandAnchor.transform.localScale = new Vector3(1, 1, 0) * _expanding.Lerp(0, mirrorSize) + Vector3.forward;

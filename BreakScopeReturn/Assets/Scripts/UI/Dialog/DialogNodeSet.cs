@@ -5,6 +5,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class DialogNodeSet : MonoBehaviour
 {
+    public int priority;
     public DialogNode CurrentNode
     {
         get => _currentNode;

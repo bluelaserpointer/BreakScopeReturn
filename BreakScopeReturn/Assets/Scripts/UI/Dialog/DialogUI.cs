@@ -28,21 +28,26 @@ public class DialogUI : MonoBehaviour
     {
         _dialogTextUI.font = _languageFontSO.GetCurrentLanguageFont();
     }
-    public void SetDialog(DialogNodeSet nodeSet)
+    public bool SetDialog(DialogNodeSet nodeSet)
     {
         if (CurrentNodeSet != null)
         {
+            if (nodeSet != null && CurrentNodeSet.priority > nodeSet.priority)
+            {
+                return false;
+            }
             CurrentNodeSet.gameObject.SetActive(false);
         }
         CurrentNodeSet = nodeSet;
         if (nodeSet == null)
         {
-            return; 
+            return true;
         }
         CurrentNodeSet.Init();
         CurrentNodeSet.gameObject.SetActive(true);
         CurrentNodeSet.SetFirstNode();
         currentNodeDisplayedTime = 0;
+        return true;
     }
     public void SetText(string text)
     {

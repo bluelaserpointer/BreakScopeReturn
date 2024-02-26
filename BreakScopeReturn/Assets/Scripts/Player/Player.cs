@@ -135,53 +135,55 @@ public class Player : Unit
     {
         Ray ray = new(Camera.transform.position, Camera.transform.forward);
         Collider latestReflectedMirrorCollider = null;
-        bool rayHitFilter(RaycastHit hitInfo, out bool isMirror)
-        {
-            isMirror = false;
-            if (hitInfo.collider == latestReflectedMirrorCollider)
-                return false;
-            if (RicochetMirror.IsRicochetMirrorCollider(hitInfo.collider))
-            {
-                isMirror = true;
-                return true;
-            }
-            if (hitInfo.collider.isTrigger)
-                return false;
-            return !IsMyCollider(hitInfo.collider);
-        }
         Vector3 firstRayOrigin = ray.origin;
         float totalRayDistance = 0;
         List<Vector3> aimLinePositions = new() { Camera.transform.position };
+        AimCollider = null;
+        AimInteractable = null;
         do
         {
-            RaycastHit closestHit = new() { distance = float.MaxValue };
+            RaycastHit closestSolidHit = new() { distance = float.MaxValue };
+            RaycastHit closestInteractableHit = new() { distance = _interactionDistance };
             bool isMirror = false;
             foreach (var hitInfo in Physics.RaycastAll(ray))
             {
-                if (hitInfo.distance > closestHit.distance)
+                if (hitInfo.collider == latestReflectedMirrorCollider || IsMyCollider(hitInfo.collider))
                     continue;
-                if (!rayHitFilter(hitInfo, out bool _isMirror))
+                //interaction
+                if (latestReflectedMirrorCollider == null //prevents interacting with in-mirror objects
+                    && hitInfo.distance < closestInteractableHit.distance
+                    && hitInfo.collider.TryGetComponent(out IInteractable interactable))
+                {
+                    closestInteractableHit = hitInfo;
+                    AimInteractable = interactable;
+                }
+                //solid
+                if (hitInfo.distance > closestSolidHit.distance)
                     continue;
-                closestHit = hitInfo;
-                isMirror = _isMirror;
+                isMirror = false;
+                if (RicochetMirror.IsRicochetMirrorCollider(hitInfo.collider))
+                    isMirror = true;
+                else if (hitInfo.collider.isTrigger)
+                    continue;
+                closestSolidHit = hitInfo;
             }
-            if (closestHit.collider == null)
+            if (closestSolidHit.collider == null)
             {
                 AimCollider = null;
                 aimLinePositions.Add(ray.origin + ray.direction * 100);
                 totalRayDistance += 100;
                 break;
             }
-            aimLinePositions.Add(closestHit.point);
-            totalRayDistance += closestHit.distance;
+            aimLinePositions.Add(closestSolidHit.point);
+            totalRayDistance += closestSolidHit.distance;
             if (!isMirror)
             {
-                AimCollider = closestHit.collider;
+                AimCollider = closestSolidHit.collider;
                 break;
             }
-            latestReflectedMirrorCollider = closestHit.collider;
-            ray.origin = closestHit.point;
-            ray.direction = Vector3.Reflect(ray.direction, closestHit.normal);
+            latestReflectedMirrorCollider = closestSolidHit.collider;
+            ray.origin = closestSolidHit.point;
+            ray.direction = Vector3.Reflect(ray.direction, closestSolidHit.normal);
         } while (true);
         AimDistance = totalRayDistance;
         AimPosition = firstRayOrigin + Camera.transform.forward * AimDistance;
@@ -189,21 +191,17 @@ public class Player : Unit
     }
     private void InteractUpdate()
     {
-        if (AimDistance < _interactionDistance && AimCollider.TryGetComponent(out IInteractable interactable))
+        if (AimInteractable == null)
         {
-            AimInteractable = interactable;
-            GameManager.Instance.InteractUI.SetInfo(interactable);
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                AimInteractable.Interact();
-            }
-            GameManager.Instance.InteractUI.gameObject.SetActive(true);
-        }
-        else
-        {
-            AimInteractable = null;
             GameManager.Instance.InteractUI.gameObject.SetActive(false);
+            return;
         }
+        GameManager.Instance.InteractUI.SetInfo(AimInteractable);
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            AimInteractable.Interact();
+        }
+        GameManager.Instance.InteractUI.gameObject.SetActive(true);
     }
     protected override void OnAIEnableChange()
     {
@@ -259,5 +257,6 @@ public class Player : Unit
         _gunInventory.LoadInit();
         reuseCandidates.ForEach(candidate => Destroy(candidate.gameObject));
         MouseLook.LoadInit();
+        _projectRicochetMirror.CloseMirrorImmediate();
     }
 }

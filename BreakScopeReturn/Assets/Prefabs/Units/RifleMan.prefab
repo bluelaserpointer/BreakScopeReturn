@@ -583,6 +583,7 @@ MonoBehaviour:
   patrolAnchors: []
   dropPrefabs:
   - {fileID: 6529631098246839717, guid: 411c6a246e58bb34bb6220aa75685851, type: 3}
+  dropObjects: []
   _ragdollRelax: {fileID: 1339696913413384416}
   _weaponAnchor: {fileID: 9201546432704955886}
   _gunPrefab: {fileID: 6977903294796379667, guid: a22b3d5ed714bdb439f5325cb7d3b8d7, type: 3}

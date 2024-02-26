@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 169552650108100380}
   - component: {fileID: 2907073791627224434}
   - component: {fileID: 6529631098246839718}
+  - component: {fileID: 3071246960816674647}
   m_Layer: 0
   m_Name: Recover Cell
   m_TagString: Untagged
@@ -113,6 +114,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &3071246960816674647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6529631098246839717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d8c5c3ac5d33945aa4e316b6d0c9db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ignore: 1
 --- !u!1001 &6529631096616610103
 PrefabInstance:
   m_ObjectHideFlags: 0

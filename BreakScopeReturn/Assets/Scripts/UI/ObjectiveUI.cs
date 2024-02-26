@@ -13,7 +13,7 @@ public class ObjectiveUI : SaveTarget
     [SerializeField]
     IzumiTools.ReuseNest<WorldPositionPin> pins;
     [SerializeField]
-    TextMeshProUGUI _objectiveNameText;
+    TranslatedTMP _objectiveNameTransTMP;
     [SerializeField]
     GameObject _completeCheckMark;
     [SerializeField]
@@ -24,7 +24,6 @@ public class ObjectiveUI : SaveTarget
     AudioSource _completeObjectiveSESource;
 
     public DialogObjective SourceDialogObjective { get; private set; }
-    public string ObjectiveName { get; private set; }
     public bool Completed { get; private set; }
     private void Awake()
     {
@@ -34,7 +33,7 @@ public class ObjectiveUI : SaveTarget
     {
         SourceDialogObjective = null;
         Completed = false;
-        _objectiveNameText.text = "";
+        _objectiveNameTransTMP.sentence = new() { defaultString = "" };
         _completeCheckMark.SetActive(false);
         pins.DisableAll();
     }
@@ -51,21 +50,15 @@ public class ObjectiveUI : SaveTarget
     {
         Init();
         SourceDialogObjective = dialogObjective;
-        SourceDialogObjective.onSetObjective.Invoke();
+        _objectiveNameTransTMP.sentence = dialogObjective.ObjectiveNameTS;
+        _objectiveNameTransTMP.UpdateText();
+        _highlightPulseAnimator.SetTrigger("Pulse");
+        _newObjectiveSESource.Play();
     }
     public void CompleteObjective(DialogObjective dialogObjective)
     {
         if (SourceDialogObjective == dialogObjective)
             Internal_CompleteObjective();
-    }
-    public void CompleteObjective(string objectiveName)
-    {
-        if (!ObjectiveName.Equals(objectiveName))
-        {
-            print("<!>Completed objective name mismatch with current: " + ObjectiveName + "(current), " + objectiveName + "(completed)");
-            return;
-        }
-        Internal_CompleteObjective();
     }
     private void Internal_CompleteObjective()
     {
@@ -74,17 +67,6 @@ public class ObjectiveUI : SaveTarget
         _completeCheckMark.SetActive(true);
         pins.DisableAll();
         _completeObjectiveSESource.Play();
-    }
-    public void SetObjectiveNameWithHighlight(string name)
-    {
-        SetObjectiveName(name);
-        _highlightPulseAnimator.SetTrigger("Pulse");
-        _newObjectiveSESource.Play();
-    }
-    public void SetObjectiveName(string name)
-    {
-        ObjectiveName = name;
-        _objectiveNameText.text = name;
     }
     public void AddTransformTarget(Transform target)
     {
@@ -129,7 +111,10 @@ public class ObjectiveUI : SaveTarget
         GameManager.Instance.DoAfterInit(() =>
         {
             SourceDialogObjective = (DialogObjective)GameManager.Instance.FindSaveTarget(save.sourceIdentifyName);
-            SourceDialogObjective.onSetObjective.Invoke();
+            _objectiveNameTransTMP.sentence = SourceDialogObjective.ObjectiveNameTS;
+            _objectiveNameTransTMP.UpdateText();
+            SourceDialogObjective.InvokeOnSetObjective();
+            Completed = false;
         }
         );
     }

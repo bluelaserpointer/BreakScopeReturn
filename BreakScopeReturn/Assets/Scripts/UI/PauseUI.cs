@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,17 +29,23 @@ public class PauseUI : MonoBehaviour
 #endif
         if (pauseInput)
         {
-            if (!Paused)
-                SetPause(true);
-            else if (_pauseMenu.activeSelf)
-            {
-                SetPause(false);
-            }
-            else if (_settingScreen.activeSelf)
-            {
-                _settingScreen.SetActive(false);
-                _pauseMenu.SetActive(true);
-            }
+            OnPressEscapeButton();
+        }
+    }
+    public void OnPressEscapeButton()
+    {
+        if (!Paused)
+        {
+            SetPause(true);
+        }
+        else if (_pauseMenu.activeSelf)
+        {
+            SetPause(false);
+        }
+        else if (_settingScreen.activeSelf)
+        {
+            _settingScreen.SetActive(false);
+            _pauseMenu.SetActive(true);
         }
     }
     public void SetPause(bool cond)

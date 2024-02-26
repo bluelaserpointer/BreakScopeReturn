@@ -425,7 +425,7 @@ MonoBehaviour:
   runSpeed: 5
   _groundCheckDepth: 0.05
   accelLerp: 0.8
-  jumpHeight: 4
+  jumpHeight: 2
   _moveAudioSource: {fileID: 82248981901151284}
   _jumpSE: {fileID: 8300000, guid: fb859d907317d2446a59ffdeb1807e15, type: 3}
   _walkSE: {fileID: 8300000, guid: 3519e1b49b777a34d8674238d3c71350, type: 3}

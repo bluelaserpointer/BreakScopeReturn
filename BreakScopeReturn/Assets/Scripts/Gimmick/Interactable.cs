@@ -18,7 +18,7 @@ public class Interactable : MonoBehaviour, IInteractable
     public UnityEvent onInteract;
 
     public Sprite InteractIcon => interactIcon;
-    public TranslatableSentence ActionName => actionName;
+    public TranslatableSentence ActionName => actionName != null ? actionName : new TranslatableSentence() { defaultString = "?missing?" };
 
     public void Interact()
     {

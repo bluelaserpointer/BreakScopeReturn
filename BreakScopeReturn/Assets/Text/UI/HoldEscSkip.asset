@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: HoldEscSkip
   m_EditorClassIdentifier: 
   sentence:
-    defaultString: HoldEscSkip
+    defaultString: Hold Space Skip
     languageAndSentences:
     - language: 0
-      sentence: "\u957F\u6309ESC\u952E\u8DF3\u8FC7"
+      sentence: "\u957F\u6309\u7A7A\u683C\u952E\u8DF3\u8FC7"
     - language: 2
-      sentence: "ESC\u30AD\u30FC\u9577\u62BC\u3057\u3067\u30B9\u30AD\u30C3\u30D7"
+      sentence: "\u30B9\u30DA\u30FC\u30B9\u30AD\u30FC\u9577\u62BC\u3057\u3067\u30B9\u30AD\u30C3\u30D7"
