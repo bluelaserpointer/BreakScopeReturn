@@ -58,7 +58,7 @@ MonoBehaviour:
   floatInfrontOfWall: 0.001
   ignoreLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 260
   damage: 0
   speed: 1
 --- !u!54 &3104317051409024675

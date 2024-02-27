@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 
-public class CommonGuard : Unit
+public class CommonGuard : NpcUnit
 {
     [Header("Debug")]
     [SerializeField]
@@ -114,7 +114,6 @@ public class CommonGuard : Unit
     public Vector3 MovePosition { get; private set; }
     public enum GuardStateEnum { Patrol, PatrolStay, Defend, Search, ObeyActionOrder }
     public GuardStateEnum GuardState { get; private set; }
-    public bool NeverFoundEnemy { get; private set; }
     public float TimePassedAfterLastFound => Time.timeSinceLevelLoad - _lastFoundTime;
 
     Vector3 _targetAimPosition;
@@ -127,8 +126,9 @@ public class CommonGuard : Unit
     float _chaseLastFoundPositionWaitTime;
     float _patrolAnchorStayedTime;
     float _modelYRotateVelocity;
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         navMeshAgent.updateRotation = false;
         navMeshAgent.stoppingDistance = stoppingDistance;
         navMeshAgent.autoBraking = true;
@@ -463,7 +463,7 @@ public class CommonGuard : Unit
     }
     struct NpcEnemySave
     {
-        public string commonUnitSave;
+        public string npcUnitSave;
         public bool neverFoundEnemy;
         public Quaternion lookEulerAngle;
         public Quaternion aimEulerAngle;
@@ -478,8 +478,7 @@ public class CommonGuard : Unit
     {
         return JsonUtility.ToJson(new NpcEnemySave()
         {
-            commonUnitSave = base.Serialize(),
-            neverFoundEnemy = NeverFoundEnemy,
+            npcUnitSave = base.Serialize(),
             lookEulerAngle = _currentLookRotation,
             aimEulerAngle = _currentAimRotation,
             targetAimPosition = TargetAimPosition,
@@ -494,7 +493,6 @@ public class CommonGuard : Unit
     protected override void Internal_Deserialize(string json)
     {
         NpcEnemySave save = JsonUtility.FromJson<NpcEnemySave>(json);
-        NeverFoundEnemy = save.neverFoundEnemy;
         _currentLookRotation = save.lookEulerAngle;
         _currentAimRotation = save.aimEulerAngle;
         TargetAimPosition = save.targetAimPosition;
@@ -503,6 +501,6 @@ public class CommonGuard : Unit
         _lastFoundTime = save.lastFoundTime;
         _suspiciousPosition = save.suspiciousPosition;
         _suspiciousPositionSearchedTime = save.suspiciousPositionSearchedTime;
-        base.Internal_Deserialize(save.commonUnitSave);
+        base.Internal_Deserialize(save.npcUnitSave);
     }
 }

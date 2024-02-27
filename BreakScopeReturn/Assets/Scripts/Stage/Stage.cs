@@ -21,12 +21,12 @@ public abstract class Stage : MonoBehaviour
     UnityEvent _onDestroy;
     public Player Player => _player;
     public Transform InitialSpawnAnchor => _initialSpawnAnchor;
-    public List<Unit> NpcUnits => _npcUnits;
-    public List<Unit> AliveNpcUnits => _aliveNpcUnits;
+    public List<NpcUnit> NpcUnits => _npcUnits;
+    public List<NpcUnit> AliveNpcUnits => _aliveNpcUnits;
     public UnityEvent OnDestroy => _onDestroy;
 
-    readonly List<Unit> _npcUnits = new();
-    readonly List<Unit> _aliveNpcUnits = new();
+    readonly List<NpcUnit> _npcUnits = new();
+    readonly List<NpcUnit> _aliveNpcUnits = new();
 
     public void Init()
     {
@@ -34,21 +34,19 @@ public abstract class Stage : MonoBehaviour
         Player.transform.SetPositionAndRotation(InitialSpawnAnchor);
         _npcUnits.Clear();
         _aliveNpcUnits.Clear();
-        foreach (var unitObj in GameObject.FindGameObjectsWithTag(Unit.TAG_NPC_UNIT))
+    }
+    public void OnNewNpcUnitAdded(NpcUnit newNpcUnit)
+    {
+        if (_npcUnits.Contains(newNpcUnit))
+            return;
+        _npcUnits.Add(newNpcUnit);
+        if (!newNpcUnit.IsDead)
         {
-            if (unitObj.GetComponentInParent<Stage>() == this && unitObj.TryGetComponent(out Unit unit))
+            _aliveNpcUnits.Add(newNpcUnit);
+            newNpcUnit.onDead.AddListener(() =>
             {
-                _npcUnits.Add(unit);
-                unit.Init(true);
-                if (!unit.IsDead)
-                {
-                    _aliveNpcUnits.Add(unit);
-                    unit.onDead.AddListener(() =>
-                    {
-                        _aliveNpcUnits.Remove(unit);
-                    });
-                }
-            }
+                _aliveNpcUnits.Remove(newNpcUnit);
+            });
         }
     }
     protected virtual void Start()

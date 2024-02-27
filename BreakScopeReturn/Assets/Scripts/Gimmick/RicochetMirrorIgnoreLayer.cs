@@ -5,5 +5,5 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class RicochetMirrorIgnoreLayer : MonoBehaviour
 {
-    public bool ignore;
+    public bool ignore = true;
 }

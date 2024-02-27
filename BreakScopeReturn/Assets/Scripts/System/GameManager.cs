@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
     public DirectionIndicator DirectionIndicator => _directionIndicator;
     public bool PlayerAlwaysStealth => _playerAlwaysStealth;
 
-    private readonly List<Action> _afterInitActions = new();
+    private static readonly List<Action> _afterInitActions = new();
     private string _savedStageData;
     private readonly Dictionary<string, ISaveTarget> _nameMapSaveTarget = new();
     private void Awake()
@@ -73,9 +73,9 @@ public class GameManager : MonoBehaviour
     /// Ensure various init run after stage init.
     /// </summary>
     /// <param name="action"></param>
-    public void DoAfterInit(Action action)
+    public static void DoAfterInit(Action action)
     {
-        if (InitDone)
+        if (Instance != null && Instance.InitDone)
         {
             action.Invoke();
             return;

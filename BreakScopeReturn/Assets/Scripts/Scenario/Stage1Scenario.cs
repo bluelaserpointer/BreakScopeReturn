@@ -75,13 +75,13 @@ public class Stage1Scenario : Stage
         });
         foreach (Unit unit in GameManager.Instance.Stage.NpcUnits)
         {
-            if (unit.TryGetComponent(out CommonGuard guard))
+            if (unit.TryGetComponent(out NpcUnit npcUnit))
             {
-                guard.onDead.AddListener(() =>
+                npcUnit.onDead.AddListener(() =>
                 {
                     if (!GameManager.Instance.PlayingCutscene)
                         ++_scenario.killCount;
-                    if (guard.NeverFoundEnemy)
+                    if (npcUnit.NeverFoundEnemy)
                     {
                         ++_scenario.sneakKillCount;
                         if (_scenario.sneakKillCount == 1)
@@ -94,9 +94,9 @@ public class Stage1Scenario : Stage
                         _scenario.didFirstKill = true;
                         EventDropItem walkie = Instantiate(_firstKillDropWalkiePrefab, transform);
                         walkie.eventSignal = _activeRemainEnemyCounter;
-                        walkie.transform.position = guard.transform.position + Vector3.up * 1;
+                        walkie.transform.position = npcUnit.transform.position + Vector3.up * 1;
                     }
-                    if (guard.name.Contains("Shield")) //TODO: unsafe shield man identifier
+                    if (npcUnit.name.Contains("Shield")) //TODO: unsafe shield man identifier
                     {
                         ++_scenario.shieldManKillCount;
                         if (!_scenario.didFirstKillShieldMan)
@@ -108,7 +108,7 @@ public class Stage1Scenario : Stage
                 });
             }
         }
-        GameManager.Instance.DoAfterInit(() => _scenario.stageStartedTime = Time.timeSinceLevelLoad);
+        GameManager.DoAfterInit(() => _scenario.stageStartedTime = Time.timeSinceLevelLoad);
     }
     private void Update()
     {
@@ -151,12 +151,12 @@ public class Stage1Scenario : Stage
         Player.CutscenePause = true;
         GameManager.Instance.Stage.NpcUnits.ForEach(unit => unit.CutscenePause = true);
         _resultScreen.SetActive(true);
-        float enemyCount = GameManager.Instance.Stage.NpcUnits.Count;
+        int enemyCount = GameManager.Instance.Stage.NpcUnits.Count;
         achievements[0].SetAchivement("achiv1", _scenario.shieldManKillCount >= 2);
         achievements[1].SetAchivement("achiv2", _scenario.killCount == enemyCount);
-        achievements[2].SetAchivement("achiv3", _scenario.sneakKillCount / enemyCount >= 0.5F);
+        achievements[2].SetAchivement("achiv3", (float)_scenario.sneakKillCount / enemyCount >= 0.5F);
         _clearTime.text = string.Format("{0:F1}", Time.timeSinceLevelLoad - _scenario.stageStartedTime) + "s";
-        _sneakKillRateText.text = string.Format("{0:P2}", _scenario.sneakKillCount / _scenario.killCount);
+        _sneakKillRateText.text = string.Format("{0:P2}", (float)_scenario.sneakKillCount / _scenario.killCount);
         _totalDamageTakeText.text = _scenario.totalDamageTaken.ToString();
     }
 

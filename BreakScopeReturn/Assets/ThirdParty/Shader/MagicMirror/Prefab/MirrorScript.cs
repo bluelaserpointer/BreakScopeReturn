@@ -55,7 +55,7 @@ public class MirrorScript : MonoBehaviour
         {
             mirrorCamera.gameObject.AddComponent<FlareLayer>();
         }
-        mirrorMaterial = mirrorRenderer.sharedMaterial;
+        mirrorMaterial = mirrorRenderer.material;
 
         CreateRenderTexture();
     }

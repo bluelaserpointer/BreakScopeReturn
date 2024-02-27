@@ -30,6 +30,7 @@ public class WorldPositionPin : MonoBehaviour
     {
         this.target = target;
         this.pinMode = pinMode;
+        Update();
     }
     private void Update()
     {

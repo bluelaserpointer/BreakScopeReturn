@@ -15,6 +15,8 @@ public class ObjectiveUI : SaveTarget
     [SerializeField]
     TranslatedTMP _objectiveNameTransTMP;
     [SerializeField]
+    TranslatedTMP _objectiveDescriptionTransTMP;
+    [SerializeField]
     GameObject _completeCheckMark;
     [SerializeField]
     Animator _highlightPulseAnimator;
@@ -34,6 +36,7 @@ public class ObjectiveUI : SaveTarget
         SourceDialogObjective = null;
         Completed = false;
         _objectiveNameTransTMP.sentence = new() { defaultString = "" };
+        _objectiveDescriptionTransTMP.sentence = new() { defaultString = "" };
         _completeCheckMark.SetActive(false);
         pins.DisableAll();
     }
@@ -52,6 +55,8 @@ public class ObjectiveUI : SaveTarget
         SourceDialogObjective = dialogObjective;
         _objectiveNameTransTMP.sentence = dialogObjective.ObjectiveNameTS;
         _objectiveNameTransTMP.UpdateText();
+        _objectiveDescriptionTransTMP.sentence = dialogObjective.ObjectiveDescriptionTS;
+        _objectiveDescriptionTransTMP.UpdateText();
         _highlightPulseAnimator.SetTrigger("Pulse");
         _newObjectiveSESource.Play();
     }
@@ -108,11 +113,10 @@ public class ObjectiveUI : SaveTarget
         {
             return;
         }
-        GameManager.Instance.DoAfterInit(() =>
+        GameManager.DoAfterInit(() =>
         {
             SourceDialogObjective = (DialogObjective)GameManager.Instance.FindSaveTarget(save.sourceIdentifyName);
-            _objectiveNameTransTMP.sentence = SourceDialogObjective.ObjectiveNameTS;
-            _objectiveNameTransTMP.UpdateText();
+            SetObjective(SourceDialogObjective);
             SourceDialogObjective.InvokeOnSetObjective();
             Completed = false;
         }

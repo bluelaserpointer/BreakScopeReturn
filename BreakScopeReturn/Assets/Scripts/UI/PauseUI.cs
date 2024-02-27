@@ -17,7 +17,7 @@ public class PauseUI : MonoBehaviour
     {
         graphicRoot = transform.GetChild(0);
         graphicRoot.gameObject.SetActive(false);
-        GameManager.Instance.DoAfterInit(UpdateSettingUIDisplay);
+        GameManager.DoAfterInit(UpdateSettingUIDisplay);
     }
     private void Update()
     {

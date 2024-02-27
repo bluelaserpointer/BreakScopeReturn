@@ -9,11 +9,14 @@ public class DialogObjective : DialogNode, ISaveTarget
     SaveProperty _saveProperty;
     [SerializeField]
     TranslatableSentence objectiveNameTS;
+    [SerializeField]
+    TranslatableSentence objectiveDescriptionTS;
     //public bool dontSkip; //wip
     [SerializeField]
     UnityEvent onSetObjective;
 
     public TranslatableSentence ObjectiveNameTS => objectiveNameTS;
+    public TranslatableSentence ObjectiveDescriptionTS => objectiveDescriptionTS;
     public SaveProperty SaveProperty { get => _saveProperty; set => _saveProperty = value; }
 
     private void OnEnable()

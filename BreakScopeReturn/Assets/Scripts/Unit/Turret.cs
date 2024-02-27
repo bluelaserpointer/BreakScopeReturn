@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
 
-public class Turret : Unit
+public class Turret : NpcUnit
 {
     [SerializeField]
     Transform _xRotationJoint;
@@ -37,7 +37,7 @@ public class Turret : Unit
     [SerializeField]
     GameObject _destoryVFX;
     [SerializeField]
-    LaserSightVFX _laserSightVFX;
+    Renderer _laserSightRenderer;
     [SerializeField]
     List<GameObject> _aliveShowObjects;
 
@@ -52,6 +52,7 @@ public class Turret : Unit
     public Vector3 TargetAimPosition { get; private set; }
 
     Vector3 _gunRotateVelocity;
+    Material _laserSightMaterial;
 
     protected override void Internal_Init(bool isInitialInit)
     {
@@ -60,6 +61,7 @@ public class Turret : Unit
         FoundEnemy = false;
         if (isInitialInit)
         {
+            _laserSightMaterial = _laserSightRenderer.material;
             onDead.AddListener(() =>
             {
                 _destoryVFX.SetActive(true);
@@ -86,6 +88,7 @@ public class Turret : Unit
             if (!FoundEnemy)
             {
                 FoundEnemy = true;
+                NeverFoundEnemy = false;
                 _detectSoundSource.clip = _detectInSE;
                 _detectSoundSource.Play();
             }
@@ -103,7 +106,7 @@ public class Turret : Unit
         {
             Trigger();
         }
-        _laserSightVFX.aimPosition = TargetAimPosition;
+        LaserSightUpdate();
     }
     private void FixedUpdate()
     {
@@ -141,6 +144,44 @@ public class Turret : Unit
         }
         fireSE.Play();
         _animator.SetTrigger("Fire");
+    }
+    private void LaserSightUpdate()
+    {
+        Vector3 laserSightEndPosition;
+        float laserSightLineLength;
+        if (FoundEnemy)
+        {
+            laserSightEndPosition = TargetAimPosition;
+            //TODO: remove distance recalcuration
+            laserSightLineLength = Vector3.Distance(viewAnchor.position, laserSightEndPosition);
+        }
+        else
+        {
+            RaycastHit closestHit = new RaycastHit { distance = maxViewDistance };
+            foreach (var hitInfo in Physics.RaycastAll(viewAnchor.position, viewAnchor.forward, maxViewDistance))
+            {
+                if (hitInfo.collider.isTrigger || IsMyCollider(hitInfo.collider))
+                    continue;
+                if (hitInfo.distance < closestHit.distance)
+                {
+                    closestHit = hitInfo;
+                }
+            }
+            if (closestHit.collider != null)
+            {
+                laserSightEndPosition = closestHit.point;
+                laserSightLineLength = closestHit.distance;
+            }
+            else
+            {
+                laserSightEndPosition = viewAnchor.position + viewAnchor.forward * maxViewDistance;
+                laserSightLineLength = maxViewDistance;
+            }
+        }
+        _laserSightRenderer.transform.position = (viewAnchor.position + laserSightEndPosition) / 2;
+        float verticalStretch = laserSightLineLength / 2;
+        _laserSightRenderer.transform.localScale = _laserSightRenderer.transform.localScale.Set(y: verticalStretch);
+        _laserSightMaterial.SetFloat("_VScale", verticalStretch);
     }
     struct TurretSave
     {
