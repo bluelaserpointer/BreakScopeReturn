@@ -15,7 +15,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] Language _editorLanguage;
     [SerializeField] bool _logSaveLoad;
     [SerializeField] bool _playerAlwaysStealth;
-    [SerializeField] Text _errorText;
 
     [Header("Save / Load")]
     [SerializeField] Transform[] _saveTargetContainers;
@@ -55,24 +54,16 @@ public class GameManager : MonoBehaviour
     private readonly Dictionary<string, ISaveTarget> _nameMapSaveTarget = new();
     private void Awake()
     {
-        try
-        {
-            Instance = this;
+        Instance = this;
 #if UNITY_EDITOR
-            Cursor.SetCursor(Resources.Load<Texture2D>("Cursor/Cursor"), Vector2.zero, CursorMode.Auto);
-            Setting.SetDefault();
-            Setting.Set(Setting.LANGUAGE, _editorLanguage);
+        Cursor.SetCursor(Resources.Load<Texture2D>("Cursor/Cursor"), Vector2.zero, CursorMode.Auto);
+        Setting.SetDefault();
+        Setting.Set(Setting.LANGUAGE, _editorLanguage);
 #endif
-            Stage.Init();
-            InitDone = true;
-            _afterInitActions.ForEach(action => action.Invoke());
-            _afterInitActions.Clear();
-        }
-        catch (Exception ex)
-        {
-            _errorText.gameObject.SetActive(true);
-            _errorText.text = ex.Message + "\r\n" + ex.StackTrace;
-        }
+        Stage.Init();
+        InitDone = true;
+        _afterInitActions.ForEach(action => action.Invoke());
+        _afterInitActions.Clear();
     }
     private void Start()
     {
@@ -84,20 +75,12 @@ public class GameManager : MonoBehaviour
     /// <param name="action"></param>
     public void DoAfterInit(Action action)
     {
-        try
+        if (InitDone)
         {
-            if (InitDone)
-            {
-                action.Invoke();
-                return;
-            }
-            _afterInitActions.Add(action);
+            action.Invoke();
+            return;
         }
-        catch (Exception ex)
-        {
-            _errorText.gameObject.SetActive(true);
-            _errorText.text = ex.Message + "\r\n" + ex.StackTrace;
-        }
+        _afterInitActions.Add(action);
     }
     private void Update()
     {
