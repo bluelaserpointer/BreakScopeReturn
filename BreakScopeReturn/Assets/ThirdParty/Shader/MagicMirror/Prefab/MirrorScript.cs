@@ -40,7 +40,7 @@ public class MirrorScript : MonoBehaviour
     public Camera mirrorCamera;
 
     private Renderer mirrorRenderer;
-    private Material mirrorMaterial;
+    public Material MirrorMaterial { get; private set; }
 
     private RenderTexture reflectionTexture;
     private Matrix4x4 reflectionMatrix;
@@ -55,7 +55,7 @@ public class MirrorScript : MonoBehaviour
         {
             mirrorCamera.gameObject.AddComponent<FlareLayer>();
         }
-        mirrorMaterial = mirrorRenderer.material;
+        MirrorMaterial = mirrorRenderer.material;
 
         CreateRenderTexture();
     }
@@ -75,7 +75,7 @@ public class MirrorScript : MonoBehaviour
             reflectionTexture.hideFlags = HideFlags.HideAndDontSave;
             reflectionTexture.autoGenerateMips = false;
             reflectionTexture.wrapMode = TextureWrapMode.Clamp;
-            mirrorMaterial.SetTexture("_ReflectionMap", reflectionTexture);
+            MirrorMaterial.SetTexture("_ReflectionMap", reflectionTexture);
             oldReflectionTextureSize = TextureSize;
         }
 
@@ -112,7 +112,7 @@ public class MirrorScript : MonoBehaviour
     {
         // bail if we don't have a camera or renderer
         if (renderingMirror || !enabled || cameraLookingAtThisMirror == null ||
-            mirrorRenderer == null || mirrorMaterial == null || !mirrorRenderer.enabled)
+            mirrorRenderer == null || MirrorMaterial == null || !mirrorRenderer.enabled)
         {
             return;
         }
@@ -131,17 +131,17 @@ public class MirrorScript : MonoBehaviour
 
             if (MirrorRecursion)
             {
-                mirrorMaterial.EnableKeyword("MIRROR_RECURSION");
+                MirrorMaterial.EnableKeyword("MIRROR_RECURSION");
                 mirrorCamera.ResetWorldToCameraMatrix();
                 mirrorCamera.ResetProjectionMatrix();
-                mirrorCamera.projectionMatrix = mirrorCamera.projectionMatrix * Matrix4x4.Scale(new Vector3(-1, 1, 1));
+                mirrorCamera.projectionMatrix *= Matrix4x4.Scale(new Vector3(-1, 1, 1));
                 GL.invertCulling = true;
                 mirrorCamera.Render();
                 GL.invertCulling = false;
             }
             else
             {
-                mirrorMaterial.DisableKeyword("MIRROR_RECURSION");
+                MirrorMaterial.DisableKeyword("MIRROR_RECURSION");
                 Vector3 pos = mirrorCamera.transform.position;
                 Vector3 normal = (NormalIsForward ? mirrorCamera.transform.forward : mirrorCamera.transform.up);
 

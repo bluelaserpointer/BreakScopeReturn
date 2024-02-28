@@ -9,6 +9,8 @@ public class RicochetMirror : MonoBehaviour
     [Header("Visual")]
     [SerializeField] float mirrorSize;
     [SerializeField] SmoothDampTransition _expanding = new SmoothDampTransition(0.5F);
+    [SerializeField] float maxAlphaDistance = 0.5F;
+    [SerializeField] AnimationCurve _alphaCurveByDistance;
 
     [Header("SE")]
     [SerializeField] HitSound _hitSound;
@@ -59,6 +61,7 @@ public class RicochetMirror : MonoBehaviour
         else
         {
             UpdatePose();
+            UpdateAlpha();
         }
     }
     public void CloseImmediate()
@@ -114,6 +117,29 @@ public class RicochetMirror : MonoBehaviour
         }
         if (!foundValidHit)
             renderParent.SetActive(false);
+    }
+    /// <summary>
+    /// 1. Decrease alpha when player camera get close to mirror.
+    /// 2. Using depth texture to reshape mirror plane match within the back-object's flat surface
+    /// </summary>
+    private void UpdateAlpha()
+    {
+        Vector3 cameraPosition = GameManager.Instance.Player.Camera.transform.position;
+        /*
+        float playerDistance = Vector3.Distance(transform.position, cameraPosition);
+        float mirrorAlpha;
+        if (playerDistance > maxAlphaDistance)
+        {
+            mirrorAlpha = 1;
+        }
+        else
+        {
+            mirrorAlpha = _alphaCurveByDistance.Evaluate(playerDistance / maxAlphaDistance);
+        }
+        Color mirrorColor = mirrorScript.MirrorMaterial.color;
+        mirrorColor.a = mirrorAlpha;
+        mirrorScript.MirrorMaterial.color = mirrorColor;
+        */
     }
     private bool FlatCheck(RaycastHit raycastHit, Vector2 extend, out bool hitSurface)
     {
