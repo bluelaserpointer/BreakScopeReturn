@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7016430658101828303
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3176765458956580677}
+  - component: {fileID: 1181777033427465362}
+  m_Layer: 5
+  m_Name: InfoRifleMan
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3176765458956580677
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7016430658101828303}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1181777033427465362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7016430658101828303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c1da9d047850354393035e1818f80b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _saveProperty:
+    excludeFromSave: 0
+    identifyName: 
+    prefabRoot: {fileID: 0}
+  objectiveNameTS:
+    defaultString: Rifleman
+    languageAndSentences:
+    - language: 2
+      sentence: "\u30E9\u30A4\u30D5\u30EB\u30DE\u30F3"
+    - language: 0
+      sentence: "\u8F7B\u673A\u67AA\u624B"
+  objectiveDescriptionTS:
+    defaultString: 
+    languageAndSentences:
+    - language: 2
+      sentence: "\u5206\u6790\u7D50\u679C:\n\u8EFD\u706B\u529B\u5358\u4F4D\n\u982D\u90E8\u304C\u5F31\u70B9\n\u56DE\u5FA9\u85AC\u3092\u6240\u6301"
+    - language: 0
+      sentence: "\u5206\u6790\u7ED3\u679C:\n\u8F7B\u706B\u529B\u5355\u4F4D\n\u5934\u90E8\u5F31\u70B9\n\u6301\u6709\u6CBB\u7597\u836F\u6C34"
+  onSetObjective:
+    m_PersistentCalls:
+      m_Calls: []

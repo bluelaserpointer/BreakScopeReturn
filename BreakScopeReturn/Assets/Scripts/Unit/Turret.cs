@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class Turret : NpcUnit
@@ -73,13 +72,11 @@ public class Turret : NpcUnit
         _destoryVFX.SetActive(IsDead);
         _aliveShowObjects.ForEach(each => each.SetActive(IsAlive));
     }
-    public static bool turretDebug = false;
     private void Update()
     {
         if (IsDead)
             return;
         float viewAngleDifference = Vector3.Angle(viewAnchor.forward, Player.ViewPosition - ViewPosition);
-        turretDebug = true;
         if (!Player.stealth
             && Vector3.Distance(Player.ViewPosition, ViewPosition) < maxViewDistance
             && viewAngleDifference < viewAngle / 2
@@ -89,6 +86,7 @@ public class Turret : NpcUnit
             {
                 FoundEnemy = true;
                 NeverFoundEnemy = false;
+                print("found.");
                 _detectSoundSource.clip = _detectInSE;
                 _detectSoundSource.Play();
             }
@@ -100,7 +98,6 @@ public class Turret : NpcUnit
             _detectSoundSource.clip = _detectOutSE;
             _detectSoundSource.Play();
         }
-        turretDebug = false;
         fireCD.AddDeltaTime();
         if (FoundEnemy && viewAngleDifference < _fireConeAngle / 2)
         {

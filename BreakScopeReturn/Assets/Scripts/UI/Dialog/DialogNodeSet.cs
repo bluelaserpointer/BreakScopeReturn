@@ -17,7 +17,7 @@ public class DialogNodeSet : MonoBehaviour
             (_currentNode = value)?.gameObject.SetActive(true);
         }
     }
-    public float CurrentNodeDisplayTime => CurrentNode.LifeTime();
+    public float CurrentNodeDisplayTime => CurrentNode != null ? CurrentNode.LifeTime() : 0;
     public bool ReachEnd => CurrentNode == null;
 
     DialogNode _currentNode;
@@ -34,7 +34,8 @@ public class DialogNodeSet : MonoBehaviour
     }
     public void Next()
     {
-        SetNode(CurrentNode.transform.GetSiblingIndex() + 1);
+        if (CurrentNode != null)
+            SetNode(CurrentNode.transform.GetSiblingIndex() + 1);
     }
     public void End()
     {

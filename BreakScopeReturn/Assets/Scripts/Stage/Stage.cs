@@ -11,6 +11,8 @@ public abstract class Stage : MonoBehaviour
     Player _player;
     [SerializeField]
     Transform _initialSpawnAnchor;
+    [SerializeField]
+    Transform _debugSpawnAnchor;
 
     [Header("EventSignal")]
     [SerializeField]
@@ -20,7 +22,11 @@ public abstract class Stage : MonoBehaviour
     [SerializeField]
     UnityEvent _onDestroy;
     public Player Player => _player;
+#if UNITY_EDITOR
+    public Transform InitialSpawnAnchor => _debugSpawnAnchor;
+#else
     public Transform InitialSpawnAnchor => _initialSpawnAnchor;
+#endif
     public List<NpcUnit> NpcUnits => _npcUnits;
     public List<NpcUnit> AliveNpcUnits => _aliveNpcUnits;
     public UnityEvent OnDestroy => _onDestroy;

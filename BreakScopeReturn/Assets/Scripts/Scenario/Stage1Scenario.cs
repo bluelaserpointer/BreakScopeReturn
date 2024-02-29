@@ -27,6 +27,8 @@ public class Stage1Scenario : Stage
     [SerializeField]
     DialogNodeSet remainEnemyCounterDialog;
     [SerializeField]
+    DialogNodeSet firstKillTurretDialog;
+    [SerializeField]
     DialogNodeSet firstKillShieldManDialog;
 
     [Header("Achivement & Result Screen")]
@@ -54,6 +56,7 @@ public class Stage1Scenario : Stage
         public bool didFirstContactGuide;
         public bool didFirstKill;
         public bool didFirstKillShieldMan;
+        public bool didFirstKillTurret;
         public int shieldManKillCount;
         public int killCount;
         public int sneakKillCount;
@@ -96,13 +99,21 @@ public class Stage1Scenario : Stage
                         walkie.eventSignal = _activeRemainEnemyCounter;
                         walkie.transform.position = npcUnit.transform.position + Vector3.up * 1;
                     }
-                    if (npcUnit.name.Contains("Shield")) //TODO: unsafe shield man identifier
+                    if (npcUnit.name.Contains("Shield")) //TODO: unsafe shield man identify
                     {
                         ++_scenario.shieldManKillCount;
                         if (!_scenario.didFirstKillShieldMan)
                         {
                             _scenario.didFirstKillShieldMan = true;
                             GameManager.Instance.DialogUI.SetDialog(firstKillShieldManDialog);
+                        }
+                    }
+                    else if (npcUnit.name.Contains("Turret")) //TODO: unsafe turret identify
+                    {
+                        if (!_scenario.didFirstKillTurret)
+                        {
+                            _scenario.didFirstKillTurret = true;
+                            GameManager.Instance.DialogUI.SetDialog(firstKillTurretDialog);
                         }
                     }
                 });

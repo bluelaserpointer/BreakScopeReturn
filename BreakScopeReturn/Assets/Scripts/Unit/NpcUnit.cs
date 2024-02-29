@@ -21,7 +21,10 @@ public class NpcUnit : Unit
     protected override void Internal_Init(bool isInitialInit)
     {
         if (isInitialInit)
+        {
             GameManager.Instance.Stage.OnNewNpcUnitAdded(this);
+            NeverFoundEnemy = true;
+        }
         base.Internal_Init(isInitialInit);
     }
     public override string Serialize()

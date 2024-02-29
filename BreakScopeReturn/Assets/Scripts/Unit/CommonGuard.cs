@@ -187,7 +187,6 @@ public class CommonGuard : NpcUnit
         SetModelFiringCD(Gun.FireCD.Capacity);
         if (isInitialInit)
         {
-            NeverFoundEnemy = true;
             TargetAimPosition = transform.position + transform.forward * 100;
             MovePosition = transform.position;
             _currentLookRotation = transform.rotation;

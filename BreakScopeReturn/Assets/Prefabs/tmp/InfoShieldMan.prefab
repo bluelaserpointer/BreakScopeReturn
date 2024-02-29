@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8833599326769162401
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 151878472121905802}
+  - component: {fileID: 2950105487580607824}
+  m_Layer: 5
+  m_Name: InfoShieldMan
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &151878472121905802
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8833599326769162401}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2950105487580607824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8833599326769162401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c1da9d047850354393035e1818f80b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _saveProperty:
+    excludeFromSave: 0
+    identifyName: 
+    prefabRoot: {fileID: 0}
+  objectiveNameTS:
+    defaultString: Shield Man
+    languageAndSentences:
+    - language: 2
+      sentence: "\u30B7\u30FC\u30EB\u30C9\u30E9\u30A4\u30D5\u30EB\u30DE\u30F3"
+    - language: 0
+      sentence: "\u62A4\u76FE\u67AA\u624B"
+  objectiveDescriptionTS:
+    defaultString: 
+    languageAndSentences:
+    - language: 2
+      sentence: "\u5206\u6790\u7D50\u679C\uFF1A\n\u30B7\u30FC\u30EB\u30C9\u306F\u7834\u58CA\u4E0D\u53EF\u80FD\n\u5074\u5F8C\u90E8\u306F\u7121\u9632\u5099"
+    - language: 0
+      sentence: "\u5206\u6790\u7ED3\u679C\uFF1A\n\u62A4\u76FE\u65E0\u6CD5\u51FB\u6BC1\n\u4FA7\u80CC\u90E8\u7F3A\u4E4F\u9632\u62A4"
+  onSetObjective:
+    m_PersistentCalls:
+      m_Calls: []
