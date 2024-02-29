@@ -47,6 +47,10 @@ public class Player : Unit
     [SerializeField]
     AudioClip _deathSE;
 
+    [Header("HUD-UI")]
+    [SerializeField]
+    HPBar _hpBar;
+
     public Camera Camera => MouseLook.Camera;
     public Camera HUDCamera => _hudCamera;
     public ProjectRicochetMirror ProjectRicochetMirror => _projectRicochetMirror;
@@ -122,6 +126,7 @@ public class Player : Unit
         }
         AimPositionUpdate();
         InteractUpdate();
+        _hpBar.UpdateHP(Health.Ratio);
     }
     public override bool IsMyCollider(Collider collider)
     {
