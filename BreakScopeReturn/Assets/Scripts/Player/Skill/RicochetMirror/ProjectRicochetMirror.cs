@@ -10,6 +10,9 @@ public class ProjectRicochetMirror : MonoBehaviour
     [SerializeField]
     AudioSource _moduleAudioSource;
 
+    [Header("UI")]
+    [SerializeField] SkillSlot _skillSlot;
+
     public RicochetMirror Mirror { get; private set; }
     public bool MirrorExpanded => Mirror.expand;
 
@@ -21,8 +24,12 @@ public class ProjectRicochetMirror : MonoBehaviour
     }
     private void Update()
     {
-        if (GameManager.Instance.Player.AIEnable && Input.GetKeyDown(KeyCode.Q))
+        if (!GameManager.Instance.Player.AIEnable)
+            return;
+        bool keyInput = Input.GetKeyDown(KeyCode.Q);
+        if (keyInput)
             SetMirror(!MirrorExpanded);
+        _skillSlot.ActivateLit(Mirror.expand);
     }
     public void SetMirror(bool cond)
     {
