@@ -689,6 +689,7 @@ MonoBehaviour:
   onDead:
     m_PersistentCalls:
       m_Calls: []
+  _catalog: {fileID: 11400000, guid: d2916d907ed913248ab2629ae08d85fd, type: 2}
   _xRotationJoint: {fileID: 563194484280188306}
   _yRotationJoint: {fileID: 4457408656374350896}
   maxViewDistance: 50

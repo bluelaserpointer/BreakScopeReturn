@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] bool _playerAlwaysStealth;
 
     [Header("Save / Load")]
+    [SerializeField] GameSave _dummyGameSave;
     [SerializeField] Transform[] _saveTargetContainers;
 
     [Header("Reference")]
@@ -30,11 +31,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] InteractUI _interactUI;
     [SerializeField] MinimapUI _minimapUI;
     [SerializeField] ObjectiveUI _objectiveUI;
+    [SerializeField] CatalogPopUpUI _catalogPopUpUI;
     [SerializeField] PauseUI _pauseUI;
     public static GameManager Instance { get; private set; }
     public bool InitDone { get; private set; }
     public Cutscene ActiveCutscene { get; set; }
     public bool PlayingCutscene => ActiveCutscene != null && ActiveCutscene.Playing;
+    public GameSave GameSave => _dummyGameSave;
     public Stage Stage => _stage;
     public FadingBlackout CutsceneBlackout => _cutsceneBlackout;
     public Player Player => Stage.Player;
@@ -43,6 +46,7 @@ public class GameManager : MonoBehaviour
     public InteractUI InteractUI => _interactUI;
     public MinimapUI MinimapUI => _minimapUI;
     public ObjectiveUI ObjectiveUI => _objectiveUI;
+    public CatalogPopUpUI CatalogPopUpUI => _catalogPopUpUI;
     public PauseUI PauseUI => _pauseUI;
     public bool MenuPause => PauseUI.Paused;
     public CheckPointUI CheckPointUI => _checkPointNotification;

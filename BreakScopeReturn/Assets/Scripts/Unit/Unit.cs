@@ -57,8 +57,8 @@ public class Unit : SaveTarget, IDamageReceiver
     public void Init(bool isInitialInit)
     {
         Initializing = true;
-        AIEnable = true;
         Internal_Init(isInitialInit);
+        AIEnableUpdate();
         Initializing = false;
     }
     protected virtual void Internal_Init(bool isInitialInit)
@@ -79,11 +79,10 @@ public class Unit : SaveTarget, IDamageReceiver
             IsDead = Health.Value <= 0;
         }
         _cutscenePause = false;
-        AIEnableUpdate();
     }
     public void AIEnableUpdate()
     {
-        bool newAIState = !CutscenePause && !MenuPause;
+        bool newAIState = !CutscenePause && !MenuPause && IsAlive;
         if (AIEnable != newAIState || Initializing)
         {
             AIEnable = newAIState;
@@ -129,6 +128,7 @@ public class Unit : SaveTarget, IDamageReceiver
             return;
         IsDead = true;
         Health.Value = 0;
+        AIEnableUpdate();
         onDead.Invoke();
     }
     public virtual void ListenSound(SoundSource soundSouce)
@@ -189,7 +189,7 @@ public class Unit : SaveTarget, IDamageReceiver
     {
         Initializing = true;
         Internal_Deserialize(json);
-        Internal_Init(false);
+        Init(false);
         Initializing = false;
     }
     protected virtual void Internal_Deserialize(string json)

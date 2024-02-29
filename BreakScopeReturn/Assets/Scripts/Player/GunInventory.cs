@@ -137,6 +137,7 @@ public class GunInventory : MonoBehaviour
             Hands.transform.SetPositionAndRotation(transform.position, transform.rotation);
             Hands.Init(HoldingEquipment);
             Hands.gameObject.SetActive(true);
+            Hands.enabled = Player.AIEnable;
         }
         else
         {

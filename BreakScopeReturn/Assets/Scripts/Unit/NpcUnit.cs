@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class NpcUnit : Unit
+public abstract class NpcUnit : Unit, IHasCatalog
 {
+    [SerializeField]
+    Catalog _catalog;
     public bool NeverFoundEnemy { get; protected set; }
 
-    [Serializable]
+    public Catalog Catalog => _catalog;
+
     struct NpcUnitSave
     {
         public string unitSave;

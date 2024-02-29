@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 691de95835240ff468c0ff6230ecdc8c, type: 3}
+  m_Name: RifleMan
+  m_EditorClassIdentifier: 
+  nameTS:
+    defaultString: Rifleman
+    languageAndSentences:
+    - language: 2
+      sentence: "\u30E9\u30A4\u30D5\u30EB\u30DE\u30F3"
+    - language: 0
+      sentence: "\u8F7B\u673A\u67AA\u624B"
+  descriptionTS:
+    defaultString: 
+    languageAndSentences:
+    - language: 2
+      sentence: "\u8EFD\u706B\u529B\u5358\u4F4D\n\u982D\u90E8\u304C\u5F31\u70B9\n\u56DE\u5FA9\u85AC\u3092\u6240\u6301"
+    - language: 0
+      sentence: "\u8F7B\u706B\u529B\u5355\u4F4D\n\u5934\u90E8\u4E3A\u5F31\u70B9\n\u6301\u6709\u6CBB\u7597\u836F\u6C34"

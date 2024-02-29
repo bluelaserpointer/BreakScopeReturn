@@ -565,6 +565,7 @@ MonoBehaviour:
   onDead:
     m_PersistentCalls:
       m_Calls: []
+  _catalog: {fileID: 11400000, guid: 0478286921b9f8e48a215fe2f1bf2df7, type: 2}
   _lookLineDebug: {fileID: 7485218951885572124}
   viewRange: 50
   viewAngle: 110

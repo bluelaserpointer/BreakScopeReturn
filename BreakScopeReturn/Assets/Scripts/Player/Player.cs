@@ -65,6 +65,7 @@ public class Player : Unit
     public Vector3 AimPosition { get; private set; }
     public float AimDistance { get; private set; }
     public IInteractable AimInteractable { get; private set; }
+    public IHasCatalog AimHasCatalog { get; private set; }
     public Vector3 FootPosition => transform.position;
     public Transform AbilityContainer => _abilityContainer;
     private Vignette _bloodVignette;
@@ -86,8 +87,6 @@ public class Player : Unit
             onDead.AddListener(() =>
             {
                 GameManager.Instance.SetBlackout(true);
-                Movement.enabled = false;
-                MouseLook.enabled = false;
                 _respawnWaitedTime = 0;
                 AudioSource.PlayClipAtPoint(_deathSE, Camera.transform.position);
             });
@@ -126,6 +125,7 @@ public class Player : Unit
         }
         AimPositionUpdate();
         InteractUpdate();
+        CatalogUpdate();
         _hpBar.UpdateHP(Health.Ratio);
     }
     public override bool IsMyCollider(Collider collider)
@@ -145,10 +145,12 @@ public class Player : Unit
         List<Vector3> aimLinePositions = new() { Camera.transform.position };
         AimCollider = null;
         AimInteractable = null;
+        AimHasCatalog = null;
         do
         {
             RaycastHit closestSolidHit = new() { distance = float.MaxValue };
             RaycastHit closestInteractableHit = new() { distance = _interactionDistance };
+            RaycastHit closestHasCatalogHit = new() { distance = float.MaxValue };
             bool isMirror = false;
             foreach (var hitInfo in Physics.RaycastAll(ray))
             {
@@ -161,6 +163,14 @@ public class Player : Unit
                 {
                     closestInteractableHit = hitInfo;
                     AimInteractable = interactable;
+                }
+                //hasCatalog
+                IHasCatalog hasCatalog;
+                if (hitInfo.distance < closestHasCatalogHit.distance
+                    && (hasCatalog = hitInfo.collider.GetComponentInParent<IHasCatalog>()) != null)
+                {
+                    closestHasCatalogHit = hitInfo;
+                    AimHasCatalog = hasCatalog;
                 }
                 //solid
                 if (hitInfo.distance > closestSolidHit.distance)
@@ -179,6 +189,11 @@ public class Player : Unit
                 totalRayDistance += 100;
                 break;
             }
+            //prevent interact & scan catalog data througth walls
+            if (closestInteractableHit.distance > closestSolidHit.distance)
+                AimInteractable = null;
+            if (closestHasCatalogHit.distance > closestSolidHit.distance)
+                AimHasCatalog = null;
             aimLinePositions.Add(closestSolidHit.point);
             totalRayDistance += closestSolidHit.distance;
             if (!isMirror)
@@ -208,6 +223,15 @@ public class Player : Unit
         }
         GameManager.Instance.InteractUI.gameObject.SetActive(true);
     }
+    private void CatalogUpdate()
+    {
+        if (AimHasCatalog == null)
+            return;
+        if (!GameManager.Instance.GameSave.catalogedList.Contains(AimHasCatalog.Catalog))
+        {
+            GameManager.Instance.GameSave.AddCatalog(AimHasCatalog.Catalog);
+        }
+    }
     protected override void OnAIEnableChange()
     {
         Cursor.lockState = AIEnable ? CursorLockMode.Locked : CursorLockMode.None;
@@ -235,6 +259,7 @@ public class Player : Unit
         public List<PrefabCloneSave> equipmentSaves;
         public int holdingEquipmentIndex;
         public string commonUnitSave;
+        public List<Catalog> catalogedList;
     }
     public override string Serialize()
     {
@@ -242,7 +267,7 @@ public class Player : Unit
         {
             equipmentSaves = _gunInventory.equipments.ConvertAll(equipment => new PrefabCloneSave(equipment.saveProperty.prefabRoot)),
             holdingEquipmentIndex = GunInventory.HoldingEquipmentIndex,
-            commonUnitSave = base.Serialize()
+            commonUnitSave = base.Serialize(),
         });
         return json;
     }
@@ -261,6 +286,7 @@ public class Player : Unit
         _gunInventory.InitHoldingWeaponIndex(save.holdingEquipmentIndex);
         _gunInventory.LoadInit();
         reuseCandidates.ForEach(candidate => Destroy(candidate.gameObject));
+
         MouseLook.LoadInit();
         _projectRicochetMirror.CloseMirrorImmediate();
     }
