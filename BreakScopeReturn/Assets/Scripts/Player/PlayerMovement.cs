@@ -91,6 +91,7 @@ public class PlayerMovement : MonoBehaviour {
 	{
         InputXZ = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         HasInputXZ = InputXZ != Vector2.zero;
+        Player.Animator.SetBool("isMoving", HasInputXZ);
         JumpInput = Input.GetButtonDown("Jump");
         if (IsGrounded && JumpInput)
         {
@@ -127,6 +128,7 @@ public class PlayerMovement : MonoBehaviour {
                 MovingState = MovingStateEnum.Walk;
             }
         }
+        Player.Animator.SetBool("running", HasInputXZ && MovingState == MovingStateEnum.Run);
     }
 	void Update()
     {

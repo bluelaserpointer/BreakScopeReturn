@@ -9,8 +9,8 @@ public class RicochetMirror : MonoBehaviour
     [Header("Visual")]
     [SerializeField] float mirrorSize;
     [SerializeField] SmoothDampTransition _expanding = new SmoothDampTransition(0.5F);
-    [SerializeField] float maxAlphaDistance = 0.5F;
-    [SerializeField] AnimationCurve _alphaCurveByDistance;
+    //[SerializeField] float maxAlphaDistance = 0.5F;
+    //[SerializeField] AnimationCurve _alphaCurveByDistance;
 
     [Header("SE")]
     [SerializeField] HitSound _hitSound;

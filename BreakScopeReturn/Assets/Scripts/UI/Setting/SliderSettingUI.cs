@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [DisallowMultipleComponent]
-public class SliderSettingUI : SettingUI
+public class SliderSettingUI : SettingItemUI
 {
     [Header("Option Value")]
     [SerializeField]

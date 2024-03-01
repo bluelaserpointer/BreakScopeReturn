@@ -3,31 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public abstract class SettingUI : MonoBehaviour
+public class SettingUI : MonoBehaviour
 {
-    [Header("Option Name")]
-    [SerializeField]
-    string _playerPrefsKey;
-    [SerializeField]
-    TranslatableSentenceSO _optionNameTS;
-    [SerializeField]
-    TranslatedTMP _optionNameTranslator;
-
-    public string PlayerPrefsKey => _playerPrefsKey;
-
-    protected void ApplySetting(object value)
+    private void OnEnable()
     {
-        Setting.Set(PlayerPrefsKey, value);
+        UpdateSettingUIDisplay();
     }
-    public abstract void UpdateDisplay();
-    private void OnValidate()
+    public void UpdateSettingUIDisplay()
     {
-        if (_optionNameTS == null || _optionNameTranslator == null)
-            return;
-        _optionNameTranslator.sentenceSO = _optionNameTS;
-        _optionNameTranslator.OnValidate();
+        foreach (SettingItemUI settingUI in GetComponentsInChildren<SettingItemUI>(includeInactive: true))
+        {
+            settingUI.UpdateDisplay();
+        }
     }
-    protected string GetOptionValueString() => PlayerPrefs.GetString(PlayerPrefsKey);
-    protected int GetOptionValueInt() => PlayerPrefs.GetInt(PlayerPrefsKey);
-    protected float GetOptionValueFloat() => PlayerPrefs.GetFloat(PlayerPrefsKey);
+    public void UIEventResetSetting()
+    {
+        Setting.SetDefault();
+        UpdateSettingUIDisplay();
+    }
 }

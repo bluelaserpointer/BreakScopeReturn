@@ -60,7 +60,8 @@ public abstract class Stage : MonoBehaviour
     }
     public virtual void GameClear()
     {
-        _npcUnits.ForEach(unit => unit.enabled = false);
+        Player.CutscenePause = true;
+        GameManager.Instance.Stage.NpcUnits.ForEach(unit => unit.CutscenePause = true);
     }
     public void Destroy()
     {

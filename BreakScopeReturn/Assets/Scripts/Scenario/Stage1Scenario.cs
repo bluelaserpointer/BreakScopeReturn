@@ -125,6 +125,8 @@ public class Stage1Scenario : Stage
         {
             return;
         }
+        if (Input.GetKey(KeyCode.U))
+            GameClear();
         if (!_scenario.didFirstContactGuide)
         {
             foreach (var unit in GameManager.Instance.Stage.NpcUnits)
@@ -157,15 +159,13 @@ public class Stage1Scenario : Stage
     public override void GameClear()
     {
         base.GameClear();
-        Player.CutscenePause = true;
-        GameManager.Instance.Stage.NpcUnits.ForEach(unit => unit.CutscenePause = true);
         _resultScreen.SetActive(true);
         int enemyCount = GameManager.Instance.Stage.NpcUnits.Count;
         achievements[0].SetAchivement("achiv1", _scenario.shieldManKillCount >= 2);
         achievements[1].SetAchivement("achiv2", _scenario.killCount == enemyCount);
         achievements[2].SetAchivement("achiv3", (float)_scenario.sneakKillCount / enemyCount >= 0.5F);
         _clearTime.text = string.Format("{0:F1}", Time.timeSinceLevelLoad - _scenario.stageStartedTime) + "s";
-        _sneakKillRateText.text = string.Format("{0:P2}", (float)_scenario.sneakKillCount / _scenario.killCount);
+        _sneakKillRateText.text = _scenario.killCount == 0 ? "0" : string.Format("{0:P2}", (float)_scenario.sneakKillCount / _scenario.killCount);
         _totalDamageTakeText.text = _scenario.totalDamageTaken.ToString();
     }
 

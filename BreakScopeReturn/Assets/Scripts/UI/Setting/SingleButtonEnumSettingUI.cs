@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SingleButtonEnumSettingUI : SettingUI
+public class SingleButtonEnumSettingUI : SettingItemUI
 {
     [Header("Option Value")]
     [SerializeField]

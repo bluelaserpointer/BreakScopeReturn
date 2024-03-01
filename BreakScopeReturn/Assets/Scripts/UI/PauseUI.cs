@@ -9,15 +9,16 @@ public class PauseUI : MonoBehaviour
     [SerializeField]
     GameObject _pauseMenu;
     [SerializeField]
-    GameObject _settingScreen;
+    SettingUI _settingScreen;
+
     public bool Paused { get; private set; }
-    Transform graphicRoot;
+    
+    Transform _graphicRoot;
     private Player Player => GameManager.Instance.Player;
     private void Awake()
     {
-        graphicRoot = transform.GetChild(0);
-        graphicRoot.gameObject.SetActive(false);
-        GameManager.DoAfterInit(UpdateSettingUIDisplay);
+        _graphicRoot = transform.GetChild(0);
+        _graphicRoot.gameObject.SetActive(false);
     }
     private void Update()
     {
@@ -42,9 +43,9 @@ public class PauseUI : MonoBehaviour
         {
             SetPause(false);
         }
-        else if (_settingScreen.activeSelf)
+        else if (_settingScreen.gameObject.activeSelf)
         {
-            _settingScreen.SetActive(false);
+            _settingScreen.gameObject.SetActive(false);
             _pauseMenu.SetActive(true);
         }
     }
@@ -52,24 +53,12 @@ public class PauseUI : MonoBehaviour
     {
         Paused = cond;
         Time.timeScale = Paused ? 0F : 1F;
-        graphicRoot.gameObject.SetActive(Paused);
+        _graphicRoot.gameObject.SetActive(Paused);
         Player.AIEnableUpdate();
         GameManager.Instance.Stage.NpcUnits.ForEach(unit => unit.AIEnableUpdate());
-    }
-    public void UpdateSettingUIDisplay()
-    {
-        foreach (SettingUI settingUI in GetComponentsInChildren<SettingUI>(includeInactive: true))
-        {
-            settingUI.UpdateDisplay();
-        }
     }
     public void UIEventBackToTitle()
     {
         LoadingScreen.LoadScene("Title", longLoadStyle: false);
-    }
-    public void UIEventResetSetting()
-    {
-        Setting.SetDefault();
-        UpdateSettingUIDisplay();
     }
 }

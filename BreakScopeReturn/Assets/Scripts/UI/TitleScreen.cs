@@ -10,12 +10,10 @@ public class TitleScreen : MonoBehaviour
     [SerializeField]
     string _initialStageSceneName;
     [SerializeField]
-    Language _buildLanguage;
-    [SerializeField]
     TextMeshProUGUI _versionText;
 
     public static TitleScreen Instance { get; private set; }
-    private static bool _hasSetBuildLanguage;
+    private static bool _hasSetSystemLanguage;
 
     private void Awake()
     {
@@ -24,10 +22,26 @@ public class TitleScreen : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.SetCursor(Resources.Load<Texture2D>("Cursor/Cursor"), Vector2.zero, CursorMode.Auto);
         _versionText.text = "Version: " + Application.version.ToString();
-        if (!_hasSetBuildLanguage)
+        if (!_hasSetSystemLanguage)
         {
-            _hasSetBuildLanguage = true;
-            _buildLanguage.SetAsCurrentLanguage();
+            _hasSetSystemLanguage = true;
+            switch (Application.systemLanguage)
+            {
+                case SystemLanguage.English:
+                    Language.English.SetAsCurrentLanguage();
+                    break;
+                case SystemLanguage.Chinese:
+                case SystemLanguage.ChineseSimplified:
+                case SystemLanguage.ChineseTraditional:
+                    Language.Chinese.SetAsCurrentLanguage();
+                    break;
+                case SystemLanguage.Japanese:
+                    Language.Japanese.SetAsCurrentLanguage();
+                    break;
+                default:
+                    Language.English.SetAsCurrentLanguage();
+                    break;
+            }
         }
     }
     public void StartGame()

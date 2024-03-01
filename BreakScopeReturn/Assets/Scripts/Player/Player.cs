@@ -241,6 +241,11 @@ public class Player : Unit
         {
             GunInventory.Hands.enabled = AIEnable;
         }
+        if (!AIEnable)
+        {
+            Animator.SetBool("isMoving", false);
+            Animator.SetBool("running", false);
+        }
     }
     /*
     public void OrderAimAction(Transform aimTarget)

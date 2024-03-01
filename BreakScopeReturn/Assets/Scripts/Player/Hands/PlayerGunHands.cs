@@ -340,8 +340,6 @@ public class PlayerGunHands : PlayerHands
 	}
 	private void AnimationUpdate()
     {
-        Animator.SetBool("isMoving", PlayerMovement.HasInputXZ);
         Animator.SetFloat("ADSTransition", aimTransition.value);
-        Animator.SetBool("running", PlayerMovement.HasInputXZ && PlayerMovement.MovingState == MovingStateEnum.Run);
     }
 }
