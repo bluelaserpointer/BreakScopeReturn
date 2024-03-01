@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a65563b91936cd14192c49cb6798d6cf, type: 3}
+  m_Name: Stage1
+  m_EditorClassIdentifier: 
+  _sceneName: Stage1
+  _nameTS:
+    defaultString: Prey in the mirror
+    languageAndSentences:
+    - language: 0
+      sentence: "\u955C\u4E2D\u730E\u7269"
+    - language: 2
+      sentence: "\u93E1\u306B\u6620\u308B\u7372\u7269"
+  _descriptionTS:
+    defaultString: 
+    languageAndSentences:
+    - language: 0
+      sentence: "\u4F60\u5C06\u8D1F\u8D23\u8BBE\u65BD\u7684\u6F5C\u5165\u4E0E\u654C\u5175\u7684\u6E05\u9664\u3002\n\u672C\u6B21\u662F\u5355\u72EC\u4EFB\u52A1\uFF0C\u56E0\u6B64\u6211\u4EEC\u4E3A\u4F60\u63D0\u4F9B\u4E86\u4E00\u79CD\u7279\u6B8A\u7684\u4F5C\u6218\u88C5\u7F6E\u3002\n\u5168\u7A0B\u6211\u4EEC\u4F1A\u4FDD\u6301\u8054\u7EDC\u6765\u534F\u52A9\u4F60\u7684\u4F5C\u6218\u3002\n\u4E00\u8DEF\u987A\u98CE\u3002"
+    - language: 2
+      sentence: "\u65BD\u8A2D\u306E\u6F5C\u5165\u3068\u6575\u5175\u306E\u6BB2\u6EC5\u3092\u884C\u3063\u3066\u3082\u3089\u3046\u3002\n\u5358\u72EC\u30DF\u30C3\u30B7\u30E7\u30F3\u3060\u304C\u3001\u4ECA\u56DE\u306E\u6F5C\u5165\u3092\u52A9\u3051\u308B\u7279\u6B8A\u306A\u30C7\u30D0\u30A4\u30B9\u3092\u6E21\u3057\u305F\u3002\n\u6211\u3005\u3082\u901A\u4FE1\u304B\u3089\u3001\u541B\u306E\u4F5C\u6226\u5224\u65AD\u306E\u652F\u63F4\u3092\u884C\u3046\u3002\n\u6B66\u904B\u3092\u7948\u308B\u3002"

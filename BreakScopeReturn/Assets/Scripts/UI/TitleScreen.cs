@@ -8,8 +8,6 @@ using UnityEngine;
 public class TitleScreen : MonoBehaviour
 {
     [SerializeField]
-    string _initialStageSceneName;
-    [SerializeField]
     TextMeshProUGUI _versionText;
 
     public static TitleScreen Instance { get; private set; }
@@ -43,10 +41,6 @@ public class TitleScreen : MonoBehaviour
                     break;
             }
         }
-    }
-    public void StartGame()
-    {
-        LoadingScreen.LoadScene(_initialStageSceneName, longLoadStyle: true);
     }
     public void NextLanguage()
     {

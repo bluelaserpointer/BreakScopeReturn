@@ -20,6 +20,8 @@ public struct TranslatableSentence
     public string defaultString;
     public LanguageAndSentence[] languageAndSentences;
     public override string ToString() {
+        if (languageAndSentences == null)
+            return defaultString;
         int pairID = Array.FindIndex(languageAndSentences, eachPair => eachPair.language.Equals(LanguageExtension.CurrentLanguage));
         return pairID == -1 ? defaultString : languageAndSentences[pairID].sentence;
     }
