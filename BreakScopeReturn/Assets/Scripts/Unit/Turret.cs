@@ -4,12 +4,8 @@ using UnityEngine;
 
 public class Turret : NpcUnit
 {
-    [SerializeField]
-    Transform _xRotationJoint;
-    [SerializeField]
-    Transform _yRotationJoint;
-
     [Header("View")]
+    public Transform _initialAimTarget;
     public float maxViewDistance = 10;
     public float viewAngle = 100;
 
@@ -24,11 +20,9 @@ public class Turret : NpcUnit
 
     [Header("Mobility")]
     [SerializeField]
-    float _rotateSmoothTime = 10;
+    public BijointAim _bijointAim;
     [SerializeField]
     float _fireConeAngle = 2F;
-    [SerializeField]
-    Vector2 _xRotateRange = new Vector2(-60, 75), _yRotateRange = new Vector2(-180, 180);
 
     [Header("Animation")]
     [SerializeField]
@@ -37,8 +31,6 @@ public class Turret : NpcUnit
     GameObject _destoryVFX;
     [SerializeField]
     Renderer _laserSightRenderer;
-    [SerializeField]
-    List<GameObject> _aliveShowObjects;
 
     [Header("SE")]
     [SerializeField]
@@ -64,13 +56,11 @@ public class Turret : NpcUnit
             onDead.AddListener(() =>
             {
                 _destoryVFX.SetActive(true);
-                _aliveShowObjects.ForEach(each => each.SetActive(false));
             });
-            TargetAimPosition = viewAnchor.position + viewAnchor.forward;
+            TargetAimPosition = (_initialAimTarget != null) ? _initialAimTarget.position: viewAnchor.position + viewAnchor.forward;
             _animator.SetFloat("FireSpeedMultiplier", fireCD.Capacity > 0 ? _fireAnimationClip.length / fireCD.Capacity : 1);
         }
         _destoryVFX.SetActive(IsDead);
-        _aliveShowObjects.ForEach(each => each.SetActive(IsAlive));
     }
     private void Update()
     {
@@ -86,7 +76,6 @@ public class Turret : NpcUnit
             {
                 FoundEnemy = true;
                 NeverFoundEnemy = false;
-                print("found.");
                 _detectSoundSource.clip = _detectInSE;
                 _detectSoundSource.Play();
             }
@@ -98,31 +87,13 @@ public class Turret : NpcUnit
             _detectSoundSource.clip = _detectOutSE;
             _detectSoundSource.Play();
         }
+        _bijointAim.targetAimPosition = TargetAimPosition;
         fireCD.AddDeltaTime();
         if (FoundEnemy && viewAngleDifference < _fireConeAngle / 2)
         {
             Trigger();
         }
         LaserSightUpdate();
-    }
-    private void FixedUpdate()
-    {
-        if (IsDead)
-            return;
-        Vector3 horzDelta = (TargetAimPosition - viewAnchor.position).Set(y: 0);
-        Vector2 newAngle = Vector2.zero;
-        if (horzDelta != Vector3.zero)
-        {
-            newAngle.x = -Mathf.Rad2Deg * Mathf.Atan2(TargetAimPosition.y - viewAnchor.position.y, horzDelta.magnitude);
-            newAngle.y = Quaternion.LookRotation(horzDelta).eulerAngles.y;
-        }
-        else
-        {
-            newAngle.x = _xRotationJoint.eulerAngles.x;
-            newAngle.y = _yRotationJoint.eulerAngles.y;
-        }
-        _xRotationJoint.eulerAngles = _xRotationJoint.eulerAngles.Set(x: Mathf.SmoothDampAngle(_xRotationJoint.eulerAngles.x, newAngle.x, ref _gunRotateVelocity.x, _rotateSmoothTime * Time.fixedDeltaTime));
-        _yRotationJoint.eulerAngles = _yRotationJoint.eulerAngles.Set(y: Mathf.SmoothDampAngle(_yRotationJoint.eulerAngles.y, newAngle.y, ref _gunRotateVelocity.y, _rotateSmoothTime * Time.fixedDeltaTime));
     }
     public void Trigger()
     {

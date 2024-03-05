@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 // [ExecuteInEditMode] // Make mirror live-update even when not in play mode
@@ -173,7 +174,15 @@ public class MirrorScript : MonoBehaviour
                 GL.invertCulling = true;
                 mirrorCamera.transform.position = newpos;
                 mirrorCamera.farClipPlane = FarClipPlane;
-                mirrorCamera.Render();
+                //avoid frustum error (screen position out of view frustum)
+                try
+                {
+                    mirrorCamera.Render();
+                }
+                catch
+                {
+                    print("catched");
+                }
                 mirrorCamera.transform.position = oldpos;
                 mirrorCamera.farClipPlane = oldclip;
                 GL.invertCulling = false;

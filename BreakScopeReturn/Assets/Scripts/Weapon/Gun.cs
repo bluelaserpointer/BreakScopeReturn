@@ -11,16 +11,6 @@ public class Gun : HandEquipment
     [SerializeField]
     bool _realtimeIK;
 
-    [Header("Info")]
-    [SerializeField]
-    string _displayName;
-    [SerializeField]
-    Sprite _icon;
-
-    [Header("Dynamic data")]
-    public IzumiTools.CappedValue magazine;
-    public int spareAmmo;
-
     [Header("Spec")]
     public GunSpec spec;
 
@@ -83,8 +73,6 @@ public class Gun : HandEquipment
         }
         new TransformRelator(transform, AimCameraAnchor).ApplyChildTransform(transform, player.Camera.transform);
     }
-    public string DisplayName => _displayName;
-    public Sprite Icon => _icon;
     public Unit Owner { get; private set; }
     public Transform MuzzleAnchor => _muzzleAnchor;
     public Transform ArmCameraAnchor => _armCameraAnchor;
@@ -104,9 +92,9 @@ public class Gun : HandEquipment
     public TransformRelator CentreRelArmCamera { get; private set; }
     public TransformRelator CentreRelAimCamera { get; private set; }
 
-    private void Awake()
+    protected override void Awake()
     {
-        magazine.Fill();
+        base.Awake();
         UpdateAnchorRelation();
     }
     private void Update()
@@ -119,27 +107,5 @@ public class Gun : HandEquipment
         CentreRelRightHand = new TransformRelator(transform, RightHandGoal);
         CentreRelArmCamera = new TransformRelator(transform, ArmCameraAnchor);
         CentreRelAimCamera = new TransformRelator(transform, AimCameraAnchor);
-    }
-    struct GunSave
-    {
-        public int magazineSize;
-        public int magazineAmmo;
-        public int spareAmmo;
-    }
-    public override string Serialize()
-    {
-        return JsonUtility.ToJson(new GunSave()
-        {
-            magazineSize = (int)magazine.Capacity,
-            magazineAmmo = (int)magazine.Value,
-            spareAmmo = spareAmmo
-        });
-    }
-    public override void Deserialize(string json)
-    {
-        GunSave save = JsonUtility.FromJson<GunSave>(json);
-        magazine.Capacity = save.magazineSize;
-        magazine.Value = save.magazineAmmo;
-        spareAmmo = save.spareAmmo;
     }
 }

@@ -64,10 +64,7 @@ public class GunInventory : MonoBehaviour
         equipment.saveProperty.prefabRoot.excludeFromSave = true;
         equipment.gameObject.SetActive(false);
         equipments.Add(equipment);
-        if (typeof(Gun).IsAssignableFrom(equipment.GetType()))
-            Player.EquipmentSidePreview.SetGun(equipments.Count - 1, equipment as Gun);
-        else
-            print("<!>Unsupported " + nameof(HandEquipment) + " type: " + equipment.GetType().Name);
+        Player.EquipmentSidePreview.SetEquipment(equipments.Count - 1, equipment);
     }
     private void Update()
     {

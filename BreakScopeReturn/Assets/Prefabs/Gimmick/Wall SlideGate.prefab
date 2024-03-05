@@ -442,31 +442,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 972244189732658583, guid: af0f215540b1a80498f1cc5db63afe57, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 60
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 972244189732658583, guid: af0f215540b1a80498f1cc5db63afe57, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 17.75
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 972244189732658583, guid: af0f215540b1a80498f1cc5db63afe57, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 972244189732658583, guid: af0f215540b1a80498f1cc5db63afe57, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071073
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 972244189732658583, guid: af0f215540b1a80498f1cc5db63afe57, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.000000015454322
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 972244189732658583, guid: af0f215540b1a80498f1cc5db63afe57, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.7071063
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 972244189732658583, guid: af0f215540b1a80498f1cc5db63afe57, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.000000015454297
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 972244189732658583, guid: af0f215540b1a80498f1cc5db63afe57, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -474,7 +474,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 972244189732658583, guid: af0f215540b1a80498f1cc5db63afe57, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -90.00001
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 972244189732658583, guid: af0f215540b1a80498f1cc5db63afe57, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -565,12 +565,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-  onStepIn:
-    m_PersistentCalls:
-      m_Calls: []
-  onStepOut:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!4 &5752504300237905412 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 972244189732658583, guid: af0f215540b1a80498f1cc5db63afe57, type: 3}
@@ -598,12 +592,16 @@ MonoBehaviour:
     identifyName: 
     prefabRoot: {fileID: 0}
   isOpen: 0
+  isLocked: 0
   _slideObject: {fileID: 1122368419635688811}
   _openVector: {x: 0, y: 2.2, z: 0}
   _openTransition:
     smoothTime: 1
     value: 0
     velocity: 0
+  _interactWhileLock:
+    m_PersistentCalls:
+      m_Calls: []
   _audioSource: {fileID: 8573931631643051191}
   _openSE: {fileID: 8300000, guid: a7fa7b53e54283f4abdabf17a7438b3c, type: 3}
   _closeSE: {fileID: 8300000, guid: 95575de9f192689428105d484f675dc7, type: 3}

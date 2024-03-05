@@ -12,7 +12,7 @@ public class Player : Unit
     [SerializeField]
     Transform _abilityContainer;
     [SerializeField]
-    ProjectRicochetMirror _projectRicochetMirror;
+    BulletMirrorSkill _projectRicochetMirror;
 
     [Header("Accessiblity")]
     [SerializeField]
@@ -53,7 +53,7 @@ public class Player : Unit
 
     public Camera Camera => MouseLook.Camera;
     public Camera HUDCamera => _hudCamera;
-    public ProjectRicochetMirror ProjectRicochetMirror => _projectRicochetMirror;
+    public BulletMirrorSkill ProjectRicochetMirror => _projectRicochetMirror;
     public EquipmentSidePreview EquipmentSidePreview => _equipmentSidePreview;
     public AnimatorIKEventExposure IKEventExposure => _IKEventExposure;
     public PlayerMovement Movement => _movement;

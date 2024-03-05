@@ -52,6 +52,8 @@ public class NPCGun : MonoBehaviour
     }
     public void UpdateAnchorRelation()
     {
+        if (_headAnchor == null)
+            return;
         CentreRelHead = new TransformRelator(transform, _headAnchor);
     }
     public void Init(Unit owner)

@@ -19,16 +19,16 @@ public class GunSidePreviewSlot : MonoBehaviour
     [SerializeField]
     ReuseNest<Image> _spareAmmoSquareGrid;
 
-    public Gun Gun { get; private set; }
+    public HandEquipment Equipment { get; private set; }
     
-    public void SetGun(Gun gun)
+    public void SetEquipment(HandEquipment equipment)
     {
-        Gun = gun;
-        if (Gun != null)
+        Equipment = equipment;
+        if (Equipment != null)
         {
-            _nameText.text = gun.DisplayName;
+            _nameText.text = equipment.DisplayName;
             _icon.enabled = true;
-            _icon.sprite = gun.Icon;
+            _icon.sprite = equipment.Icon;
         }
         else
         {
@@ -39,7 +39,7 @@ public class GunSidePreviewSlot : MonoBehaviour
     }
     private void Update()
     {
-        if (Gun == null)
+        if (Equipment == null)
             return;
         UpdateGunDataUI();
     }
@@ -47,18 +47,18 @@ public class GunSidePreviewSlot : MonoBehaviour
     {
         //Selection Background
         //TODO: Animate
-        bool selected = Gun.HoldedByPlayer;
+        bool selected = Equipment.HoldedByPlayer;
         _onSelectEnables.ForEach(each => each.SetActive(selected));
         //Ammo Text
-        if (Gun == null)
+        if (Equipment == null)
         {
             _magazineAmmoText.text = _spareAmmoText.text = "";
             return;
         }
-        _magazineAmmoText.text = Gun.magazine.Value.ToString();
-        _spareAmmoText.text = Gun.spareAmmo.ToString();
+        _magazineAmmoText.text = Equipment.magazine.Value.ToString();
+        _spareAmmoText.text = Equipment.spareAmmo.ToString();
         //Spare Ammo Squares
-        int spareMagazineCount = Mathf.CeilToInt(Gun.spareAmmo / Gun.magazine.Capacity);
+        int spareMagazineCount = Mathf.CeilToInt(Equipment.spareAmmo / Equipment.magazine.Capacity);
         int countDiff = spareMagazineCount - _spareAmmoSquareGrid.ActiveCount;
         while (countDiff > 0)
         {
@@ -70,7 +70,7 @@ public class GunSidePreviewSlot : MonoBehaviour
             _spareAmmoSquareGrid.DisableFirst();
             ++countDiff;
         }
-        float remain = Gun.spareAmmo % Gun.magazine.Capacity;
-        _spareAmmoSquareGrid.LastChild.fillAmount = (remain == 0) ? 1 : remain / Gun.magazine.Capacity;
+        float remain = Equipment.spareAmmo % Equipment.magazine.Capacity;
+        _spareAmmoSquareGrid.LastChild.fillAmount = (remain == 0) ? 1 : remain / Equipment.magazine.Capacity;
     }
 }

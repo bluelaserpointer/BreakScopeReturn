@@ -47,7 +47,7 @@ public class Stage1Scenario : Stage
     [SerializeField]
     GameObject remainEnemyCounter;
 
-    ProjectRicochetMirror _projectRicochetMirror;
+    BulletMirrorSkill _projectRicochetMirror;
     struct ScenarioData
     {
         public float stageStartedTime;
@@ -65,7 +65,7 @@ public class Stage1Scenario : Stage
     protected override void Start()
     {
         base.Start();
-        _projectRicochetMirror = Player.AbilityContainer.GetComponentInChildren<ProjectRicochetMirror>();
+        _projectRicochetMirror = Player.AbilityContainer.GetComponentInChildren<BulletMirrorSkill>();
         GameManager.Instance.DialogUI.SetDialog(initialDialog);
         Player.onDamage.AddListener(damageSouce =>
         {
@@ -125,8 +125,6 @@ public class Stage1Scenario : Stage
         {
             return;
         }
-        if (Input.GetKey(KeyCode.U))
-            GameClear();
         if (!_scenario.didFirstContactGuide)
         {
             foreach (var unit in GameManager.Instance.Stage.NpcUnits)

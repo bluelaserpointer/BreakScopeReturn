@@ -107,8 +107,8 @@ public class PlayerMovement : MonoBehaviour {
             case MovingStateEnum.Walk:
                 if (Input.GetKey(KeyCode.LeftShift))
                     MovingState = MovingStateEnum.Run;
-                else if (Input.GetKeyDown(KeyCode.C))
-                    MovingState = MovingStateEnum.Crouch;
+                //else if (Input.GetKeyDown(KeyCode.C))
+                    //MovingState = MovingStateEnum.Crouch;
                 break;
             case MovingStateEnum.Run:
                 if (Input.GetKeyUp(KeyCode.LeftShift))
@@ -117,8 +117,8 @@ public class PlayerMovement : MonoBehaviour {
             case MovingStateEnum.Crouch:
                 if (Input.GetKey(KeyCode.LeftShift))
                     MovingState = MovingStateEnum.Run;
-                else if (Input.GetKeyDown(KeyCode.C))
-                    MovingState = MovingStateEnum.Walk;
+                //else if (Input.GetKeyDown(KeyCode.C))
+                    //MovingState = MovingStateEnum.Walk;
                 break;
         }
         if (MovingState == MovingStateEnum.Run)

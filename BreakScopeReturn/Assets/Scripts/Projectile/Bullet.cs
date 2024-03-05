@@ -22,7 +22,6 @@ public class Bullet : MonoBehaviour
     public float damage;
     [HideInInspector]
     public float speed;
-    RicochetMirror latestRicochetMirror;
     public Rigidbody Rigidbody { get; private set; }
 
     private void Awake()
@@ -48,8 +47,11 @@ public class Bullet : MonoBehaviour
         RaycastHit closestValidHit = new();
         closestValidHit.distance = float.MaxValue;
         RicochetMirror validMirror = null;
-        foreach (var hit in Physics.RaycastAll(transform.position, transform.forward, speed * Time.fixedDeltaTime, ~ignoreLayer))
+        RaycastHit[] raycastHits = Physics.RaycastAll(transform.position, transform.forward, speed * Time.fixedDeltaTime, ~ignoreLayer);
+        foreach (var hit in raycastHits)
         {
+            if (PenetratableCollider.IgnoreThis(hit, raycastHits))
+                continue;
             if (hit.distance > closestValidHit.distance)
                 continue;
             bool isCandidate = false;
@@ -66,7 +68,7 @@ public class Bullet : MonoBehaviour
                 {
                     isCandidate = !hit.collider.isTrigger;
                 }
-                else if (mirror != latestRicochetMirror)
+                else if (mirror != validMirror)
                 {
                     isCandidate = true;
                     validMirror = mirror;
@@ -92,14 +94,13 @@ public class Bullet : MonoBehaviour
             //mirror reflection / damage dealt / decal spawn
             if (validMirror != null)
             {
-                latestRicochetMirror = validMirror;
+                transform.forward = Vector3.Reflect(transform.forward, closestValidHit.normal);
                 //detach and reinstance trail visual effect on every reflections
                 if (_reinstanceOnReflection != null)
                 {
                     Transform parent = _reinstanceOnReflection.transform.parent;
                     _reinstanceOnReflection.transform.GetLocalPositionAndRotation(out Vector3 pos, out Quaternion rot);
                     _reinstanceOnReflection.transform.SetParent(transform.parent);
-                    transform.forward = Vector3.Reflect(transform.forward, closestValidHit.normal);
                     GameObject copyOnEveryReflection = Instantiate(_reinstanceOnReflection, parent);
                     copyOnEveryReflection.transform.SetLocalPositionAndRotation(pos, rot);
                 }

@@ -30,7 +30,7 @@ public class Scope : MonoBehaviour
     }
     void OnBeginCameraRendering()
     {
-        RicochetMirror mirror = GameManager.Instance.Player.GetComponentInChildren<ProjectRicochetMirror>().Mirror;
+        RicochetMirror mirror = GameManager.Instance.Player.GetComponentInChildren<BulletMirrorSkill>().Mirror;
         if (mirror == null)
         {
             return;
@@ -39,7 +39,7 @@ public class Scope : MonoBehaviour
     }
     private void OnEndCameraRendering()
     {
-        RicochetMirror mirror = GameManager.Instance.Player.GetComponentInChildren<ProjectRicochetMirror>().Mirror;
+        RicochetMirror mirror = GameManager.Instance.Player.GetComponentInChildren<BulletMirrorSkill>().Mirror;
         if (mirror == null)
         {
             return;

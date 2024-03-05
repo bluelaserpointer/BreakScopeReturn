@@ -96,6 +96,10 @@ public class GameManager : MonoBehaviour
         {
             LoadStage();
         }
+        else if (Input.GetKeyDown(KeyCode.F6))
+        {
+            Stage.GameClear();
+        }
     }
     public void SkipCutScene()
     {

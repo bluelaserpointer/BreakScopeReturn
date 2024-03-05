@@ -16,6 +16,30 @@ PrefabInstance:
       propertyPath: _aliveDevice
       value: 
       objectReference: {fileID: 881996052292800783}
+    - target: {fileID: 1856690465757679453, guid: 4e4db13e51bd34f4abd274450e00d2dd, type: 3}
+      propertyPath: onAliveChange.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1856690465757679453, guid: 4e4db13e51bd34f4abd274450e00d2dd, type: 3}
+      propertyPath: onAliveChange.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 881996052292800783}
+    - target: {fileID: 1856690465757679453, guid: 4e4db13e51bd34f4abd274450e00d2dd, type: 3}
+      propertyPath: onAliveChange.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1856690465757679453, guid: 4e4db13e51bd34f4abd274450e00d2dd, type: 3}
+      propertyPath: onAliveChange.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetActive
+      objectReference: {fileID: 0}
+    - target: {fileID: 1856690465757679453, guid: 4e4db13e51bd34f4abd274450e00d2dd, type: 3}
+      propertyPath: onAliveChange.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.GameObject, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 1856690465757679453, guid: 4e4db13e51bd34f4abd274450e00d2dd, type: 3}
+      propertyPath: onAliveChange.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 9201546432711364340, guid: 4e4db13e51bd34f4abd274450e00d2dd, type: 3}
       propertyPath: m_Name
       value: ShieldRifleMan Variant

@@ -6,14 +6,14 @@ using UnityEngine;
 public class EquipmentSidePreview : MonoBehaviour
 {
     [SerializeField]
-    GunSidePreviewSlot[] _gunSlots;
+    GunSidePreviewSlot[] _slots;
     [SerializeField]
     Transform _abilitySlotParent;
     [SerializeField]
     Transform _throwableSlotParent;
 
-    public void SetGun(int index, Gun gun)
+    public void SetEquipment(int index, HandEquipment equipment)
     {
-        _gunSlots[index].SetGun(gun);
+        _slots[index].SetEquipment(equipment);
     }
 }

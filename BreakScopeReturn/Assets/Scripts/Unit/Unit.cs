@@ -21,6 +21,7 @@ public class Unit : SaveTarget, IDamageReceiver
     public UnityEvent<DamageSource> onDamage = new();
     public UnityEvent<float> onHeal = new();
     public UnityEvent onDead = new();
+    public UnityEvent<bool> onAliveChange = new();
 
     /// <summary>
     /// Set this true to always pass value change check during initialize phase. <br/>
@@ -73,10 +74,15 @@ public class Unit : SaveTarget, IDamageReceiver
             {
                 Dead();
             }
+            else
+            {
+                onAliveChange.Invoke(true);
+            }
         }
         else
         {
             IsDead = Health.Value <= 0;
+            onAliveChange.Invoke(IsAlive);
         }
         _cutscenePause = false;
     }
@@ -130,6 +136,7 @@ public class Unit : SaveTarget, IDamageReceiver
         Health.Value = 0;
         AIEnableUpdate();
         onDead.Invoke();
+        onAliveChange.Invoke(false);
     }
     public virtual void ListenSound(SoundSource soundSouce)
     {
