@@ -1426,6 +1426,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 34251e419e291a744a4a5b880806ac34, type: 3}
   m_PrefabInstance: {fileID: 61476875}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &75072175
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 75072176}
+  m_Layer: 0
+  m_Name: TurretAimTarget (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &75072176
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 75072175}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 46.675, y: 6.482, z: -32.96}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1737219756}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &75556980
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4452,6 +4483,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9222408220077309190, guid: 1b2e0c15a34b5e24ea266246ee7534f8, type: 3}
   m_PrefabInstance: {fileID: 125123697}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &125304014
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 125304015}
+  m_Layer: 0
+  m_Name: TurretAimTarget (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &125304015
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 125304014}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 28.72, y: 1.098, z: -30.864}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1737219756}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &134460480
 GameObject:
   m_ObjectHideFlags: 0
@@ -5404,7 +5466,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 214033010}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.12089117, y: -0.17743304, z: 0.021967817, w: 0.97643244}
+  m_LocalRotation: {x: 0.120891176, y: -0.177433, z: 0.021967813, w: 0.97643244}
   m_LocalPosition: {x: 60, y: 15, z: -1.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5545,7 +5607,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 217030162}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0908282, y: 0.9075989, z: -0.3165137, w: 0.26044872}
+  m_LocalRotation: {x: 0.09082819, y: 0.907599, z: -0.3165137, w: 0.26044872}
   m_LocalPosition: {x: 62.06, y: 15.11, z: -2.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -6284,7 +6346,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 285877944}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.042351693, y: -0.15090637, z: 0.006471259, w: 0.9876192}
+  m_LocalRotation: {x: 0.042351663, y: -0.15090641, z: 0.0064712577, w: 0.9876192}
   m_LocalPosition: {x: 62.26, y: 14.12, z: -6.16}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -10443,7 +10505,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1696647510833497161, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.619
+      value: 5.96
       objectReference: {fileID: 0}
     - target: {fileID: 1696647510833497161, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
       propertyPath: m_LocalPosition.z
@@ -10481,6 +10543,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Turret
       objectReference: {fileID: 0}
+    - target: {fileID: 3416148634837259685, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
+      propertyPath: _initialAimTarget
+      value: 
+      objectReference: {fileID: 125304015}
     - target: {fileID: 3416148634837259685, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
       propertyPath: saveProperty.identifyName
       value: Turret (Turret)#Scene-28
@@ -12205,7 +12271,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1696647510833497161, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.619
+      value: 5.96
       objectReference: {fileID: 0}
     - target: {fileID: 1696647510833497161, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
       propertyPath: m_LocalPosition.z
@@ -12243,6 +12309,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Turret (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3416148634837259685, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
+      propertyPath: _initialAimTarget
+      value: 
+      objectReference: {fileID: 125304015}
     - target: {fileID: 3416148634837259685, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
       propertyPath: saveProperty.identifyName
       value: Turret (1) (Turret)#Scene-29
@@ -12963,7 +13033,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1696647510833497161, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.619
+      value: 5.97
       objectReference: {fileID: 0}
     - target: {fileID: 1696647510833497161, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
       propertyPath: m_LocalPosition.z
@@ -13001,6 +13071,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Turret (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 3416148634837259685, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
+      propertyPath: _initialAimTarget
+      value: 
+      objectReference: {fileID: 75072176}
     - target: {fileID: 3416148634837259685, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
       propertyPath: saveProperty.identifyName
       value: Turret (3) (Turret)#Scene-31
@@ -13428,7 +13502,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 680122718}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.04235169, y: -0.15090638, z: 0.0064712586, w: 0.9876192}
+  m_LocalRotation: {x: 0.042351693, y: -0.15090637, z: 0.006471259, w: 0.9876192}
   m_LocalPosition: {x: 62.26, y: 14.12, z: -6.16}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -16541,14 +16615,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1972564616}
     m_Modifications:
-    - target: {fileID: 5440728087577347409, guid: d7b5f535be3818f43ab40297e1958bcc, type: 3}
-      propertyPath: m_BoundingSphereOverride.w
-      value: NaN
-      objectReference: {fileID: 0}
-    - target: {fileID: 5440728087577347409, guid: d7b5f535be3818f43ab40297e1958bcc, type: 3}
-      propertyPath: m_BoundingSphereOverride.x
-      value: 1.8616219e+34
-      objectReference: {fileID: 0}
     - target: {fileID: 538598116358816925, guid: e34d488180176e245bf85c4e1c91a74b, type: 3}
       propertyPath: m_Name
       value: Wall Light Cyan (1)
@@ -16605,6 +16671,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5440728087577347409, guid: d7b5f535be3818f43ab40297e1958bcc, type: 3}
+      propertyPath: m_BoundingSphereOverride.w
+      value: NaN
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440728087577347409, guid: d7b5f535be3818f43ab40297e1958bcc, type: 3}
+      propertyPath: m_BoundingSphereOverride.x
+      value: 1.8616219e+34
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16640,7 +16714,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 863638419}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.012856348, y: -0.17843837, z: -0.002331689, w: 0.98386437}
+  m_LocalRotation: {x: -0.012856361, y: -0.17843837, z: -0.002331691, w: 0.98386437}
   m_LocalPosition: {x: 58.7, y: 9.932799, z: 1.7300768}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -17543,6 +17617,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8429478593361919019, guid: 6ca5fcf99bad4c74f8ac9ef194f1ec43, type: 3}
   m_PrefabInstance: {fileID: 8686008196222688390}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &903393289
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 903393290}
+  m_Layer: 0
+  m_Name: TurretAimTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &903393290
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 903393289}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.000000020751116, y: -0.3138905, z: 0.0000000068603003, w: 0.94945925}
+  m_LocalPosition: {x: 36.06, y: 8.02, z: 28.9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1737219756}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &904451581
 GameObject:
   m_ObjectHideFlags: 0
@@ -18709,7 +18814,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 969123048}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0071217148, y: -0.34827447, z: 0.0026460553, w: 0.9373619}
+  m_LocalRotation: {x: 0.0071217148, y: -0.3482745, z: 0.0026460558, w: 0.93736184}
   m_LocalPosition: {x: 61.06, y: 10.5, z: 6.89}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -19925,7 +20030,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1696647510833497161, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.159
+      value: 4.437
       objectReference: {fileID: 0}
     - target: {fileID: 1696647510833497161, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
       propertyPath: m_LocalPosition.z
@@ -19963,6 +20068,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Turret
       objectReference: {fileID: 0}
+    - target: {fileID: 3416148634837259685, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
+      propertyPath: _initialAimTarget
+      value: 
+      objectReference: {fileID: 903393290}
     - target: {fileID: 3416148634837259685, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
       propertyPath: saveProperty.identifyName
       value: Turret (Turret)#Scene-17
@@ -21465,7 +21574,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1138325772}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.00232601, y: 0.99739677, z: 0.06135628, w: 0.037811205}
+  m_LocalRotation: {x: -0.0023260105, y: 0.99739677, z: 0.061356284, w: 0.037811212}
   m_LocalPosition: {x: 61.06, y: 10.5, z: 6.89}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -28297,14 +28406,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1972564616}
     m_Modifications:
-    - target: {fileID: 5440728087577347409, guid: d7b5f535be3818f43ab40297e1958bcc, type: 3}
-      propertyPath: m_BoundingSphereOverride.x
-      value: 1.8616219e+34
-      objectReference: {fileID: 0}
-    - target: {fileID: 5440728087577347409, guid: d7b5f535be3818f43ab40297e1958bcc, type: 3}
-      propertyPath: m_BoundingSphereOverride.y
-      value: 3.8384e-41
-      objectReference: {fileID: 0}
     - target: {fileID: 538598116358816925, guid: e34d488180176e245bf85c4e1c91a74b, type: 3}
       propertyPath: m_Name
       value: Wall Light Cyan
@@ -28360,6 +28461,14 @@ PrefabInstance:
     - target: {fileID: 3540434016863123086, guid: e34d488180176e245bf85c4e1c91a74b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440728087577347409, guid: d7b5f535be3818f43ab40297e1958bcc, type: 3}
+      propertyPath: m_BoundingSphereOverride.x
+      value: 1.8616219e+34
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440728087577347409, guid: d7b5f535be3818f43ab40297e1958bcc, type: 3}
+      propertyPath: m_BoundingSphereOverride.y
+      value: 3.8384e-41
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -32067,7 +32176,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 1
   m_VoxelSize: 0.1
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 7cfcd74f69322ea48815d0645dcd9c4f, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: bb456b9923b477b47b1d7cf1078ffe59, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1 &1670132303
 GameObject:
@@ -32370,6 +32479,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 903393290}
+  - {fileID: 125304015}
+  - {fileID: 75072176}
   - {fileID: 700266787}
   - {fileID: 82419476}
   - {fileID: 5881978364796834071}
@@ -38045,7 +38157,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1696647510833497161, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.619
+      value: 5.97
       objectReference: {fileID: 0}
     - target: {fileID: 1696647510833497161, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
       propertyPath: m_LocalPosition.z
@@ -38083,6 +38195,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Turret (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 3416148634837259685, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
+      propertyPath: _initialAimTarget
+      value: 
+      objectReference: {fileID: 75072176}
     - target: {fileID: 3416148634837259685, guid: 90a32716aaac68b469fd78b1ab4103b4, type: 3}
       propertyPath: saveProperty.identifyName
       value: Turret (2) (Turret)#Scene-30

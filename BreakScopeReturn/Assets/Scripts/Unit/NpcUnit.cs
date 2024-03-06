@@ -23,12 +23,26 @@ public abstract class NpcUnit : Unit, IHasCatalog
     }
     protected override void Internal_Init(bool isInitialInit)
     {
+        base.Internal_Init(isInitialInit);
         if (isInitialInit)
         {
             GameManager.Instance.Stage.OnNewNpcUnitAdded(this);
             NeverFoundEnemy = true;
         }
-        base.Internal_Init(isInitialInit);
+        else if (IsAlive)
+        {
+            if (!GameManager.Instance.Stage.AliveNpcUnits.Contains(this))
+            {
+                GameManager.Instance.Stage.AliveNpcUnits.Add(this);
+            }
+        }
+        else
+        {
+            if (GameManager.Instance.Stage.AliveNpcUnits.Contains(this))
+            {
+                GameManager.Instance.Stage.AliveNpcUnits.Remove(this);
+            }
+        }
     }
     public override string Serialize()
     {
