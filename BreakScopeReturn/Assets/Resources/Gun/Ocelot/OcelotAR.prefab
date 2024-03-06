@@ -1349,12 +1349,12 @@ MonoBehaviour:
     identifyName: OcelotAR (Gun)#Prefab-0
     prefabRoot: {fileID: 8117145868251474212}
   _handsType: 0
-  _realtimeIK: 0
   _displayName: Ocelot
   _icon: {fileID: 21300044, guid: 6674e8c43c63e4f4184cbd009379498d, type: 3}
   magazine:
     _max: 30
-  spareAmmo: 180
+  spareAmmo: 300
+  _realtimeIK: 0
   spec:
     aimTime: 0.04
     cameraZoomRatio_notAiming: 60
@@ -1362,13 +1362,13 @@ MonoBehaviour:
     mouseSensitivity_aiming: 0.8
     fireMode: 1
     bulletPrefab: {fileID: 11440490, guid: 5c203ed0e2c848546ba4d6751d3c10ae, type: 3}
-    fireCD: 0.1
+    fireCD: 0.06
     damage: 20
     bulletSpeed: 600
-    accuracy: 0.012
-    recoilAmount_aiming: {x: 0.002, y: 0.008, z: 0.003}
+    accuracy: 0.008
+    recoilAmount_aiming: {x: 0.001, y: 0.004, z: 0.0015}
     recoilPenaltyNotAiming: 1.1
-    recoilOverTime: 0.5
+    recoilOverTime: 0.1
     recoilRotateRatio: 200
     reloadCD: 2
   _leftHandGoal: {fileID: 8662423748531505744}

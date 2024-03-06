@@ -94,7 +94,6 @@ public class Bullet : MonoBehaviour
             //mirror reflection / damage dealt / decal spawn
             if (validMirror != null)
             {
-                transform.forward = Vector3.Reflect(transform.forward, closestValidHit.normal);
                 //detach and reinstance trail visual effect on every reflections
                 if (_reinstanceOnReflection != null)
                 {
@@ -104,6 +103,7 @@ public class Bullet : MonoBehaviour
                     GameObject copyOnEveryReflection = Instantiate(_reinstanceOnReflection, parent);
                     copyOnEveryReflection.transform.SetLocalPositionAndRotation(pos, rot);
                 }
+                transform.forward = Vector3.Reflect(transform.forward, closestValidHit.normal);
                 if (_reflectVFXPrefab)
                 {
                     GameObject generatedEffect = Instantiate(_reflectVFXPrefab, closestValidHit.point + closestValidHit.normal * floatInfrontOfWall, Quaternion.LookRotation(closestValidHit.normal));
