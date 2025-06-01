@@ -12,4 +12,10 @@ https://github.com/bluelaserpointer/BreakScopeReturn/assets/39490836/5ed81401-1e
 
 善于观察，可在大部分遭遇前先发制人，保持体力。
 
-游戏下载链接：(准备中)
+## 游戏下载链接：
+
+### 百度网盘
+
+通过网盘分享的文件：BreakScopeReturns_pre_alpha2.1.0.zip
+
+链接: https://pan.baidu.com/s/1kS9YC-Xkapq4NviSOzrUhA?pwd=RFSN 提取码: RFSN
